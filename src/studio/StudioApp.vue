@@ -746,20 +746,42 @@ function onEditorInit(editor) {
 
 function onEditBlock(nodeProps) {
   const blocks = getBlocks();
-  const label = nodeProps.label || nodeProps.id;
-  const blockDef = blocks[label] || {};
+  const blockType = nodeProps.id || nodeProps.label;
+  const blockDef = blocks[blockType] || {};
   const blockData = defu(nodeProps.data || {}, blockDef.data || {});
 
   editState.blockData = {
-    id: label,
-    blockId: nodeProps.id,
+    id: blockType,
+    blockId: nodeProps.blockId || nodeProps.id,
     data: blockData,
+    name: blockDef.name || blockType,
+    editComponent: blockDef.editComponent,
     details: {
-      id: label,
-      name: blockDef.name || label,
+      id: blockType,
+      name: blockDef.name || blockType,
       ...blockDef,
     },
   };
+
+  if (blockType === 'wait-connections' && editorInstance.value) {
+    const edges = editorInstance.value.getEdges?.value || [];
+    const connections = edges.reduce(
+      (acc, { target, sourceNode, source }) => {
+        if (target !== editState.blockData.blockId) return acc;
+
+        const sourceLabel = sourceNode?.label || '';
+        const blockName = blocks[sourceLabel]?.name || sourceLabel;
+        acc.push({
+          id: source,
+          name: blockName,
+        });
+        return acc;
+      },
+      []
+    );
+    editState.blockData.connections = connections;
+  }
+
   editState.editing = true;
   state.showSidebar = true;
 }

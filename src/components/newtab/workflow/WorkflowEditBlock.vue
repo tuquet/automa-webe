@@ -154,7 +154,14 @@ function handleClose() {
 }
 
 function getEditComponent() {
-  const editComp = props.data.editComponent;
+  const editComp =
+    props.data.editComponent ||
+    (props.data.id
+      ? `Edit${props.data.id
+          .split('-')
+          .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+          .join('')}`
+      : null);
   if (typeof editComp === 'object') return editComp;
 
   return components[editComp];
