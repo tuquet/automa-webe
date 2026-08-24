@@ -104,6 +104,8 @@
 
         <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"></div>
 
+        <studio-daemon-status />
+
         <button
           data-testid="btn-export-json"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
@@ -116,8 +118,13 @@
 
         <button
           data-testid="btn-run-workflow"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg bg-accent hover:bg-accent/90 text-white flex items-center space-x-1.5 shadow-sm transition"
-          title="Run Workflow via Daemon Engine"
+          class="px-3 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1.5 shadow-sm transition"
+          :class="[
+            daemonState.status === 'online'
+              ? 'bg-accent hover:bg-accent/90 text-white'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600'
+          ]"
+          :title="daemonState.status === 'online' ? 'Execute Workflow via Automa Core Daemon' : 'Daemon Offline - Cannot execute'"
           @click="runWorkflow"
         >
           <v-remixicon name="riPlayLine" size="14" />
@@ -447,6 +454,67 @@
         </div>
       </div>
     </ui-modal>
+
+    <!-- Run Workflow Modal -->
+    <ui-modal
+      v-model="runModalState.show"
+      title="Execute Workflow"
+      content-class="max-w-md"
+    >
+      <div class="space-y-4 py-1 text-xs">
+        <div
+          class="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 rounded-lg border border-emerald-200 dark:border-emerald-800/60"
+        >
+          <p class="font-semibold text-emerald-800 dark:text-emerald-300 mb-0.5 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+            Automa Core Daemon (Online)
+          </p>
+          <p class="text-emerald-700/80 dark:text-emerald-400 text-[11px]">
+            Target endpoint: <span class="font-mono">{{ daemonState.baseUrl }}/api/jobs</span>
+          </p>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
+            Target Browser Profile
+          </label>
+          <select
+            v-model="runModalState.browserId"
+            class="w-full px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 dark:text-gray-100"
+          >
+            <option value="daemon_worker">⚡ Default Chromium (Daemon Worker)</option>
+            <option
+              v-for="b in daemonState.browsers"
+              :key="b.id"
+              :value="b.id"
+            >
+              🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
+            </option>
+          </select>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <ui-checkbox v-model="runModalState.headless">
+            Run in Headless Mode (Hidden Browser)
+          </ui-checkbox>
+          <ui-checkbox v-model="runModalState.closeBrowserOnFinish">
+            Close Browser when Workflow Finishes
+          </ui-checkbox>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+          <ui-button @click="runModalState.show = false">Cancel</ui-button>
+          <ui-button
+            variant="accent"
+            :loading="runModalState.isSubmitting"
+            @click="submitWorkflowExecution"
+          >
+            <v-remixicon name="riPlayLine" class="mr-1.5" size="14" />
+            <span>Execute Workflow</span>
+          </ui-button>
+        </div>
+      </div>
+    </ui-modal>
   </div>
 </template>
 
@@ -470,11 +538,14 @@ import WorkflowGlobalData from '@/components/newtab/workflow/WorkflowGlobalData.
 import WorkflowSettings from '@/components/newtab/workflow/WorkflowSettings.vue';
 import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalCtxMenu.vue';
 import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
+import StudioDaemonStatus from '@/components/newtab/workflow/StudioDaemonStatus.vue';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { useCommandManager } from '@/composable/commandManager';
 import { useSidebarResize } from '@/composable/useSidebarResize';
 import { useWorkflowAutocomplete } from '@/composable/useWorkflowAutocomplete';
+import { useDaemonHealth } from '@/composable/useDaemonHealth';
+import { useToast } from 'vue-toastification';
 import { GraphLayoutService } from '@/services/graphLayout.service';
 import { getBlocks } from '@/utils/getSharedData';
 import { excludeGroupBlocks } from '@/utils/shared';
@@ -495,6 +566,17 @@ const fileInputRef = ref(null);
 let editorCommands = null;
 const commandManager = useCommandManager();
 let internalClipboard = null;
+const toast = useToast();
+const { state: daemonState } = useDaemonHealth();
+
+// Execution & Run Modal State
+const runModalState = reactive({
+  show: false,
+  browserId: 'daemon_worker',
+  headless: false,
+  closeBrowserOnFinish: false,
+  isSubmitting: false,
+});
 
 // Logs, Execution & Debugging State
 const logHistory = ref([]);
@@ -1425,15 +1507,56 @@ function exportJson() {
 }
 
 function runWorkflow() {
-  window.parent?.postMessage(
-    { type: 'automa:run-workflow', data: workflow.value },
-    '*'
-  );
+  if (daemonState.status === 'online') {
+    runModalState.show = true;
+    return;
+  }
+
   if (window.vscode) {
     window.vscode.postMessage({
       type: 'automa:run-workflow',
       data: workflow.value,
     });
+    toast.info('Run request sent to VS Code Extension');
+    return;
+  }
+
+  toast.error(
+    'Rust Daemon is offline. Please launch the backend server (task: "Serve: Live Studio") to run workflows.'
+  );
+}
+
+async function submitWorkflowExecution() {
+  runModalState.isSubmitting = true;
+  try {
+    const payload = {
+      workflowData: workflow.value,
+      options: {
+        browserId: runModalState.browserId,
+        headless: runModalState.headless,
+        closeBrowserOnFinish: runModalState.closeBrowserOnFinish,
+      },
+    };
+
+    const res = await fetch(`${daemonState.baseUrl}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (res.ok && data.jobId) {
+      toast.success(`Workflow job started! (ID: ${data.jobId.slice(0, 8)})`);
+      runModalState.show = false;
+      openModal('logs');
+      fetchLogs();
+    } else {
+      toast.error(data.message || 'Failed to submit workflow execution job');
+    }
+  } catch (err) {
+    toast.error(`Execution error: ${err.message}`);
+  } finally {
+    runModalState.isSubmitting = false;
   }
 }
 
