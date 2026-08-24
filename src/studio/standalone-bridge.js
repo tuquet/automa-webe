@@ -4,6 +4,16 @@
  */
 
 import { reactive } from 'vue';
+import {
+  fetchStorageTables,
+  createStorageTable,
+  deleteStorageTable,
+  fetchStorageVariables,
+  createStorageVariable,
+  deleteStorageVariable,
+  fetchStorageCredentials,
+  flushSyncQueue,
+} from './storage-service';
 
 export const defaultWorkflow = {
   extVersion: '1.30.02',
@@ -185,7 +195,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// In-memory db mock replacing IndexedDB
+// In-memory db connected to Storage Service & Fallback Cache
 export const db = {
   workflows: {
     get: async (id) => studioState.currentWorkflow,
@@ -202,16 +212,34 @@ export const db = {
     toArray: async () => [studioState.currentWorkflow],
   },
   tables: {
-    get: async () => null,
-    toArray: async () => [],
+    get: async (id) => {
+      const tables = await fetchStorageTables();
+      return tables.find((t) => t.id === id) || null;
+    },
+    add: async (data) => createStorageTable(data),
+    put: async (data) => createStorageTable(data),
+    delete: async (id) => deleteStorageTable(id),
+    toArray: async () => fetchStorageTables(),
   },
   variables: {
-    get: async () => ({}),
-    toArray: async () => [],
+    get: async (name) => {
+      const vars = await fetchStorageVariables();
+      return vars.find((v) => v.name === name || v.id === name) || null;
+    },
+    add: async (data) => createStorageVariable(data),
+    put: async (data) => createStorageVariable(data),
+    delete: async (id) => deleteStorageVariable(id),
+    toArray: async () => fetchStorageVariables(),
+  },
+  credentials: {
+    toArray: async () => fetchStorageCredentials(),
   },
   settings: {
     get: async () => ({}),
     update: async () => ({}),
+  },
+  sync: {
+    flush: () => flushSyncQueue(),
   },
 };
 

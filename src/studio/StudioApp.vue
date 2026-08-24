@@ -24,6 +24,17 @@
         <!-- File Open & New Buttons -->
         <div class="flex items-center space-x-1">
           <button
+            v-if="automaCoreState.status === 'online'"
+            data-testid="btn-storage-explorer"
+            class="px-2 py-1 text-xs font-medium rounded-md border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent flex items-center space-x-1 transition"
+            title="Browse and Open Workflows from Storage workspace"
+            @click="modals.storageFiles = true"
+          >
+            <v-remixicon name="riArchiveLine" size="14" />
+            <span class="hidden md:inline">Storage Explorer</span>
+          </button>
+
+          <button
             data-testid="btn-open-file"
             class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
             title="Open Workflow JSON File from Computer (or Drag & Drop file onto Canvas)"
@@ -55,6 +66,18 @@
 
       <!-- Right Section: Data, Modals & Execution -->
       <div class="flex items-center space-x-2">
+        <button
+          v-if="automaCoreState.status === 'online'"
+          data-testid="btn-live-lint"
+          class="px-2 py-1 text-xs font-medium rounded-md border flex items-center space-x-1 transition"
+          :class="lintIssues.length > 0 ? 'border-amber-500/50 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' : 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'"
+          :title="lintIssues.length > 0 ? `Lint: ${lintIssues.length} issue(s) detected` : 'Lint: All schema checks passed'"
+          @click="triggerManualLint"
+        >
+          <v-remixicon :name="lintIssues.length > 0 ? 'riAlertLine' : 'riCheckLine'" size="13" />
+          <span class="hidden xl:inline">{{ lintIssues.length > 0 ? `${lintIssues.length} Issues` : 'Valid' }}</span>
+        </button>
+
         <button
           data-testid="btn-table-data"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
@@ -116,10 +139,10 @@
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
           :title="
             currentFilePath
-              ? `Save to Vault (${currentFilePath}) [Ctrl+S]`
-              : 'Save to Vault / Export [Ctrl+S]'
+              ? `Save to Storage (${currentFilePath}) [Ctrl+S]`
+              : 'Save to Storage / Export [Ctrl+S]'
           "
-          @click="saveWorkflowToVault"
+          @click="saveWorkflowToStorage"
         >
           <v-remixicon name="riSaveLine" size="14" />
           <span class="hidden sm:inline">Save</span>
@@ -238,6 +261,16 @@
               @click="autoAlign"
             >
               <v-remixicon name="riMagicLine" />
+            </button>
+
+            <button
+              data-testid="btn-canvas-auto-focus"
+              class="control-button mr-2 transition"
+              :class="autoFocusEnabled ? 'text-accent font-semibold' : 'text-gray-400'"
+              :title="autoFocusEnabled ? 'Auto-focus Active Node (Enabled)' : 'Auto-focus Active Node (Disabled)'"
+              @click="autoFocusEnabled = !autoFocusEnabled"
+            >
+              <v-remixicon name="riFocus3Line" />
             </button>
           </template>
         </workflow-editor>
@@ -383,12 +416,25 @@
         <app-logs />
       </div>
     </ui-modal>
+
+    <!-- Storage Workspace Explorer Modal -->
+    <ui-modal
+      v-model="modals.storageFiles"
+      title="Storage Workspace Explorer"
+      content-class="max-w-2xl"
+    >
+      <storage-file-explorer
+        @select="onStorageFileSelected"
+        @close="modals.storageFiles = false"
+      />
+    </ui-modal>
   </div>
 </template>
 
 <script setup>
 import {
   ref,
+  watch,
   computed,
   reactive,
   provide,
@@ -409,6 +455,7 @@ import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalC
 import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
 import StudioCoreStatus from '@/components/newtab/workflow/StudioCoreStatus.vue';
 import AppLogs from '@/components/newtab/app/AppLogs.vue';
+import StorageFileExplorer from './StorageFileExplorer.vue';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { useCommandManager } from '@/composable/commandManager';
@@ -454,6 +501,9 @@ const runModalState = reactive({
 const currentFilePath = ref('');
 const isSaving = ref(false);
 const activeRunningBlockId = ref(null);
+const autoFocusEnabled = ref(true);
+const lintIssues = ref([]);
+const isLinting = ref(false);
 
 // Logs State via Native IndexedDB Dexie
 const logsArr = useLiveQuery(() => dbLogs.items.toArray());
@@ -477,11 +527,24 @@ const modals = reactive({
   globalData: false,
   settings: false,
   logs: false,
+  storageFiles: false,
 });
 
 const editState = reactive({
   editing: false,
   blockData: {},
+});
+
+watch(activeRunningBlockId, (newId, oldId) => {
+  if (typeof document === 'undefined') return;
+  if (oldId) {
+    const prevEl = document.querySelector(`[data-id="${oldId}"]`);
+    if (prevEl) prevEl.classList.remove('node-running');
+  }
+  if (newId) {
+    const nextEl = document.querySelector(`[data-id="${newId}"]`);
+    if (nextEl) nextEl.classList.add('node-running');
+  }
 });
 
 function syncWorkflowFromCanvas() {
@@ -1340,7 +1403,7 @@ function exportJson() {
   downloadAnchor.remove();
 }
 
-async function loadWorkflowFromVault(path) {
+async function loadWorkflowFromStorage(path) {
   if (!path) return;
   currentFilePath.value = path;
   try {
@@ -1352,7 +1415,7 @@ async function loadWorkflowFromVault(path) {
     if (res.ok) {
       const data = await res.json();
       loadWorkflowData(data);
-      toast.success(`Loaded workflow from Vault: ${path.split(/[\\/]/).pop()}`);
+      toast.success(`Loaded workflow from Storage: ${path.split(/[\\/]/).pop()}`);
     } else {
       const err = await res.json();
       toast.error(`Failed to load workflow: ${err.message || 'Unknown error'}`);
@@ -1362,7 +1425,7 @@ async function loadWorkflowFromVault(path) {
   }
 }
 
-async function saveWorkflowToVault() {
+async function saveWorkflowToStorage() {
   if (automaCoreState.status !== 'online') {
     toast.warning('Automa Core is offline. Exporting JSON file locally...');
     exportJson();
@@ -1385,7 +1448,7 @@ async function saveWorkflowToVault() {
     });
     if (res.ok) {
       toast.success(
-        `Saved to Vault: ${currentFilePath.value.split(/[\\/]/).pop()}`
+        `Saved to Storage: ${currentFilePath.value.split(/[\\/]/).pop()}`
       );
     } else {
       const err = await res.json();
@@ -1397,6 +1460,57 @@ async function saveWorkflowToVault() {
     isSaving.value = false;
   }
 }
+
+function onStorageFileSelected(file) {
+  if (!file) return;
+  currentFilePath.value = file.path;
+  loadWorkflowFromStorage(file.path);
+  modals.storageFiles = false;
+}
+
+// Backward compatibility alias
+const loadWorkflowFromVault = loadWorkflowFromStorage;
+const saveWorkflowToVault = saveWorkflowToStorage;
+const onVaultFileSelected = onStorageFileSelected;
+
+const runLiveLint = debounce(async () => {
+  if (automaCoreState.status !== 'online' || !workflow.value?.drawflow) return;
+  isLinting.value = true;
+  try {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/lint`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        workflow: workflow.value,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      lintIssues.value = data.issues || [];
+    }
+  } catch (_) {
+    // Ignored
+  } finally {
+    isLinting.value = false;
+  }
+}, 800);
+
+function triggerManualLint() {
+  runLiveLint();
+  if (lintIssues.value.length === 0) {
+    toast.success('Lint Check: Workflow schema and DAG structure are valid!');
+  } else {
+    toast.warning(`Lint Check: ${lintIssues.value.length} potential issue(s) detected.`);
+  }
+}
+
+watch(
+  () => workflow.value?.drawflow,
+  () => {
+    runLiveLint();
+  },
+  { deep: true }
+);
 
 function runWorkflow() {
   if (automaCoreState.status === 'online') {
@@ -1416,87 +1530,6 @@ function runWorkflow() {
   toast.error(
     'Rust Daemon is offline. Please launch the backend server (task: "Serve: Live Studio") to run workflows.'
   );
-}
-
-async function syncJobLogs(jobId, baseUrl) {
-  let finished = false;
-  let pollCount = 0;
-
-  // Initialize Dexie sub-tables
-  await Promise.all([
-    dbLogs.histories.put({ logId: jobId, data: [] }),
-    dbLogs.logsData.put({ logId: jobId, data: { table: [], variables: {} } }),
-    dbLogs.ctxData.put({ logId: jobId, data: {} }),
-  ]);
-
-  const interval = setInterval(async () => {
-    pollCount += 1;
-    if (pollCount > 180 || finished) {
-      clearInterval(interval);
-      return;
-    }
-
-    try {
-      // 1. Fetch step logs from history
-      const res = await fetch(`${baseUrl}/api/history/${jobId}/logs`);
-      if (res.ok) {
-        const details = await res.json();
-        if (details?.logs && Array.isArray(details.logs)) {
-          const formattedLogs = details.logs.map((item, idx) => {
-            const rawName = item.name || item.block_name || item.label || '';
-            const desc =
-              item.description ||
-              (item.message && item.message !== 'log' ? item.message : '') ||
-              '';
-            const msg =
-              item.message && item.message !== 'log' ? item.message : '';
-            return {
-              id: String(item.id || idx),
-              name: rawName || 'Block Step',
-              blockId: item.blockId || item.block_id || '',
-              type: item.type === 'error' ? 'error' : 'success',
-              duration: item.duration || 0,
-              timestamp:
-                item.timestamp ||
-                (item.created_at
-                  ? new Date(item.created_at).getTime()
-                  : Date.now()),
-              message: msg,
-              description: desc,
-            };
-          });
-
-          await dbLogs.histories.put({
-            logId: jobId,
-            data: formattedLogs,
-          });
-        }
-
-        if (details?.results) {
-          await dbLogs.logsData.put({
-            logId: jobId,
-            data: details.results,
-          });
-        }
-      }
-
-      // 2. Fetch current job running status
-      const statusRes = await fetch(`${baseUrl}/api/jobs/${jobId}/status`);
-      if (statusRes.ok) {
-        const statusData = await statusRes.json();
-        if (['completed', 'error', 'failed', 'stopped'].includes(statusData.status)) {
-          finished = true;
-          clearInterval(interval);
-          await dbLogs.items.update(jobId, {
-            endedAt: Date.now(),
-            status: statusData.status === 'completed' ? 'success' : 'error',
-          });
-        }
-      }
-    } catch (_) {
-      // Ignored
-    }
-  }, 1000);
 }
 
 async function submitWorkflowExecution() {
@@ -1535,11 +1568,15 @@ async function submitWorkflowExecution() {
         status: 'running',
       });
 
+      // Initialize Dexie sub-tables
+      await Promise.all([
+        dbLogs.histories.put({ logId: data.jobId, data: [] }),
+        dbLogs.logsData.put({ logId: data.jobId, data: { table: [], variables: {} } }),
+        dbLogs.ctxData.put({ logId: data.jobId, data: {} }),
+      ]);
+
       // Trigger full native Automa logs modal
       openLogsModal();
-
-      // Background log synchronizer
-      syncJobLogs(data.jobId, automaCoreState.baseUrl);
     } else {
       toast.error(data.message || 'Failed to submit workflow execution job');
     }
@@ -1615,22 +1652,51 @@ onMounted(() => {
     }
   }
 
+  // Initial live lint check
+  runLiveLint();
+
   const { addEventListener } = useAutomaCoreHealth();
   cleanupEventListener = addEventListener(async (data) => {
     if (!data) return;
-    if (data.blockId) {
-      activeRunningBlockId.value = data.blockId;
-      goToBlock(data.blockId);
+    const blockId = data.blockId || data.data?.blockId || data.data?.block_id;
+    if (blockId) {
+      activeRunningBlockId.value = blockId;
+      if (autoFocusEnabled.value) {
+        goToBlock(blockId);
+      }
     }
     const jobId = data.jobId || data.job_id;
-    if (jobId && (data.event_type === 'workflow_finished' || data.type === 'finished' || data.status === 'completed')) {
-      try {
-        await dbLogs.items.update(jobId, {
-          endedAt: Date.now(),
-          status: data.status === 'error' ? 'error' : 'success',
-        });
-      } catch (_) {
-        // Ignored
+    if (jobId) {
+      const msg = data.message || data.data?.message;
+      if (msg) {
+        try {
+          const entry = (await dbLogs.histories.get(jobId)) || { logId: jobId, data: [] };
+          const list = Array.isArray(entry.data) ? entry.data : [];
+          list.push({
+            id: String(list.length + 1),
+            name: data.name || data.data?.name || 'Block Step',
+            blockId: blockId || '',
+            type: data.type === 'error' ? 'error' : 'success',
+            timestamp: Date.now(),
+            message: msg,
+            description: data.description || data.data?.description || '',
+          });
+          await dbLogs.histories.put({ logId: jobId, data: list });
+        } catch (_) {
+          // Ignored
+        }
+      }
+
+      if (data.event_type === 'workflow_finished' || data.type === 'finished' || data.status === 'completed' || data.status === 'error') {
+        activeRunningBlockId.value = null;
+        try {
+          await dbLogs.items.update(jobId, {
+            endedAt: Date.now(),
+            status: (data.status === 'error' || data.type === 'error') ? 'error' : 'success',
+          });
+        } catch (_) {
+          // Ignored
+        }
       }
     }
   });
@@ -1659,5 +1725,19 @@ onBeforeUnmount(() => {
 }
 .custom-drag:hover {
   opacity: 1;
+}
+
+.vue-flow__node.node-running {
+  box-shadow: 0 0 0 3px #10b981, 0 0 15px rgba(16, 185, 129, 0.5) !important;
+  animation: pulse-node 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes pulse-node {
+  0%, 100% {
+    box-shadow: 0 0 0 3px #10b981, 0 0 15px rgba(16, 185, 129, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 5px #34d399, 0 0 25px rgba(52, 211, 153, 0.8);
+  }
 }
 </style>

@@ -100,6 +100,7 @@ import { computed, onMounted, watch, reactive } from 'vue';
 import { nanoid } from 'nanoid';
 import { useI18n } from 'vue-i18n';
 import dbStorage from '@/db/storage';
+import { fetchStorageTables } from '@/studio/storage-service';
 import { debounce } from '@/utils/helper';
 import { dataTypes } from '@/utils/constants/table';
 import { useWorkflowStore } from '@/stores/workflow';
@@ -205,7 +206,11 @@ watch(
 );
 
 onMounted(async () => {
-  state.tableList = await dbStorage.tablesItems.toArray();
+  try {
+    state.tableList = await fetchStorageTables();
+  } catch (_) {
+    state.tableList = await dbStorage.tablesItems.toArray();
+  }
   if (props.workflow.connectedTable) {
     const findTable = state.tableList.find(
       (table) => table.id === props.workflow.connectedTable
