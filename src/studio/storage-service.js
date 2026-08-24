@@ -291,7 +291,7 @@ export async function fetchStorageCredentials() {
 
 export async function fetchStorageFiles() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/vault/files`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/files`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {

@@ -55,7 +55,19 @@ function verifySelector() {
       findBy: props.findBy,
     })
     .then((result) => {
-      if (!result.notFound) return;
+      if (result.standalone) {
+        if (result.isValid) {
+          toast.success('Selector syntax is valid');
+        } else {
+          toast.error('Invalid selector syntax');
+        }
+        return;
+      }
+
+      if (!result.notFound) {
+        toast.success('Element found on page');
+        return;
+      }
 
       toast.error('Element not found');
     });

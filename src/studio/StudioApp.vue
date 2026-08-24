@@ -1408,7 +1408,7 @@ async function loadWorkflowFromStorage(path) {
   currentFilePath.value = path;
   try {
     const res = await fetch(
-      `${automaCoreState.baseUrl}/api/vault/workflow?path=${encodeURIComponent(
+      `${automaCoreState.baseUrl}/api/storage/workflow?path=${encodeURIComponent(
         path
       )}`
     );
@@ -1438,7 +1438,7 @@ async function saveWorkflowToStorage() {
   isSaving.value = true;
   syncWorkflowFromCanvas();
   try {
-    const res = await fetch(`${automaCoreState.baseUrl}/api/vault/workflow`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/storage/workflow`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
