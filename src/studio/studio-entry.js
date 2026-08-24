@@ -79,19 +79,23 @@ if (typeof window !== 'undefined') {
   const pollBundleUpdate = async () => {
     try {
       const bundleUrl = new URL('studio.bundle.js', window.location.href).href;
-      const res = await fetch(`${bundleUrl}?_t=${Date.now()}`, { method: 'HEAD', cache: 'no-store' });
-      const current = res.headers.get('last-modified') || res.headers.get('etag');
+      const res = await fetch(`${bundleUrl}?_t=${Date.now()}`, {
+        method: 'HEAD',
+        cache: 'no-store',
+      });
+      const current =
+        res.headers.get('last-modified') || res.headers.get('etag');
       if (lastModified && current && current !== lastModified) {
-        console.log('[Studio Live Reload] Bundle updated. Reloading page...');
         window.location.reload();
       }
       if (current) {
         lastModified = current;
       }
-    } catch (_) {}
+    } catch (_) {
+      // Ignored
+    }
   };
   setInterval(pollBundleUpdate, 1500);
 }
 
 if (module.hot) module.hot.accept();
-

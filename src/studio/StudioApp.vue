@@ -182,7 +182,9 @@
           @delete:node="onDeleteNode"
         >
           <template #controls-prepend>
-            <div class="inline-flex items-center rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 mr-2">
+            <div
+              class="inline-flex items-center rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 mr-2"
+            >
               <button
                 data-testid="btn-canvas-undo"
                 class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
@@ -192,7 +194,9 @@
               >
                 <v-remixicon name="riArrowGoBackLine" />
               </button>
-              <hr class="inline-block h-6 border-r border-gray-200 dark:border-gray-700" />
+              <hr
+                class="inline-block h-6 border-r border-gray-200 dark:border-gray-700"
+              />
               <button
                 data-testid="btn-canvas-redo"
                 class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
