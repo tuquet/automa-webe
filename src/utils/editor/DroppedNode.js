@@ -20,9 +20,9 @@ class DroppedNode {
   }
 
   static replaceNode(editor, { block, target: targetEl }) {
-    const targetNode = editor.getNode.value(targetEl.dataset.id);
-
-    if (targetNode.label === 'blocks-group' || block.fromBlockBasic) return;
+    if (!targetEl?.dataset?.id) return;
+    const targetNode = editor?.getNode?.value ? editor.getNode.value(targetEl.dataset.id) : null;
+    if (!targetNode || targetNode.label === 'blocks-group' || block?.fromBlockBasic) return;
 
     let blockData = block;
     if (block.fromBlockBasic) {

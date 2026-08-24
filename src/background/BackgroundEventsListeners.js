@@ -134,6 +134,10 @@ class BackgroundEventsListeners {
 
   static async onRuntimeInstalled({ reason }) {
     try {
+      if (typeof __IS_RUNNER__ !== 'undefined' && __IS_RUNNER__) {
+        return;
+      }
+
       if (reason === 'install') {
         await browser.storage.local.set({
           logs: [],

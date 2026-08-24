@@ -56,18 +56,13 @@ config.plugins = config.plugins.filter((plugin) => {
 // 4. Mocks & Aliases for runner
 config.resolve.alias['@/utils/api'] = path.resolve(__dirname, 'business/dev/utils/api-runner-mock.js');
 config.resolve.alias['webextension-polyfill'] = path.resolve(__dirname, 'business/dev/lib/browser-compat.js');
+config.resolve.alias['@business$'] = path.resolve(__dirname, 'business/dev/index.js');
+config.resolve.alias['@business'] = path.resolve(__dirname, 'business/dev');
 
-// Inject the runner initialization to offscreen entry point
+// Inject the runner initialization to offscreen entry point (background already imports @business)
 config.entry.offscreen = [path.resolve(__dirname, 'business/dev/inject-offscreen.js'), config.entry.offscreen];
 
-// 5. Add __IS_RUNNER__ define variable
-config.plugins.push(
-  new webpack.DefinePlugin({
-    __IS_RUNNER__: JSON.stringify(true),
-  })
-);
-
-// 6. Disable cache to guarantee fresh runner build
+// 5. Disable cache to guarantee fresh runner build
 config.cache = false;
 
 // 7. Generate an empty dummy.html for CLI background execution without triggering listeners

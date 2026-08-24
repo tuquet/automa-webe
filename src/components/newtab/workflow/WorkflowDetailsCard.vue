@@ -1,21 +1,22 @@
 <template>
-  <div class="mb-2 mt-1 flex items-start px-4">
-    <ui-popover class="mr-2 h-8">
+  <div data-testid="workflow-details-card" class="mb-2 mt-2 flex items-start px-3 text-xs">
+    <ui-popover class="mr-2 h-7">
       <template #trigger>
         <span
+          data-testid="workflow-icon-btn"
           :title="t('workflow.sidebar.workflowIcon')"
-          class="inline-block h-full cursor-pointer"
+          class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-gray-100 dark:bg-gray-700/60 cursor-pointer hover:opacity-80 transition"
         >
           <ui-img
             v-if="workflow.icon.startsWith('http')"
             :src="workflow.icon"
-            class="h-8 w-8"
+            class="h-5 w-5"
           />
-          <v-remixicon v-else :name="workflow.icon" size="26" class="mt-1" />
+          <v-remixicon v-else :name="workflow.icon" size="18" />
         </span>
       </template>
-      <div class="w-56">
-        <p class="mb-2">{{ t('workflow.sidebar.workflowIcon') }}</p>
+      <div class="w-56 text-xs">
+        <p class="mb-2 font-medium">{{ t('workflow.sidebar.workflowIcon') }}</p>
         <div class="mb-2 grid grid-cols-5 gap-1">
           <span
             v-for="icon in icons"
@@ -23,7 +24,7 @@
             class="hoverable inline-block cursor-pointer rounded-lg p-2 text-center"
             @click="$emit('update', { icon })"
           >
-            <v-remixicon :name="icon" />
+            <v-remixicon :name="icon" size="18" />
           </span>
         </div>
         <ui-input
@@ -35,29 +36,31 @@
         />
       </div>
     </ui-popover>
-    <div class="flex-1 overflow-hidden">
-      <p class="text-overflow mt-1 text-lg font-semibold leading-tight">
+    <div class="flex-1 overflow-hidden min-w-0">
+      <p data-testid="workflow-name-display" class="text-overflow text-xs font-semibold leading-tight text-gray-900 dark:text-gray-100">
         {{ workflow.name }}
       </p>
       <p
-        class="cursor-pointer leading-tight"
+        data-testid="workflow-description-display"
+        class="cursor-pointer text-[11px] text-gray-500 dark:text-gray-400 leading-tight mt-0.5"
         :class="descriptionCollapsed ? 'line-clamp' : 'whitespace-pre-wrap'"
         @click="descriptionCollapsed = !descriptionCollapsed"
       >
-        {{ workflow.description }}
+        {{ workflow.description || 'No description provided' }}
       </p>
     </div>
   </div>
   <ui-input
     id="search-input"
+    data-testid="workflow-search-input"
     v-model="query"
     :placeholder="`${t('common.search')}... (${
       shortcut['action:search'].readable
     })`"
     prepend-icon="riSearch2Line"
-    class="mt-4 mb-2 w-full px-4"
+    class="mt-1 mb-2 w-full px-3 text-xs"
   />
-  <div class="scroll relative flex-1 overflow-auto bg-scroll px-4">
+  <div data-testid="workflow-blocks-scroll-area" class="scroll relative flex-1 overflow-auto bg-scroll px-3 text-xs">
     <workflow-block-list
       v-if="pinnedBlocksList.length > 0"
       :model-value="true"
@@ -71,7 +74,7 @@
       :key="catId"
       :model-value="true"
       :blocks="items"
-      :category="categories[catId]"
+      :category="categories[catId] || { name: catId, color: 'bg-accent' }"
       :pinned="pinnedBlocks"
       @pin="pinBlock"
     />

@@ -14,6 +14,7 @@ const ASSET_PATH = process.env.ASSET_PATH || '/';
 const alias = {
   '@': path.resolve(__dirname, 'src/'),
   secrets: path.join(__dirname, 'secrets.blank.js'),
+  '@business$': path.resolve(__dirname, 'business/dev/index.js'),
   '@business': path.resolve(__dirname, 'business/dev'),
   'webextension-polyfill': path.resolve(__dirname, 'business/dev/lib/browser-compat.js'),
 };
@@ -238,6 +239,7 @@ const options = {
     new webpack.DefinePlugin({
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
+      __IS_RUNNER__: JSON.stringify(process.env.TARGET_ENV === 'runner'),
     }),
     // Fix i18n warning
     new webpack.DefinePlugin({

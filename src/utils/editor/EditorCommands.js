@@ -1,14 +1,20 @@
 class EditorCommands {
   constructor(editor, initialStates = {}) {
     this.editor = editor;
-    this.state = initialStates;
+    this.state = {
+      nodes: {},
+      edges: {},
+      ...initialStates,
+    };
   }
 
-  nodeAdded(addedNodes) {
+  nodeAdded(addedNodes = []) {
     const ids = [];
     addedNodes.forEach((node) => {
-      ids.push(node.id);
-      this.state.nodes[node.id] = node;
+      if (node?.id) {
+        ids.push(node.id);
+        this.state.nodes[node.id] = node;
+      }
     });
 
     return {
@@ -22,24 +28,28 @@ class EditorCommands {
     };
   }
 
-  nodeRemoved(ids) {
+  nodeRemoved(ids = []) {
     return {
       name: 'node-removed',
       execute: () => {
         this.editor.removeNodes(ids);
       },
       undo: () => {
-        const nodes = ids.map((id) => this.state.nodes[id]);
-        this.editor.addNodes(nodes);
+        const nodes = ids.map((id) => this.state.nodes[id]).filter(Boolean);
+        if (nodes.length > 0) {
+          this.editor.addNodes(nodes);
+        }
       },
     };
   }
 
-  edgeAdded(addedEdges) {
+  edgeAdded(addedEdges = []) {
     const ids = [];
     addedEdges.forEach((edge) => {
-      ids.push(edge.id);
-      this.state.edges[edge.id] = edge;
+      if (edge?.id) {
+        ids.push(edge.id);
+        this.state.edges[edge.id] = edge;
+      }
     });
 
     return {
@@ -53,15 +63,17 @@ class EditorCommands {
     };
   }
 
-  edgeRemoved(ids) {
+  edgeRemoved(ids = []) {
     return {
       name: 'edge-removed',
       execute: () => {
         this.editor.removeEdges(ids);
       },
       undo: () => {
-        const edges = ids.map((id) => this.state.edges[id]);
-        this.editor.addEdges(edges);
+        const edges = ids.map((id) => this.state.edges[id]).filter(Boolean);
+        if (edges.length > 0) {
+          this.editor.addEdges(edges);
+        }
       },
     };
   }

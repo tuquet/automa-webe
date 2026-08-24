@@ -28,11 +28,12 @@ export async function loadLocaleMessages(locale, location) {
       const messages = await import(
         /* webpackChunkName: "locales/locale-[request]" */ `../locales/${locale}/${path}`
       );
+      const content = messages.default || messages;
 
       if (merge) {
-        i18n.global.mergeLocaleMessage(locale, messages.default);
+        i18n.global.mergeLocaleMessage(locale, content);
       } else {
-        i18n.global.setLocaleMessage(locale, messages.default);
+        i18n.global.setLocaleMessage(locale, content);
       }
     } catch (error) {
       console.error(error);

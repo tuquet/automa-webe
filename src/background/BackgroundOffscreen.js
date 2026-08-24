@@ -41,17 +41,22 @@ class BackgroundOffscreen {
     const isOpened = await this.isOpened();
     if (isOpened) return;
 
-    await chrome.offscreen.createDocument({
-      url: OFFSCREEN_URL,
-      reasons: [
-        chrome.offscreen.Reason.BLOBS,
-        chrome.offscreen.Reason.CLIPBOARD,
-        chrome.offscreen.Reason.IFRAME_SCRIPTING,
-      ],
-      justification: 'For running the workflow',
-    });
-
-    await sleep(500);
+    try {
+      await chrome.offscreen.createDocument({
+        url: OFFSCREEN_URL,
+        reasons: [
+          chrome.offscreen.Reason.BLOBS,
+          chrome.offscreen.Reason.CLIPBOARD,
+          chrome.offscreen.Reason.IFRAME_SCRIPTING,
+        ],
+        justification: 'For running the workflow',
+      });
+      await sleep(300);
+    } catch (err) {
+      if (!String(err).includes('single offscreen document')) {
+        console.warn('[BackgroundOffscreen] createDocument warning:', err);
+      }
+    }
   }
 
   /**
@@ -61,12 +66,21 @@ class BackgroundOffscreen {
   async isOpened() {
     if (IS_FIREFOX) return false;
 
-    const contexts = await chrome.runtime.getContexts({
-      documentUrls: [OFFSCREEN_URL],
-      contextTypes: ['OFFSCREEN_DOCUMENT'],
-    });
+    if (chrome.offscreen?.hasDocument) {
+      try {
+        return await chrome.offscreen.hasDocument();
+      } catch (e) {}
+    }
 
-    return Boolean(contexts.length);
+    try {
+      const contexts = await chrome.runtime.getContexts({
+        contextTypes: ['OFFSCREEN_DOCUMENT'],
+      });
+
+      return Boolean(contexts && contexts.length);
+    } catch (e) {
+      return false;
+    }
   }
 
   /**
@@ -75,10 +89,18 @@ class BackgroundOffscreen {
    * @param {*} data
    * @returns {Promise<*>}
    */
-  async sendMessage(name, data) {
-    await this.#ensureDocument();
-
-    return this.#messageListener.sendMessage(name, data);
+  async sendMessage(name, data, retries = 5) {
+    for (let i = 0; i < retries; i++) {
+      await this.#ensureDocument();
+      try {
+        return await this.#messageListener.sendMessage(name, data);
+      } catch (err) {
+        if (i === retries - 1 || !String(err).includes('Receiving end does not exist')) {
+          throw err;
+        }
+        await sleep(300);
+      }
+    }
   }
 }
 

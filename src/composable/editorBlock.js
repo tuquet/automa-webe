@@ -6,16 +6,17 @@ export function useEditorBlock(label) {
   const blocks = getBlocks();
   const block = reactive({
     details: {},
-    category: {},
+    category: { color: 'bg-accent', name: 'General' },
   });
 
   onMounted(() => {
     if (!label) return;
 
     const details = blocks[label];
-
-    block.details = { id: label, ...details };
-    block.category = categories[details.category];
+    if (details) {
+      block.details = { id: label, ...details };
+      block.category = categories[details.category] || { color: 'bg-accent', name: details.category || 'General' };
+    }
   });
 
   return block;

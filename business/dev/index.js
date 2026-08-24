@@ -1,5 +1,11 @@
 
 import { sendMessage } from '@/utils/message';
+import BackgroundWorkflowUtils from '@/background/BackgroundWorkflowUtils';
+import WorkflowEngine from '@/workflowEngine/WorkflowEngine';
+
+let isWorkerDaemonInitialized = false;
+let isOffscreenDaemonInitialized = false;
+
 export default function (context, message) {
   if (context === 'background') {
     initWorkerDaemon(message);
@@ -8,9 +14,11 @@ export default function (context, message) {
   }
 }
 
-async function initOffscreenDaemon(messageListener) {
+function initOffscreenDaemon(messageListener) {
+  if (isOffscreenDaemonInitialized) return;
+  isOffscreenDaemonInitialized = true;
+
   console.log('[Automa Daemon] Initializing offscreen monkey-patches...');
-  const { default: WorkflowEngine } = await import('@/workflowEngine/WorkflowEngine');
 
   const originalAddLogHistory = WorkflowEngine.prototype.addLogHistory;
   WorkflowEngine.prototype.addLogHistory = function (detail) {
@@ -37,6 +45,9 @@ async function initOffscreenDaemon(messageListener) {
 }
 
 async function initWorkerDaemon(message) {
+  if (isWorkerDaemonInitialized) return;
+  isWorkerDaemonInitialized = true;
+
   console.log('[Automa Daemon Worker] Initializing SSE connection...');
   let eventSource = null;
 
@@ -96,7 +107,6 @@ async function initWorkerDaemon(message) {
                 };
 
                 console.log(`[Automa Daemon Worker] Invoking executeWorkflow for ${payload.jobId}...`);
-                const { default: BackgroundWorkflowUtils } = await import('@/background/BackgroundWorkflowUtils');
                 BackgroundWorkflowUtils.instance.executeWorkflow(payload.workflowData, {
                   jobId: payload.jobId,
                   isDaemonJob: true,
@@ -132,25 +142,49 @@ async function initWorkerDaemon(message) {
 
   connect();
 
-  message.on('daemon:log', async (payload) => {
-    try {
-      await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload.data)
-      });
-    } catch (e) {
-      console.error('[Automa Daemon] Failed to push log', e);
-    }
-  });
+  if (message && typeof message.on === 'function') {
+    message.on('daemon:log', async (payload) => {
+      try {
+        await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload.data)
+        });
+      } catch (e) {
+        console.error('[Automa Daemon] Failed to push log', e);
+      }
+    });
 
-  message.on('daemon:finish', async (payload) => {
-    try {
-      await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/status`, {
-        method: 'PATCH'
-      });
-    } catch (e) {
-      console.error('[Automa Daemon] Failed to finish job', e);
-    }
-  });
+    message.on('daemon:finish', async (payload) => {
+      try {
+        await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/status`, {
+          method: 'PATCH'
+        });
+      } catch (e) {
+        console.error('[Automa Daemon] Failed to finish job', e);
+      }
+    });
+  }
+
+  if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg?.name === 'background--daemon:log' || msg?.name === 'daemon:log') {
+        const payload = msg.body || msg.payload || msg.data;
+        if (payload?.jobId) {
+          fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload.data)
+          }).catch(console.error);
+        }
+      } else if (msg?.name === 'background--daemon:finish' || msg?.name === 'daemon:finish') {
+        const payload = msg.body || msg.payload || msg.data;
+        if (payload?.jobId) {
+          fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/status`, {
+            method: 'PATCH'
+          }).catch(console.error);
+        }
+      }
+    });
+  }
 }

@@ -1,6 +1,7 @@
 <template>
   <vue-flow
     :id="props.id"
+    data-testid="vue-flow-root"
     :class="{ disabled: isDisabled }"
     :default-edge-options="{
       type: 'custom',
@@ -12,11 +13,16 @@
     <Background />
     <MiniMap
       v-if="minimap"
+      data-testid="canvas-minimap"
       :node-class-name="minimapNodeClassName"
-      class="hidden md:block"
+      :node-color="minimapNodeColor"
+      pannable
+      zoomable
+      class="hidden md:block shadow-md border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden !z-20"
     />
     <div
       v-if="editorControls"
+      data-testid="editor-controls-bar"
       class="absolute left-0 bottom-0 z-10 flex w-full items-center p-4 md:pr-60"
     >
       <slot name="controls-prepend" />
@@ -25,6 +31,7 @@
       <slot name="controls-append" />
       <button
         v-tooltip.group="t('workflow.editor.resetZoom')"
+        data-testid="btn-canvas-fit-view"
         class="control-button mr-2"
         @click="editor.fitView()"
       >
@@ -33,6 +40,7 @@
       <div class="inline-block rounded-lg bg-white dark:bg-gray-800">
         <button
           v-tooltip.group="t('workflow.editor.zoomOut')"
+          data-testid="btn-canvas-zoom-out"
           class="relative z-10 rounded-lg p-2"
           @click="editor.zoomOut()"
         >
@@ -41,6 +49,7 @@
         <hr class="inline-block h-6 border-r" />
         <button
           v-tooltip.group="t('workflow.editor.zoomIn')"
+          data-testid="btn-canvas-zoom-in"
           class="rounded-lg p-2"
           @click="editor.zoomIn()"
         >
@@ -214,10 +223,24 @@ function clearBlockSettings() {
   });
 }
 function minimapNodeClassName({ label }) {
-  const { category } = blocks[label];
-  const { color } = categories[category];
+  const block = blocks[label];
+  if (!block || !block.category) return 'bg-accent';
+  const categoryObj = categories[block.category];
 
-  return color;
+  return categoryObj?.color || 'bg-accent';
+}
+function minimapNodeColor(node) {
+  const label = node.label || node.id;
+  const block = blocks[label];
+  if (!block || !block.category) return '#ea580c';
+  const colorMap = {
+    general: '#3b82f6',
+    interaction: '#10b981',
+    data: '#f59e0b',
+    flow: '#8b5cf6',
+    online: '#06b6d4',
+  };
+  return colorMap[block.category] || '#ea580c';
 }
 function updateBlockData(nodeId, data = {}) {
   if (isDisabled.value) return;
@@ -329,6 +352,25 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   window.removeEventListener('mousedown', onMousedown, true);
+});
+
+defineExpose({
+  editor,
+  getNodes: () => editor.getNodes?.value || [],
+  getEdges: () => editor.getEdges?.value || [],
+  getSelectedNodes: () => editor.getSelectedNodes?.value || [],
+  fitView: (params) => editor.fitView?.(params),
+  zoomIn: () => editor.zoomIn?.(),
+  zoomOut: () => editor.zoomOut?.(),
+  addNodes: (nodes) => editor.addNodes?.(nodes),
+  removeNodes: (nodes) => editor.removeNodes?.(nodes),
+  addEdges: (edges) => editor.addEdges?.(edges),
+  removeEdges: (edges) => editor.removeEdges?.(edges),
+  setNodes: (nodes) => editor.setNodes?.(nodes),
+  setEdges: (edges) => editor.setEdges?.(edges),
+  applyNodeChanges: (changes) => editor.applyNodeChanges?.(changes),
+  applyEdgeChanges: (changes) => editor.applyEdgeChanges?.(changes),
+  project: (pos) => editor.project?.(pos),
 });
 </script>
 <style>

@@ -1,0 +1,1305 @@
+<template>
+  <div class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none">
+    <!-- Top Header Bar -->
+    <header data-testid="studio-header" class="h-12 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 px-4 flex items-center justify-between z-30 shrink-0">
+      <!-- Left Section: Sidebar Toggle, New/Open File, & Workflow Name -->
+      <div class="flex items-center space-x-3">
+        <button
+          data-testid="btn-toggle-sidebar"
+          class="p-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+          :title="state.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'"
+          @click="state.showSidebar = !state.showSidebar"
+        >
+          <v-remixicon :name="state.showSidebar ? 'riSideBarFill' : 'riSideBarLine'" size="18" />
+        </button>
+
+        <span class="p-1.5 rounded-lg bg-accent text-white flex items-center justify-center shadow-sm">
+          <v-remixicon :name="workflow.icon || 'riFlashlightLine'" size="18" />
+        </span>
+
+        <div class="flex items-center space-x-2">
+          <input
+            v-model="workflow.name"
+            data-testid="workflow-name-input"
+            class="text-sm font-bold bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-accent focus:outline-none px-1 py-0.5 rounded transition max-w-[200px] sm:max-w-xs text-ellipsis"
+            placeholder="Workflow Name"
+            @change="notifyWorkflowChange(workflow)"
+          />
+          <span data-testid="workflow-version-badge" class="text-[11px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
+            v{{ workflow.version || '1.0.0' }}
+          </span>
+        </div>
+
+        <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1 hidden sm:block"></div>
+
+        <!-- File Open & New Buttons -->
+        <div class="flex items-center space-x-1">
+          <button
+            data-testid="btn-open-file"
+            class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
+            title="Open Workflow JSON File from Computer (or Drag & Drop file onto Canvas)"
+            @click="openFilePicker"
+          >
+            <v-remixicon name="riFolderOpenLine" size="14" />
+            <span class="hidden md:inline">Open File</span>
+          </button>
+          <input
+            ref="fileInputRef"
+            data-testid="file-picker-input"
+            type="file"
+            accept=".json,.automa.json"
+            class="hidden"
+            @change="onFileSelected"
+          />
+
+          <button
+            data-testid="btn-new-workflow"
+            class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
+            title="Create New Blank Workflow"
+            @click="createNewWorkflow"
+          >
+            <v-remixicon name="riAddLine" size="14" />
+            <span class="hidden md:inline">New</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Center Section: Canvas & History Tools -->
+      <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/50 p-1 rounded-lg">
+        <button
+          data-testid="btn-undo"
+          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition"
+          :disabled="!commandManager.state.value.canUndo"
+          title="Undo (Ctrl+Z)"
+          @click="commandManager.undo"
+        >
+          <v-remixicon name="riArrowGoBackLine" size="16" />
+        </button>
+
+        <button
+          data-testid="btn-redo"
+          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition"
+          :disabled="!commandManager.state.value.canRedo"
+          title="Redo (Ctrl+Y)"
+          @click="commandManager.redo"
+        >
+          <v-remixicon name="riArrowGoForwardLine" size="16" />
+        </button>
+
+        <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
+
+        <button
+          data-testid="btn-auto-align"
+          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 flex items-center space-x-1 text-xs font-medium transition"
+          title="Auto Align Graph Layout"
+          @click="autoAlign"
+        >
+          <v-remixicon name="riMagicLine" size="16" />
+          <span class="hidden md:inline">Auto Align</span>
+        </button>
+      </div>
+
+      <!-- Right Section: Data, Modals & Execution -->
+      <div class="flex items-center space-x-2">
+        <button
+          data-testid="btn-table-data"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
+          @click="openModal('table')"
+          title="Workflow Data Table"
+        >
+          <v-remixicon name="riFileListLine" size="14" />
+          <span class="hidden lg:inline">Table Data</span>
+        </button>
+
+        <button
+          data-testid="btn-global-data"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
+          @click="openModal('global-data')"
+          title="Global Data / Variables"
+        >
+          <v-remixicon name="riDatabase2Line" size="14" />
+          <span class="hidden lg:inline">Global Data</span>
+        </button>
+
+        <button
+          data-testid="btn-settings"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
+          @click="openModal('settings')"
+          title="Workflow Settings"
+        >
+          <v-remixicon name="riSettings3Line" size="14" />
+          <span class="hidden lg:inline">Settings</span>
+        </button>
+
+        <button
+          data-testid="btn-logs"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
+          @click="openModal('logs')"
+          title="Execution Logs & History"
+        >
+          <v-remixicon name="riHistoryLine" size="14" />
+          <span class="hidden lg:inline">Logs</span>
+          <span
+            v-if="logHistory.length > 0"
+            data-testid="logs-count-badge"
+            class="px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-semibold"
+          >
+            {{ logHistory.length }}
+          </span>
+        </button>
+
+        <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"></div>
+
+        <button
+          data-testid="btn-export-json"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
+          @click="exportJson"
+          title="Export Workflow JSON"
+        >
+          <v-remixicon name="riDownloadLine" size="14" />
+          <span class="hidden sm:inline">Export</span>
+        </button>
+
+        <button
+          data-testid="btn-run-workflow"
+          class="px-3 py-1.5 text-xs font-medium rounded-lg bg-accent hover:bg-accent/90 text-white flex items-center space-x-1.5 shadow-sm transition"
+          @click="runWorkflow"
+          title="Run Workflow via Daemon Engine"
+        >
+          <v-remixicon name="riPlayLine" size="14" />
+          <span>Run</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Studio Workspace -->
+    <div class="flex-1 flex overflow-hidden relative">
+      <!-- Left Resizable Sidebar (Palette or Edit Block) -->
+      <aside
+        v-if="state.showSidebar"
+        data-testid="studio-sidebar"
+        :style="{ width: `${sidebarCss.width}px` }"
+        class="h-full border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 z-20 flex flex-col shrink-0 overflow-hidden shadow-sm relative text-xs"
+      >
+        <!-- Block Form Editor -->
+        <workflow-edit-block
+          v-if="editState.editing"
+          data-testid="sidebar-edit-block"
+          :data="editState.blockData"
+          :workflow="workflow"
+          :editor="editorInstance"
+          @update="updateBlockData"
+          @close="closeEditingSidebar"
+        />
+
+        <!-- Workflow Details & Block Palette -->
+        <workflow-details-card
+          v-else
+          data-testid="sidebar-details-card"
+          :workflow="workflow"
+          @update="updateWorkflowDetails"
+        />
+
+        <!-- Resizable Drag Handle -->
+        <div
+          data-testid="sidebar-resize-handle"
+          class="custom-drag"
+          title="Drag to resize sidebar"
+          @mousedown="startDrag"
+        ></div>
+      </aside>
+
+      <!-- VueFlow Canvas Area -->
+      <main
+        data-testid="studio-canvas-main"
+        class="flex-1 h-full relative overflow-hidden bg-gray-100 dark:bg-gray-900"
+        @dragover.prevent="onDragoverEditor"
+        @drop="onDropInEditor"
+      >
+        <workflow-editor
+          v-if="workflow.drawflow"
+          ref="editorRef"
+          data-testid="workflow-editor-canvas"
+          :data="workflow.drawflow"
+          :class="{ 'animate-blocks': state.animateBlocks }"
+          @init="onEditorInit"
+          @edit="onEditBlock"
+          @update:node="onUpdateNode"
+          @delete:node="onDeleteNode"
+        />
+
+        <!-- In-canvas Debugging Dock -->
+        <editor-debugging
+          v-if="workflowStates && workflowStates.length > 0"
+          :states="workflowStates"
+          @goToBlock="goToBlock"
+        />
+
+        <!-- Canvas Context Menu -->
+        <editor-local-ctx-menu
+          v-if="editorInstance"
+          :editor="editorInstance"
+          @copy="copySelectedElements"
+          @duplicate="duplicateElements"
+          @paste="pasteCopiedElements"
+          @group="groupBlocks"
+          @ungroup="ungroupBlocks"
+        />
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Table Data Modal -->
+    <ui-modal v-model="modals.table" title="Workflow Table" content-class="max-w-2xl">
+      <workflow-data-table
+        :workflow="workflow"
+        @update="updateWorkflowDetails"
+        @close="modals.table = false"
+      />
+    </ui-modal>
+
+    <!-- Global Data Modal -->
+    <ui-modal v-model="modals.globalData" title="Global Data" content-class="max-w-2xl">
+      <workflow-global-data
+        :workflow="workflow"
+        @update="updateWorkflowDetails"
+        @close="modals.globalData = false"
+      />
+    </ui-modal>
+
+    <!-- Settings Modal -->
+    <ui-modal v-model="modals.settings" custom-content content-class="max-w-2xl">
+      <workflow-settings
+        :workflow="workflow"
+        @update="updateWorkflowSettings"
+        @close="modals.settings = false"
+      />
+    </ui-modal>
+
+    <!-- Logs Modal -->
+    <ui-modal v-model="modals.logs" title="Execution Logs & History" content-class="max-w-4xl">
+      <div class="space-y-4 text-gray-900 dark:text-gray-100">
+        <div class="flex items-center justify-between border-b pb-2 dark:border-gray-700">
+          <div class="flex items-center space-x-2">
+            <span class="text-sm font-semibold">Execution History</span>
+            <button class="p-1 text-gray-500 hover:text-accent rounded transition" title="Refresh Logs" @click="fetchLogs">
+              <v-remixicon name="riRefreshLine" size="16" />
+            </button>
+          </div>
+          <button
+            v-if="logHistory.length > 0"
+            class="px-2.5 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-red-200 dark:border-red-800 transition"
+            @click="clearHistory"
+          >
+            Clear History
+          </button>
+        </div>
+
+        <div v-if="loadingLogs" class="text-center py-8 text-gray-400">
+          <v-remixicon name="riLoader4Line" class="animate-spin inline-block mr-2" size="20" />
+          Loading logs from daemon...
+        </div>
+
+        <div v-else-if="logHistory.length === 0" class="text-center py-10 text-gray-400">
+          <v-remixicon name="riInboxLine" size="36" class="mx-auto mb-2 opacity-50" />
+          <p class="text-sm">No execution logs found yet.</p>
+          <p class="text-xs text-gray-500 mt-1">Click "Run" on the header to execute this workflow!</p>
+        </div>
+
+        <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[60vh]">
+          <!-- History List -->
+          <div class="col-span-1 border-r dark:border-gray-700 overflow-y-auto space-y-2 pr-2 max-h-[55vh]">
+            <div
+              v-for="item in logHistory"
+              :key="item.id"
+              class="p-2.5 rounded-lg border text-xs cursor-pointer transition select-none"
+              :class="selectedLogId === item.id ? 'border-accent bg-accent/10 font-semibold' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'"
+              @click="selectLog(item.id)"
+            >
+              <div class="flex items-center justify-between">
+                <span class="truncate max-w-[130px]">{{ item.name || 'Workflow Run' }}</span>
+                <span
+                  class="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold"
+                  :class="{
+                    'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300': item.status === 'completed',
+                    'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300': item.status === 'running' || item.status === 'queued',
+                    'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300': item.status === 'error',
+                  }"
+                >
+                  {{ item.status }}
+                </span>
+              </div>
+              <div class="text-gray-400 text-[11px] mt-1">{{ item.createdAt || item.updatedAt }}</div>
+            </div>
+          </div>
+
+          <!-- Log Detail & Output -->
+          <div class="col-span-2 overflow-y-auto pl-2 space-y-3 max-h-[55vh]">
+            <div v-if="selectedLogDetails" class="space-y-3">
+              <div class="flex items-center justify-between text-xs text-gray-500 border-b pb-2 dark:border-gray-700">
+                <span>Job ID: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded font-mono">{{ selectedLogDetails.job?.id || selectedLogId }}</code></span>
+                <span v-if="selectedLogDetails.job?.duration">Duration: {{ selectedLogDetails.job.duration }}ms</span>
+              </div>
+
+              <!-- Logs Stream -->
+              <div>
+                <h4 class="text-xs font-semibold mb-1">Step Logs</h4>
+                <div class="space-y-1 font-mono text-xs max-h-52 overflow-y-auto bg-gray-900 text-gray-100 p-3 rounded-lg">
+                  <div v-for="(log, idx) in (selectedLogDetails.logs || [])" :key="idx" class="flex items-start space-x-2 py-0.5">
+                    <span class="text-gray-500 select-none">[{{ idx + 1 }}]</span>
+                    <span :class="log.type === 'error' ? 'text-red-400 font-bold' : log.type === 'warn' ? 'text-yellow-400' : 'text-green-400'">
+                      {{ log.message || JSON.stringify(log) }}
+                    </span>
+                  </div>
+                  <div v-if="(!selectedLogDetails.logs || selectedLogDetails.logs.length === 0)" class="text-gray-500 italic">
+                    No step logs recorded for this run.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Result Table/Variables -->
+              <div v-if="selectedLogDetails.results">
+                <h4 class="text-xs font-semibold mb-1">Execution Results</h4>
+                <pre class="text-[11px] bg-gray-100 dark:bg-gray-800 p-2.5 rounded max-h-40 overflow-auto font-mono">{{ JSON.stringify(selectedLogDetails.results, null, 2) }}</pre>
+              </div>
+            </div>
+            <div v-else class="text-center py-14 text-gray-400 text-xs">
+              Select a run from the left list to view step logs and execution output.
+            </div>
+          </div>
+        </div>
+      </div>
+    </ui-modal>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, reactive, provide, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { customAlphabet } from 'nanoid';
+import cloneDeep from 'lodash.clonedeep';
+import defu from 'defu';
+import { defaultWorkflow, studioState, setAutomaWorkflow, notifyWorkflowChange } from './standalone-bridge';
+import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
+import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
+import WorkflowDetailsCard from '@/components/newtab/workflow/WorkflowDetailsCard.vue';
+import WorkflowDataTable from '@/components/newtab/workflow/WorkflowDataTable.vue';
+import WorkflowGlobalData from '@/components/newtab/workflow/WorkflowGlobalData.vue';
+import WorkflowSettings from '@/components/newtab/workflow/WorkflowSettings.vue';
+import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalCtxMenu.vue';
+import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
+import DroppedNode from '@/utils/editor/DroppedNode';
+import EditorCommands from '@/utils/editor/EditorCommands';
+import { useCommandManager } from '@/composable/commandManager';
+import { useSidebarResize } from '@/composable/useSidebarResize';
+import { useWorkflowAutocomplete } from '@/composable/useWorkflowAutocomplete';
+import { GraphLayoutService } from '@/services/graphLayout.service';
+import { getBlocks } from '@/utils/getSharedData';
+import { excludeGroupBlocks } from '@/utils/shared';
+import { parseJSON } from '@/utils/helper';
+
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 7);
+
+const workflow = computed(() => studioState.currentWorkflow);
+const editorRef = ref(null);
+const editorInstance = ref(null);
+const fileInputRef = ref(null);
+let editorCommands = null;
+const commandManager = useCommandManager();
+let internalClipboard = null;
+
+// Logs, Execution & Debugging State
+const logHistory = ref([]);
+const selectedLogId = ref(null);
+const selectedLogDetails = ref(null);
+const loadingLogs = ref(false);
+const workflowStates = ref([]);
+
+// Dynamic Autocomplete Provider via Composable
+const { autocompleteList } = useWorkflowAutocomplete(workflow);
+provide('autocompleteData', autocompleteList);
+
+// Sidebar Resize State via Composable
+const { sidebarCss, startDrag, stopDrag } = useSidebarResize();
+
+const state = reactive({
+  showSidebar: true,
+  animateBlocks: false,
+});
+
+const modals = reactive({
+  table: false,
+  globalData: false,
+  settings: false,
+  logs: false,
+});
+
+const editState = reactive({
+  editing: false,
+  blockData: {},
+});
+
+function openModal(name) {
+  if (name === 'table') modals.table = true;
+  else if (name === 'global-data') modals.globalData = true;
+  else if (name === 'settings') modals.settings = true;
+  else if (name === 'logs') {
+    modals.logs = true;
+    fetchLogs();
+  }
+}
+
+function onEditorInit(editor) {
+  editorInstance.value = editor;
+  window.editorInstance = editor;
+
+  let nodeToConnect = null;
+
+  // 1. Double click edge to remove
+  editor.onEdgeDoubleClick?.(({ edge }) => {
+    editor.removeEdges([edge]);
+    if (workflow.value.drawflow?.edges) {
+      const idx = workflow.value.drawflow.edges.findIndex((e) => e.id === edge.id);
+      if (idx !== -1) workflow.value.drawflow.edges.splice(idx, 1);
+    }
+    notifyWorkflowChange(workflow.value);
+  });
+
+  // 2. Smart Connect (Drag from output handle and drop onto target node body)
+  editor.onConnectStart?.(({ nodeId, handleId, handleType }) => {
+    if (handleType !== 'source') return;
+    nodeToConnect = { nodeId, handleId };
+  });
+
+  editor.onConnectEnd?.(({ target }) => {
+    if (!nodeToConnect) return;
+
+    if (target?.hasAttribute?.('data-handleid')) {
+      const handleId = target.getAttribute('data-handleid');
+      if (handleId.includes('-output-')) return;
+    }
+
+    const isNotTargetHandle = !target?.closest?.('.vue-flow__handle.target');
+    const targetNode = isNotTargetHandle && target?.closest?.('.vue-flow__node');
+
+    if (targetNode && targetNode.dataset?.id !== nodeToConnect.nodeId) {
+      const nodeId = targetNode.dataset.id;
+      const nodeData = editor.getNode?.value ? editor.getNode.value(nodeId) : editor.findNode?.(nodeId);
+
+      if (nodeData && nodeData.handleBounds?.target?.length >= 1) {
+        const targetHandle = nodeData.handleBounds.target.find((item) => item.id);
+        if (!targetHandle) return;
+
+        const newEdge = {
+          id: `vueflow__edge-${nodeToConnect.nodeId}${nodeToConnect.handleId}-${nodeId}${targetHandle.id}`,
+          target: nodeId,
+          source: nodeToConnect.nodeId,
+          targetHandle: targetHandle.id,
+          sourceHandle: nodeToConnect.handleId,
+          type: 'custom',
+          updatable: true,
+        };
+
+        editor.addEdges([newEdge]);
+        if (workflow.value.drawflow?.edges) {
+          workflow.value.drawflow.edges.push(newEdge);
+        }
+        notifyWorkflowChange(workflow.value);
+      }
+    }
+
+    nodeToConnect = null;
+  });
+
+  // 3. Node Drag Stop (Track position changes in EditorCommands & notify)
+  editor.onNodeDragStop?.(({ nodes }) => {
+    if (editorCommands?.state?.nodes) {
+      nodes.forEach((node) => {
+        editorCommands.state.nodes[node.id] = node;
+      });
+    }
+    if (workflow.value.drawflow?.nodes) {
+      nodes.forEach((dragged) => {
+        const target = workflow.value.drawflow.nodes.find((n) => n.id === dragged.id);
+        if (target && dragged.position) {
+          target.position = { ...dragged.position };
+        }
+      });
+    }
+    notifyWorkflowChange(workflow.value);
+  });
+
+  // 4. Edges Change (Filter invalid output-to-output and sync edges)
+  editor.onEdgesChange?.((changes) => {
+    let hasChanges = false;
+    changes.forEach(({ type, item }) => {
+      if (
+        type === 'add' &&
+        item?.sourceHandle?.includes('output') &&
+        item?.targetHandle?.includes('output')
+      ) {
+        editor.removeEdges([item.id]);
+        return;
+      }
+      if (type === 'remove' || type === 'add') {
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      const currentEdges = editor.getEdges?.value || [];
+      if (workflow.value.drawflow) {
+        workflow.value.drawflow.edges = currentEdges.map((e) => ({
+          id: e.id,
+          source: e.source,
+          target: e.target,
+          sourceHandle: e.sourceHandle,
+          targetHandle: e.targetHandle,
+          type: e.type || 'custom',
+          data: e.data || {},
+        }));
+      }
+      notifyWorkflowChange(workflow.value);
+    }
+  });
+
+  // 5. Initialize CommandManager tracking
+  const convertToObj = (array) =>
+    (array || []).reduce((acc, item) => {
+      if (item?.id) acc[item.id] = item;
+      return acc;
+    }, {});
+
+  const nodes = editor?.getNodes?.value || [];
+  const edges = editor?.getEdges?.value || [];
+  const commandInitState = {
+    nodes: convertToObj(nodes),
+    edges: convertToObj(edges),
+  };
+  editorCommands = new EditorCommands(editor, commandInitState);
+}
+
+function onEditBlock(nodeProps) {
+  const blocks = getBlocks();
+  const label = nodeProps.label || nodeProps.id;
+  const blockDef = blocks[label] || {};
+  const blockData = defu(nodeProps.data || {}, blockDef.data || {});
+
+  editState.blockData = {
+    id: label,
+    blockId: nodeProps.id,
+    data: blockData,
+    details: {
+      id: label,
+      name: blockDef.name || label,
+      ...blockDef,
+    },
+  };
+  editState.editing = true;
+  state.showSidebar = true;
+}
+
+function closeEditingSidebar() {
+  editState.editing = false;
+  editState.blockData = {};
+}
+
+function updateBlockData(newData) {
+  if (!editState.blockData.blockId) return;
+
+  const nodes = workflow.value.drawflow?.nodes || [];
+  const targetNode = nodes.find((n) => n.id === editState.blockData.blockId);
+  if (targetNode) {
+    targetNode.data = JSON.parse(JSON.stringify(newData));
+    editState.blockData.data = targetNode.data;
+    notifyWorkflowChange(workflow.value);
+  }
+}
+
+function updateWorkflowDetails(partial) {
+  Object.assign(workflow.value, partial);
+  notifyWorkflowChange(workflow.value);
+}
+
+function updateWorkflowSettings(settings) {
+  workflow.value.settings = Object.assign(workflow.value.settings || {}, settings);
+  notifyWorkflowChange(workflow.value);
+}
+
+function onUpdateNode({ id, data }) {
+  const nodes = workflow.value.drawflow?.nodes || [];
+  const targetNode = nodes.find((n) => n.id === id);
+  if (targetNode) {
+    targetNode.data = JSON.parse(JSON.stringify(data));
+    notifyWorkflowChange(workflow.value);
+  }
+}
+
+function onDeleteNode(id) {
+  const nodes = workflow.value.drawflow?.nodes || [];
+  const index = nodes.findIndex((n) => n.id === id);
+  if (index !== -1) {
+    nodes.splice(index, 1);
+    if (editState.blockData?.blockId === id) {
+      closeEditingSidebar();
+    }
+    notifyWorkflowChange(workflow.value);
+  }
+}
+
+function onDragoverEditor(event) {
+  event.preventDefault();
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'copy';
+  }
+}
+
+// File Loading & Canvas Drop Handler
+async function loadWorkflowData(content) {
+  if (!content || typeof content !== 'object') return;
+  setAutomaWorkflow(content);
+  closeEditingSidebar();
+  await nextTick();
+  const editor = editorRef.value || editorInstance.value;
+  if (editor) {
+    const nodes = content.drawflow?.nodes || content.nodes || [];
+    const edges = content.drawflow?.edges || content.edges || [];
+    if (editor.setNodes) editor.setNodes(nodes);
+    if (editor.setEdges) editor.setEdges(edges);
+    if (editor.fitView) editor.fitView();
+  }
+}
+
+function openFilePicker() {
+  if (window.vscode) {
+    window.vscode.postMessage({ type: 'automa:pick-file' });
+  } else if (fileInputRef.value) {
+    fileInputRef.value.click();
+  }
+}
+
+function onFileSelected(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      loadWorkflowData(parsed);
+    } catch (err) {
+      console.error('Failed to parse workflow file:', err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function createNewWorkflow() {
+  const newWorkflow = JSON.parse(JSON.stringify(defaultWorkflow));
+  newWorkflow.id = `wf_${nanoid()}`;
+  if (newWorkflow.drawflow?.nodes?.[0]) {
+    newWorkflow.drawflow.nodes[0].id = nanoid();
+  }
+  loadWorkflowData(newWorkflow);
+}
+
+function onDropInEditor(event) {
+  event.preventDefault();
+
+  // 1. Handle File Dropped from Desktop / File Explorer
+  if (event.dataTransfer?.files?.length > 0) {
+    const file = event.dataTransfer.files[0];
+    if (file.name.endsWith('.json')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          loadWorkflowData(parsed);
+        } catch (err) {
+          console.error('Failed to parse dropped workflow file', err);
+        }
+      };
+      reader.readAsText(file);
+      return;
+    }
+  }
+
+  // 2. Handle Block Dropped from Palette
+  if (!editorInstance.value) return;
+
+  const rawBlock = event.dataTransfer?.getData('block');
+  if (!rawBlock) return;
+
+  const block = parseJSON(rawBlock, null);
+  if (!block) return;
+
+  const canvasEl =
+    document.querySelector('.vue-flow') ||
+    document.querySelector('.vue-flow__transformationpane') ||
+    document.querySelector('main');
+  const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
+
+  const position = editorInstance.value.project({
+    x: event.clientX - editorRect.left,
+    y: event.clientY - editorRect.top,
+  });
+
+  const isTriggerExists =
+    block.id === 'trigger' &&
+    (editorInstance.value.getNodes?.value || []).some((node) => node.label === 'trigger');
+  if (isTriggerExists) return;
+
+  const nodeEl = DroppedNode.isNode(event.target);
+  if (nodeEl) {
+    DroppedNode.replaceNode(editorInstance.value, { block, target: nodeEl });
+    syncWorkflowFromCanvas();
+    return;
+  }
+
+  const nodeId = nanoid();
+  const newNode = {
+    id: block.id === 'blocks-group-2' ? `group-${nodeId}` : nodeId,
+    label: block.id,
+    type: block.component || 'BlockBasic',
+    position,
+    data: JSON.parse(JSON.stringify(block.data || {})),
+  };
+
+  editorInstance.value.addNodes([newNode]);
+
+  const edgeEl = DroppedNode.isEdge(event.target);
+  const handleEl = DroppedNode.isHandle(event.target);
+
+  if (handleEl) {
+    DroppedNode.appendNode(editorInstance.value, {
+      target: handleEl,
+      nodeId: newNode.id,
+    });
+  } else if (edgeEl) {
+    DroppedNode.insertBetweenNode(editorInstance.value, {
+      target: edgeEl,
+      nodeId: newNode.id,
+      outputs: block.outputs || 1,
+    });
+  }
+
+  if (editorCommands) {
+    commandManager.add(editorCommands.nodeAdded([newNode]));
+  }
+
+  syncWorkflowFromCanvas();
+}
+
+function syncWorkflowFromCanvas() {
+  if (!editorInstance.value) return;
+  const nodes = editorInstance.value.getNodes?.value || [];
+  const edges = editorInstance.value.getEdges?.value || [];
+  workflow.value.drawflow = {
+    ...(workflow.value.drawflow || {}),
+    nodes: JSON.parse(JSON.stringify(nodes)),
+    edges: JSON.parse(JSON.stringify(edges)),
+  };
+  notifyWorkflowChange(workflow.value);
+}
+
+// Auto Align with Dagre Graph Layout
+function autoAlign() {
+  const editor = editorRef.value || editorInstance.value;
+  if (!editor) return;
+
+  state.animateBlocks = true;
+
+  const nodes = editorRef.value?.getNodes?.() || editorInstance.value?.getNodes?.value || [];
+  const edges = editorRef.value?.getEdges?.() || editorInstance.value?.getEdges?.value || [];
+
+  const nodeChanges = GraphLayoutService.computeDagreLayout(nodes, edges);
+
+  if (editor.applyNodeChanges) {
+    editor.applyNodeChanges(nodeChanges);
+  }
+  if (editor.fitView) {
+    editor.fitView({ padding: 0.1 });
+  }
+  syncWorkflowFromCanvas();
+
+  setTimeout(() => {
+    state.animateBlocks = false;
+  }, 500);
+}
+
+// Robust Selection Helpers
+function getSelectedNodes() {
+  if (!editorInstance.value) return [];
+  
+  const allNodes = editorInstance.value.getNodes?.value || editorInstance.value.nodes?.value || [];
+  
+  // 1. Direct getSelectedNodes
+  let selected = editorInstance.value.getSelectedNodes?.value;
+  if (Array.isArray(selected) && selected.length > 0) return selected;
+  if (typeof editorInstance.value.getSelectedNodes === 'function') {
+    selected = editorInstance.value.getSelectedNodes();
+    if (Array.isArray(selected) && selected.length > 0) return selected;
+  }
+
+  // 2. From allNodes .selected property
+  selected = allNodes.filter((n) => n.selected);
+  if (selected.length > 0) return selected;
+
+  // 3. From DOM .vue-flow__node.selected
+  const selectedEls = document.querySelectorAll('.vue-flow__node.selected');
+  if (selectedEls.length > 0) {
+    const ids = Array.from(selectedEls).map((el) => el.dataset.id);
+    const domNodes = allNodes.filter((n) => ids.includes(n.id));
+    if (domNodes.length > 0) return domNodes;
+  }
+
+  // 4. From active editing block in sidebar
+  if (editState.blockData?.blockId) {
+    const editNode = allNodes.find((n) => n.id === editState.blockData.blockId);
+    if (editNode) return [editNode];
+  }
+
+  return [];
+}
+
+function getSelectedEdges() {
+  if (!editorInstance.value) return [];
+  const allEdges = editorInstance.value.getEdges?.value || editorInstance.value.edges?.value || [];
+  
+  let selected = editorInstance.value.getSelectedEdges?.value;
+  if (Array.isArray(selected) && selected.length > 0) return selected;
+  if (typeof editorInstance.value.getSelectedEdges === 'function') {
+    selected = editorInstance.value.getSelectedEdges();
+    if (Array.isArray(selected) && selected.length > 0) return selected;
+  }
+
+  return allEdges.filter((e) => e.selected);
+}
+
+function selectAllNodes() {
+  if (!editorInstance.value) return;
+  const allNodes = editorInstance.value.getNodes?.value || [];
+  allNodes.forEach((node) => {
+    node.selected = true;
+  });
+  if (editorInstance.value.addSelectedNodes) {
+    editorInstance.value.addSelectedNodes(allNodes);
+  }
+}
+
+// Copy, Duplicate, Paste Elements
+function copyElements(nodes, edges, initialPos) {
+  const blocks = getBlocks();
+  const newIds = new Map();
+  let firstNodePos = null;
+
+  const newNodes = (nodes || []).map((node, index) => {
+    const newNodeId = nanoid();
+    newIds.set(node.id, newNodeId);
+
+    const nodePos = {
+      x: (node.position?.x || 0) + 40,
+      y: (node.position?.y || 0) + 40,
+    };
+
+    if (initialPos && (initialPos.clientX !== undefined || initialPos.x !== undefined)) {
+      if (index === 0) {
+        firstNodePos = { x: node.position?.x || 0, y: node.position?.y || 0 };
+        const canvasEl = document.querySelector('.vue-flow') || document.querySelector('main');
+        const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
+        const clientX = initialPos.clientX !== undefined ? initialPos.clientX : initialPos.x;
+        const clientY = initialPos.clientY !== undefined ? initialPos.clientY : initialPos.y;
+        const projectedPos = editorInstance.value.project({
+          x: clientX - editorRect.left,
+          y: clientY - editorRect.top,
+        });
+        Object.assign(nodePos, projectedPos);
+      } else {
+        const xDistance = (node.position?.x || 0) - firstNodePos.x;
+        const yDistance = (node.position?.y || 0) - firstNodePos.y;
+        nodePos.x = nodePos.x + xDistance;
+        nodePos.y = nodePos.y + yDistance;
+      }
+    }
+
+    const label = node.label || node.id;
+    const blockDef = blocks[label] || {};
+
+    return {
+      id: newNodeId,
+      label,
+      type: node.type || blockDef.component || 'BlockBasic',
+      position: nodePos,
+      selected: true,
+      data: JSON.parse(JSON.stringify(node.data || {})),
+    };
+  });
+
+  const newEdges = (edges || []).reduce((acc, edge) => {
+    const targetId = newIds.get(edge.target);
+    const sourceId = newIds.get(edge.source);
+    if (!targetId || !sourceId) return acc;
+
+    acc.push({
+      id: `edge-${nanoid()}`,
+      selected: true,
+      target: targetId,
+      source: sourceId,
+      targetHandle: edge.targetHandle ? edge.targetHandle.replace(edge.target, targetId) : `${targetId}-input-1`,
+      sourceHandle: edge.sourceHandle ? edge.sourceHandle.replace(edge.source, sourceId) : `${sourceId}-output-1`,
+      class: edge.class || '',
+    });
+    return acc;
+  }, []);
+
+  return { nodes: newNodes, edges: newEdges };
+}
+
+function duplicateElements(ctxData) {
+  if (!editorInstance.value) return;
+
+  let nodes = ctxData?.nodes;
+  let edges = ctxData?.edges;
+
+  if (!nodes || !nodes.length) {
+    nodes = getSelectedNodes();
+  }
+  if (!edges || !edges.length) {
+    edges = getSelectedEdges();
+  }
+
+  if (!nodes || nodes.length === 0) return;
+
+  const { nodes: newNodes, edges: newEdges } = copyElements(nodes, edges, ctxData?.position);
+
+  const allNodes = editorInstance.value.getNodes?.value || [];
+  allNodes.forEach((n) => (n.selected = false));
+  const allEdges = editorInstance.value.getEdges?.value || [];
+  allEdges.forEach((e) => (e.selected = false));
+
+  editorInstance.value.addNodes(newNodes);
+  if (newEdges.length > 0) {
+    editorInstance.value.addEdges(newEdges);
+  }
+  if (editorInstance.value.addSelectedNodes) {
+    editorInstance.value.addSelectedNodes(newNodes);
+  }
+
+  if (editorCommands) {
+    commandManager.add(editorCommands.nodeAdded(newNodes));
+  }
+  syncWorkflowFromCanvas();
+}
+
+function copySelectedElements(ctxData) {
+  if (!editorInstance.value) return;
+
+  let nodes = ctxData?.nodes;
+  let edges = ctxData?.edges;
+
+  if (!nodes || !nodes.length) {
+    nodes = getSelectedNodes();
+  }
+  if (!edges || !edges.length) {
+    edges = getSelectedEdges();
+  }
+
+  if (!nodes || nodes.length === 0) return;
+
+  const payload = {
+    name: 'automa-blocks',
+    data: {
+      nodes: JSON.parse(JSON.stringify(nodes)),
+      edges: JSON.parse(JSON.stringify(edges || [])),
+    },
+  };
+
+  internalClipboard = payload;
+
+  try {
+    const text = JSON.stringify(payload);
+    navigator.clipboard?.writeText(text).catch(() => {});
+  } catch (e) {}
+}
+
+async function pasteCopiedElements(position) {
+  if (!editorInstance.value) return;
+
+  let clipboardData = internalClipboard;
+
+  try {
+    if (navigator.clipboard?.readText) {
+      const text = await navigator.clipboard.readText();
+      const parsed = parseJSON(text, null);
+      if (parsed && parsed.name === 'automa-blocks' && parsed.data) {
+        clipboardData = parsed;
+      }
+    }
+  } catch (err) {}
+
+  if (!clipboardData || !clipboardData.data || !clipboardData.data.nodes?.length) return;
+
+  const { nodes: sourceNodes, edges: sourceEdges } = clipboardData.data;
+  const { nodes: newNodes, edges: newEdges } = copyElements(sourceNodes, sourceEdges, position);
+
+  const allNodes = editorInstance.value.getNodes?.value || [];
+  allNodes.forEach((n) => (n.selected = false));
+  const allEdges = editorInstance.value.getEdges?.value || [];
+  allEdges.forEach((e) => (e.selected = false));
+
+  editorInstance.value.addNodes(newNodes);
+  if (newEdges.length > 0) {
+    editorInstance.value.addEdges(newEdges);
+  }
+  if (editorInstance.value.addSelectedNodes) {
+    editorInstance.value.addSelectedNodes(newNodes);
+  }
+
+  if (editorCommands) {
+    commandManager.add(editorCommands.nodeAdded(newNodes));
+  }
+  syncWorkflowFromCanvas();
+}
+
+function groupBlocks(ctxData) {
+  if (!editorInstance.value) return;
+
+  const position = ctxData?.position;
+  const nodes = (ctxData?.nodes && ctxData.nodes.length > 0) ? ctxData.nodes : getSelectedNodes();
+  if (!nodes || nodes.length === 0) return;
+
+  const nodesToDelete = [];
+  const groupBlocksList = nodes.reduce((acc, node) => {
+    const label = node.label || node.id;
+    if (excludeGroupBlocks.includes(label)) return acc;
+
+    acc.push({
+      id: label,
+      itemId: node.id,
+      data: JSON.parse(JSON.stringify(node.data || {})),
+    });
+    nodesToDelete.push(node);
+
+    return acc;
+  }, []);
+
+  if (groupBlocksList.length === 0) return;
+
+  const blocks = getBlocks();
+  const { component, data } = blocks['blocks-group'] || { component: 'BlockGroup', data: {} };
+
+  let projectedPos = { x: 100, y: 100 };
+  if (position && position.clientX !== undefined) {
+    const canvasEl = document.querySelector('.vue-flow') || document.querySelector('main');
+    const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
+    projectedPos = editorInstance.value.project({
+      x: position.clientX - editorRect.left,
+      y: position.clientY - editorRect.top,
+    });
+  } else if (nodesToDelete[0]?.position) {
+    projectedPos = { ...nodesToDelete[0].position };
+  }
+
+  const groupNode = {
+    id: nanoid(),
+    type: component || 'BlockGroup',
+    label: 'blocks-group',
+    data: { ...data, blocks: groupBlocksList },
+    position: projectedPos,
+  };
+
+  editorInstance.value.removeNodes(nodesToDelete);
+  editorInstance.value.addNodes([groupNode]);
+  if (editorCommands) {
+    commandManager.add(editorCommands.nodeAdded([groupNode]));
+  }
+  syncWorkflowFromCanvas();
+}
+
+function ungroupBlocks(ctxData) {
+  if (!editorInstance.value) return;
+
+  const nodes = (ctxData?.nodes && ctxData.nodes.length > 0) ? ctxData.nodes : getSelectedNodes();
+  const [node] = nodes || [];
+  if (!node || node.label !== 'blocks-group') return;
+
+  const blocks = getBlocks();
+  const edges = [];
+  const position = { ...(node.position || { x: 100, y: 100 }) };
+  const copyBlocks = JSON.parse(JSON.stringify(node.data?.blocks || []));
+
+  const groupBlocksList = copyBlocks.map((item, index) => {
+    const nextNode = copyBlocks[index + 1];
+    if (nextNode) {
+      edges.push({
+        id: `edge-${nanoid()}`,
+        source: item.itemId,
+        target: nextNode.itemId,
+        sourceHandle: `${item.itemId}-output-1`,
+        targetHandle: `${nextNode.itemId}-input-1`,
+      });
+    }
+
+    const label = item.id;
+    const blockDef = blocks[label] || {};
+    const restoredNode = {
+      id: item.itemId,
+      label,
+      type: blockDef.component || 'BlockBasic',
+      position: { ...position },
+      data: item.data || {},
+    };
+
+    position.x += 250;
+    return restoredNode;
+  });
+
+  editorInstance.value.removeNodes([node]);
+  editorInstance.value.addNodes(groupBlocksList);
+  if (edges.length > 0) {
+    editorInstance.value.addEdges(edges);
+  }
+  if (editorCommands) {
+    commandManager.add(editorCommands.nodeAdded(groupBlocksList));
+  }
+  syncWorkflowFromCanvas();
+}
+
+async function fetchLogs() {
+  loadingLogs.value = true;
+  try {
+    const res = await fetch('http://127.0.0.1:8765/api/history');
+    if (res.ok) {
+      const items = await res.json();
+      logHistory.value = Array.isArray(items) ? items : [];
+      if (logHistory.value.length > 0 && !selectedLogId.value) {
+        selectLog(logHistory.value[0].id);
+      }
+    }
+  } catch (err) {
+    console.warn('[Studio] Failed to fetch logs from daemon:', err);
+  } finally {
+    loadingLogs.value = false;
+  }
+}
+
+async function selectLog(id) {
+  selectedLogId.value = id;
+  selectedLogDetails.value = null;
+  try {
+    const res = await fetch(`http://127.0.0.1:8765/api/history/${id}/logs`);
+    if (res.ok) {
+      selectedLogDetails.value = await res.json();
+    }
+  } catch (err) {
+    console.warn('[Studio] Failed to fetch log details:', err);
+  }
+}
+
+async function clearHistory() {
+  try {
+    await fetch('http://127.0.0.1:8765/api/history', { method: 'DELETE' });
+    logHistory.value = [];
+    selectedLogId.value = null;
+    selectedLogDetails.value = null;
+  } catch (err) {
+    console.warn('[Studio] Failed to clear history:', err);
+  }
+}
+
+function goToBlock(blockId) {
+  if (!editorInstance.value) return;
+  const allNodes = editorInstance.value.getNodes?.value || [];
+  const node = allNodes.find((n) => n.id === blockId);
+  if (node && node.position) {
+    if (editorInstance.value.setCenter) {
+      editorInstance.value.setCenter(node.position.x, node.position.y, { zoom: 1.2, duration: 800 });
+    }
+  }
+}
+
+function exportJson() {
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(workflow.value, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute('href', dataStr);
+  downloadAnchor.setAttribute('download', `${workflow.value.name || 'workflow'}.automa.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+}
+
+function runWorkflow() {
+  window.parent?.postMessage({ type: 'automa:run-workflow', data: workflow.value }, '*');
+  if (window.vscode) {
+    window.vscode.postMessage({ type: 'automa:run-workflow', data: workflow.value });
+  }
+}
+
+// Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z)
+function onKeydown(e) {
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) return;
+
+  const isMod = e.ctrlKey || e.metaKey;
+  const key = e.key.toLowerCase();
+
+  if (isMod && key === 'c') {
+    copySelectedElements();
+    e.preventDefault();
+  } else if (isMod && key === 'v') {
+    pasteCopiedElements();
+    e.preventDefault();
+  } else if (isMod && key === 'd') {
+    duplicateElements();
+    e.preventDefault();
+  } else if (isMod && key === 'a') {
+    selectAllNodes();
+    e.preventDefault();
+  } else if (isMod && key === 'z') {
+    if (e.shiftKey) {
+      commandManager.redo();
+    } else {
+      commandManager.undo();
+    }
+    e.preventDefault();
+  } else if (isMod && key === 'y') {
+    commandManager.redo();
+    e.preventDefault();
+  }
+}
+
+function onWindowMessage(e) {
+  if (!e || !e.data || typeof e.data !== 'object') return;
+  if (e.data.type === 'automa:load-workflow' && e.data.data && typeof e.data.data === 'object') {
+    loadWorkflowData(e.data.data);
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown);
+  window.addEventListener('message', onWindowMessage);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown);
+  window.removeEventListener('message', onWindowMessage);
+  stopDrag();
+});
+</script>
+
+<style>
+.custom-drag {
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+  background-color: rgb(59, 130, 246);
+  z-index: 50;
+}
+.custom-drag:hover {
+  opacity: 1;
+}
+</style>
