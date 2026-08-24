@@ -1,12 +1,23 @@
 <template>
-  <div id="workflow-edit-block" data-testid="workflow-edit-block" class="scroll h-full overflow-auto px-3 py-1 text-xs">
+  <div
+    id="workflow-edit-block"
+    data-testid="workflow-edit-block"
+    class="scroll h-full overflow-auto px-3 py-1 text-xs"
+  >
     <div
       class="sticky top-0 z-20 mb-2 flex items-center space-x-2 bg-white pb-2 pt-1 border-b border-gray-100 dark:border-gray-700/50 dark:bg-gray-800"
     >
-      <button data-testid="btn-edit-block-back" class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition" @click="handleClose">
+      <button
+        data-testid="btn-edit-block-back"
+        class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition"
+        @click="handleClose"
+      >
         <v-remixicon name="riArrowLeftLine" size="16" />
       </button>
-      <p data-testid="edit-block-title" class="inline-block text-xs font-semibold capitalize text-gray-900 dark:text-gray-100">
+      <p
+        data-testid="edit-block-title"
+        class="inline-block text-xs font-semibold capitalize text-gray-900 dark:text-gray-100"
+      >
         {{ getBlockName() }}
       </p>
       <div class="grow"></div>
@@ -22,9 +33,9 @@
       </a>
     </div>
     <component
-      ref="componentRef"
       :is="getEditComponent()"
       v-if="blockData"
+      ref="componentRef"
       :key="data.itemId || data.blockId"
       v-model:data="blockData"
       :block-id="data.blockId"
@@ -103,7 +114,10 @@ const blockValidators = {
     const errors = [];
     if (!spreadsheetId) {
       errors.push(
-        t('workflow.blocks.google-sheets.spreadsheetId.required', 'Spreadsheet ID is required')
+        t(
+          'workflow.blocks.google-sheets.spreadsheetId.required',
+          'Spreadsheet ID is required'
+        )
       );
     }
     if (!range) {
@@ -120,7 +134,10 @@ const blockValidators = {
 };
 
 function validateBeforeClose() {
-  if (componentRef.value?.validate && typeof componentRef.value.validate === 'function') {
+  if (
+    componentRef.value?.validate &&
+    typeof componentRef.value.validate === 'function'
+  ) {
     return componentRef.value.validate();
   }
   const validator = blockValidators[props.data.id];

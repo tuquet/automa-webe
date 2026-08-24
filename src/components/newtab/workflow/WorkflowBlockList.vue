@@ -5,7 +5,10 @@
     header-class="flex items-center py-1.5 focus:ring-0 w-full text-left text-xs font-semibold text-gray-700 dark:text-gray-300"
   >
     <template #header="{ show }">
-      <span :class="category?.color || 'bg-accent'" class="h-2.5 w-2.5 rounded-full"></span>
+      <span
+        :class="category?.color || 'bg-accent'"
+        class="h-2.5 w-2.5 rounded-full"
+      ></span>
       <p class="ml-2 flex-1 capitalize text-xs font-semibold">
         {{ category?.name || 'Blocks' }}
       </p>
@@ -61,7 +64,9 @@
           size="20"
           class="mb-1.5 text-gray-700 dark:text-gray-200"
         />
-        <p class="text-overflow capitalize leading-tight text-xs font-medium text-gray-800 dark:text-gray-200">
+        <p
+          class="text-overflow capitalize leading-tight text-xs font-medium text-gray-800 dark:text-gray-200"
+        >
           {{ block.name }}
         </p>
         <div

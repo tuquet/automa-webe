@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const config = require('./webpack.config.js');
 
 // 1. Remove UI entries & boilerplates
@@ -27,23 +28,31 @@ config.plugins = config.plugins.filter((plugin) => {
     plugin.patterns.forEach((pattern) => {
       // Change target directory from build or build-runner to dist/cli-runner
       if (pattern.to && typeof pattern.to === 'string') {
-        pattern.to = pattern.to.replace(/build(-runner)?/, 'dist' + path.sep + 'cli-runner');
+        pattern.to = pattern.to.replace(
+          /build(-runner)?/,
+          `dist${path.sep}cli-runner`
+        );
       }
 
       // Modify manifest transform for Runner
-      if (pattern.from && typeof pattern.from === 'string' && pattern.from.includes('manifest') && pattern.transform) {
+      if (
+        pattern.from &&
+        typeof pattern.from === 'string' &&
+        pattern.from.includes('manifest') &&
+        pattern.transform
+      ) {
         const originalTransform = pattern.transform;
         pattern.transform = (content, absoluteFrom) => {
           const originalResult = originalTransform(content, absoluteFrom);
           const manifestObj = JSON.parse(originalResult.toString());
-          
+
           // Strip UI permissions and overrides
           delete manifestObj.action;
           delete manifestObj.options_ui;
           delete manifestObj.chrome_url_overrides;
           delete manifestObj.sandbox;
           manifestObj.name = `${manifestObj.name} (Runner)`;
-          
+
           return Buffer.from(JSON.stringify(manifestObj));
         };
       }
@@ -54,24 +63,35 @@ config.plugins = config.plugins.filter((plugin) => {
 });
 
 // 4. Mocks & Aliases for runner
-config.resolve.alias['@/utils/api'] = path.resolve(__dirname, 'business/dev/utils/api-runner-mock.js');
-config.resolve.alias['webextension-polyfill'] = path.resolve(__dirname, 'business/dev/lib/browser-compat.js');
-config.resolve.alias['@business$'] = path.resolve(__dirname, 'business/dev/index.js');
+config.resolve.alias['@/utils/api'] = path.resolve(
+  __dirname,
+  'business/dev/utils/api-runner-mock.js'
+);
+config.resolve.alias['webextension-polyfill'] = path.resolve(
+  __dirname,
+  'business/dev/lib/browser-compat.js'
+);
+config.resolve.alias['@business$'] = path.resolve(
+  __dirname,
+  'business/dev/index.js'
+);
 config.resolve.alias['@business'] = path.resolve(__dirname, 'business/dev');
 
 // Inject the runner initialization to offscreen entry point (background already imports @business)
-config.entry.offscreen = [path.resolve(__dirname, 'business/dev/inject-offscreen.js'), config.entry.offscreen];
+config.entry.offscreen = [
+  path.resolve(__dirname, 'business/dev/inject-offscreen.js'),
+  config.entry.offscreen,
+];
 
 // 5. Disable cache to guarantee fresh runner build
 config.cache = false;
 
 // 7. Generate an empty dummy.html for CLI background execution without triggering listeners
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 config.plugins.push(
   new HtmlWebpackPlugin({
     filename: 'dummy.html',
     templateContent: '<!DOCTYPE html><html><head></head><body></body></html>',
-    chunks: []
+    chunks: [],
   })
 );
 

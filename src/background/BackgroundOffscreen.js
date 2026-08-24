@@ -69,7 +69,9 @@ class BackgroundOffscreen {
     if (chrome.offscreen?.hasDocument) {
       try {
         return await chrome.offscreen.hasDocument();
-      } catch (e) {}
+      } catch (e) {
+        // Ignored
+      }
     }
 
     try {
@@ -90,17 +92,23 @@ class BackgroundOffscreen {
    * @returns {Promise<*>}
    */
   async sendMessage(name, data, retries = 5) {
-    for (let i = 0; i < retries; i++) {
+    let lastError = null;
+    for (let i = 0; i < retries; i += 1) {
       await this.#ensureDocument();
       try {
         return await this.#messageListener.sendMessage(name, data);
       } catch (err) {
-        if (i === retries - 1 || !String(err).includes('Receiving end does not exist')) {
+        lastError = err;
+        if (
+          i === retries - 1 ||
+          !String(err).includes('Receiving end does not exist')
+        ) {
           throw err;
         }
         await sleep(300);
       }
     }
+    throw lastError || new Error('Failed to send message to offscreen');
   }
 }
 

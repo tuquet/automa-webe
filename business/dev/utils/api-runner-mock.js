@@ -1,4 +1,5 @@
 import { fetchApi as originalFetchApi } from './api';
+
 export * from './api';
 
 /**
@@ -13,6 +14,6 @@ export async function fetchApi(path, options = {}) {
       json: () => Promise.resolve({ status: 'ok', mocked: true }),
     };
   }
-  
+
   return originalFetchApi(path, options);
 }

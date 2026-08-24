@@ -1,6 +1,10 @@
 import { reactive, onBeforeUnmount } from 'vue';
 
-export function useSidebarResize({ defaultWidth = 360, minWidth = 280, maxWidth = 600 } = {}) {
+export function useSidebarResize({
+  defaultWidth = 360,
+  minWidth = 280,
+  maxWidth = 600,
+} = {}) {
   const sidebarCss = reactive({
     width: defaultWidth,
     isDragging: false,
@@ -11,7 +15,10 @@ export function useSidebarResize({ defaultWidth = 360, minWidth = 280, maxWidth 
   const drag = (event) => {
     if (sidebarCss.isDragging) {
       const diffX = event.clientX - sidebarCss.startX;
-      sidebarCss.width = Math.max(minWidth, Math.min(maxWidth, sidebarCss.startWidth + diffX));
+      sidebarCss.width = Math.max(
+        minWidth,
+        Math.min(maxWidth, sidebarCss.startWidth + diffX)
+      );
     }
   };
 

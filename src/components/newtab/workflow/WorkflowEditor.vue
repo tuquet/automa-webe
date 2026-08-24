@@ -26,7 +26,6 @@
       class="absolute left-0 bottom-0 z-10 flex w-full items-center p-4 md:pr-60"
     >
       <slot name="controls-prepend" />
-      <editor-search-blocks :editor="editor" />
       <div class="pointer-events-none grow" />
       <slot name="controls-append" />
       <button
@@ -103,7 +102,6 @@ import { getBlocks } from '@/utils/getSharedData';
 import { categories } from '@/utils/shared';
 import EditBlockSettings from './edit/EditBlockSettings.vue';
 import EditorCustomEdge from './editor/EditorCustomEdge.vue';
-import EditorSearchBlocks from './editor/EditorSearchBlocks.vue';
 import '@vue-flow/minimap/dist/style.css';
 
 const props = defineProps({

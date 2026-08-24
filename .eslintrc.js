@@ -10,7 +10,14 @@ module.exports = {
     browser: true,
     webextensions: true,
   },
-  ignorePatterns: ['src/lib/google-*'],
+  ignorePatterns: [
+    'src/lib/google-*',
+    'business/**',
+    'webpack.*.js',
+    'dist/**',
+    'src/studio/standalone-bridge.js',
+    'src/studio/standalone-browser-mock.js',
+  ],
   // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
   // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
   extends: [
@@ -31,6 +38,7 @@ module.exports = {
   // add your custom rules here
   globals: {
     BROWSER_TYPE: true,
+    __IS_RUNNER__: true,
   },
   rules: {
     camelcase: 'off',

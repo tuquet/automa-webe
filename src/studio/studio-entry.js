@@ -53,10 +53,15 @@ const app = createApp(StudioApp);
 const RouterLinkMock = {
   props: ['to'],
   setup(props, { slots }) {
-    return () => h('span', { class: 'cursor-pointer' }, slots.default ? slots.default() : []);
+    return () =>
+      h(
+        'span',
+        { class: 'cursor-pointer' },
+        slots.default ? slots.default() : []
+      );
   },
 };
-app.component('router-link', RouterLinkMock);
+app.component('RouterLink', RouterLinkMock);
 app.component('RouterLink', RouterLinkMock);
 
 app.use(head);
@@ -68,4 +73,25 @@ app.use(vRemixicon, icons);
 
 app.mount('#app');
 
+// Live-Reload watcher for Standalone Studio dev server
+if (typeof window !== 'undefined') {
+  let lastModified = null;
+  const pollBundleUpdate = async () => {
+    try {
+      const bundleUrl = new URL('studio.bundle.js', window.location.href).href;
+      const res = await fetch(`${bundleUrl}?_t=${Date.now()}`, { method: 'HEAD', cache: 'no-store' });
+      const current = res.headers.get('last-modified') || res.headers.get('etag');
+      if (lastModified && current && current !== lastModified) {
+        console.log('[Studio Live Reload] Bundle updated. Reloading page...');
+        window.location.reload();
+      }
+      if (current) {
+        lastModified = current;
+      }
+    } catch (_) {}
+  };
+  setInterval(pollBundleUpdate, 1500);
+}
+
 if (module.hot) module.hot.accept();
+

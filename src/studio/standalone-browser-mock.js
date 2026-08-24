@@ -11,8 +11,8 @@ const storageArea = {
     const keyList = Array.isArray(keys)
       ? keys
       : typeof keys === 'string'
-        ? [keys]
-        : Object.keys(keys || {});
+      ? [keys]
+      : Object.keys(keys || {});
 
     keyList.forEach((key) => {
       if (key === 'workflows') {
@@ -77,7 +77,11 @@ function createMockProxy(name = '') {
       if (prop === 'then' || prop === 'catch' || prop === 'finally') {
         return undefined;
       }
-      if (prop === Symbol.toPrimitive || prop === 'toString' || prop === 'valueOf') {
+      if (
+        prop === Symbol.toPrimitive ||
+        prop === 'toString' ||
+        prop === 'valueOf'
+      ) {
         return () => `[MockBrowser ${name}]`;
       }
       if (prop in target) {

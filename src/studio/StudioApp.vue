@@ -1,7 +1,12 @@
 <template>
-  <div class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none">
+  <div
+    class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none"
+  >
     <!-- Top Header Bar -->
-    <header data-testid="studio-header" class="h-12 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 px-4 flex items-center justify-between z-30 shrink-0">
+    <header
+      data-testid="studio-header"
+      class="h-12 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 px-4 flex items-center justify-between z-30 shrink-0"
+    >
       <!-- Left Section: Sidebar Toggle, New/Open File, & Workflow Name -->
       <div class="flex items-center space-x-3">
         <button
@@ -10,27 +15,11 @@
           :title="state.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'"
           @click="state.showSidebar = !state.showSidebar"
         >
-          <v-remixicon :name="state.showSidebar ? 'riSideBarFill' : 'riSideBarLine'" size="18" />
-        </button>
-
-        <span class="p-1.5 rounded-lg bg-accent text-white flex items-center justify-center shadow-sm">
-          <v-remixicon :name="workflow.icon || 'riFlashlightLine'" size="18" />
-        </span>
-
-        <div class="flex items-center space-x-2">
-          <input
-            v-model="workflow.name"
-            data-testid="workflow-name-input"
-            class="text-sm font-bold bg-transparent border-b border-transparent hover:border-gray-300 dark:hover:border-gray-600 focus:border-accent focus:outline-none px-1 py-0.5 rounded transition max-w-[200px] sm:max-w-xs text-ellipsis"
-            placeholder="Workflow Name"
-            @change="notifyWorkflowChange(workflow)"
+          <v-remixicon
+            :name="state.showSidebar ? 'riSideBarFill' : 'riSideBarLine'"
+            size="18"
           />
-          <span data-testid="workflow-version-badge" class="text-[11px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
-            v{{ workflow.version || '1.0.0' }}
-          </span>
-        </div>
-
-        <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1 hidden sm:block"></div>
+        </button>
 
         <!-- File Open & New Buttons -->
         <div class="flex items-center space-x-1">
@@ -64,48 +53,13 @@
         </div>
       </div>
 
-      <!-- Center Section: Canvas & History Tools -->
-      <div class="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700/50 p-1 rounded-lg">
-        <button
-          data-testid="btn-undo"
-          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition"
-          :disabled="!commandManager.state.value.canUndo"
-          title="Undo (Ctrl+Z)"
-          @click="commandManager.undo"
-        >
-          <v-remixicon name="riArrowGoBackLine" size="16" />
-        </button>
-
-        <button
-          data-testid="btn-redo"
-          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition"
-          :disabled="!commandManager.state.value.canRedo"
-          title="Redo (Ctrl+Y)"
-          @click="commandManager.redo"
-        >
-          <v-remixicon name="riArrowGoForwardLine" size="16" />
-        </button>
-
-        <div class="h-4 w-px bg-gray-300 dark:bg-gray-600 mx-1"></div>
-
-        <button
-          data-testid="btn-auto-align"
-          class="p-1.5 rounded-md text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 flex items-center space-x-1 text-xs font-medium transition"
-          title="Auto Align Graph Layout"
-          @click="autoAlign"
-        >
-          <v-remixicon name="riMagicLine" size="16" />
-          <span class="hidden md:inline">Auto Align</span>
-        </button>
-      </div>
-
       <!-- Right Section: Data, Modals & Execution -->
       <div class="flex items-center space-x-2">
         <button
           data-testid="btn-table-data"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          @click="openModal('table')"
           title="Workflow Data Table"
+          @click="openModal('table')"
         >
           <v-remixicon name="riFileListLine" size="14" />
           <span class="hidden lg:inline">Table Data</span>
@@ -114,8 +68,8 @@
         <button
           data-testid="btn-global-data"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          @click="openModal('global-data')"
           title="Global Data / Variables"
+          @click="openModal('global-data')"
         >
           <v-remixicon name="riDatabase2Line" size="14" />
           <span class="hidden lg:inline">Global Data</span>
@@ -124,8 +78,8 @@
         <button
           data-testid="btn-settings"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          @click="openModal('settings')"
           title="Workflow Settings"
+          @click="openModal('settings')"
         >
           <v-remixicon name="riSettings3Line" size="14" />
           <span class="hidden lg:inline">Settings</span>
@@ -134,8 +88,8 @@
         <button
           data-testid="btn-logs"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          @click="openModal('logs')"
           title="Execution Logs & History"
+          @click="openModal('logs')"
         >
           <v-remixicon name="riHistoryLine" size="14" />
           <span class="hidden lg:inline">Logs</span>
@@ -153,8 +107,8 @@
         <button
           data-testid="btn-export-json"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          @click="exportJson"
           title="Export Workflow JSON"
+          @click="exportJson"
         >
           <v-remixicon name="riDownloadLine" size="14" />
           <span class="hidden sm:inline">Export</span>
@@ -163,8 +117,8 @@
         <button
           data-testid="btn-run-workflow"
           class="px-3 py-1.5 text-xs font-medium rounded-lg bg-accent hover:bg-accent/90 text-white flex items-center space-x-1.5 shadow-sm transition"
-          @click="runWorkflow"
           title="Run Workflow via Daemon Engine"
+          @click="runWorkflow"
         >
           <v-remixicon name="riPlayLine" size="14" />
           <span>Run</span>
@@ -226,7 +180,40 @@
           @edit="onEditBlock"
           @update:node="onUpdateNode"
           @delete:node="onDeleteNode"
-        />
+        >
+          <template #controls-prepend>
+            <div class="inline-flex items-center rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 mr-2">
+              <button
+                data-testid="btn-canvas-undo"
+                class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                :disabled="!commandManager.state.value.canUndo"
+                title="Undo (Ctrl+Z)"
+                @click="commandManager.undo"
+              >
+                <v-remixicon name="riArrowGoBackLine" />
+              </button>
+              <hr class="inline-block h-6 border-r border-gray-200 dark:border-gray-700" />
+              <button
+                data-testid="btn-canvas-redo"
+                class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+                :disabled="!commandManager.state.value.canRedo"
+                title="Redo (Ctrl+Y)"
+                @click="commandManager.redo"
+              >
+                <v-remixicon name="riArrowGoForwardLine" />
+              </button>
+            </div>
+
+            <button
+              data-testid="btn-canvas-auto-align"
+              class="control-button mr-2"
+              title="Auto Align Graph Layout"
+              @click="autoAlign"
+            >
+              <v-remixicon name="riMagicLine" />
+            </button>
+          </template>
+        </workflow-editor>
 
         <!-- In-canvas Debugging Dock -->
         <editor-debugging
@@ -250,7 +237,11 @@
 
     <!-- Modals -->
     <!-- Table Data Modal -->
-    <ui-modal v-model="modals.table" title="Workflow Table" content-class="max-w-2xl">
+    <ui-modal
+      v-model="modals.table"
+      title="Workflow Table"
+      content-class="max-w-2xl"
+    >
       <workflow-data-table
         :workflow="workflow"
         @update="updateWorkflowDetails"
@@ -259,7 +250,11 @@
     </ui-modal>
 
     <!-- Global Data Modal -->
-    <ui-modal v-model="modals.globalData" title="Global Data" content-class="max-w-2xl">
+    <ui-modal
+      v-model="modals.globalData"
+      title="Global Data"
+      content-class="max-w-2xl"
+    >
       <workflow-global-data
         :workflow="workflow"
         @update="updateWorkflowDetails"
@@ -268,7 +263,11 @@
     </ui-modal>
 
     <!-- Settings Modal -->
-    <ui-modal v-model="modals.settings" custom-content content-class="max-w-2xl">
+    <ui-modal
+      v-model="modals.settings"
+      custom-content
+      content-class="max-w-2xl"
+    >
       <workflow-settings
         :workflow="workflow"
         @update="updateWorkflowSettings"
@@ -277,12 +276,22 @@
     </ui-modal>
 
     <!-- Logs Modal -->
-    <ui-modal v-model="modals.logs" title="Execution Logs & History" content-class="max-w-4xl">
+    <ui-modal
+      v-model="modals.logs"
+      title="Execution Logs & History"
+      content-class="max-w-4xl"
+    >
       <div class="space-y-4 text-gray-900 dark:text-gray-100">
-        <div class="flex items-center justify-between border-b pb-2 dark:border-gray-700">
+        <div
+          class="flex items-center justify-between border-b pb-2 dark:border-gray-700"
+        >
           <div class="flex items-center space-x-2">
             <span class="text-sm font-semibold">Execution History</span>
-            <button class="p-1 text-gray-500 hover:text-accent rounded transition" title="Refresh Logs" @click="fetchLogs">
+            <button
+              class="p-1 text-gray-500 hover:text-accent rounded transition"
+              title="Refresh Logs"
+              @click="fetchLogs"
+            >
               <v-remixicon name="riRefreshLine" size="16" />
             </button>
           </div>
@@ -296,62 +305,120 @@
         </div>
 
         <div v-if="loadingLogs" class="text-center py-8 text-gray-400">
-          <v-remixicon name="riLoader4Line" class="animate-spin inline-block mr-2" size="20" />
+          <v-remixicon
+            name="riLoader4Line"
+            class="animate-spin inline-block mr-2"
+            size="20"
+          />
           Loading logs from daemon...
         </div>
 
-        <div v-else-if="logHistory.length === 0" class="text-center py-10 text-gray-400">
-          <v-remixicon name="riInboxLine" size="36" class="mx-auto mb-2 opacity-50" />
+        <div
+          v-else-if="logHistory.length === 0"
+          class="text-center py-10 text-gray-400"
+        >
+          <v-remixicon
+            name="riInboxLine"
+            size="36"
+            class="mx-auto mb-2 opacity-50"
+          />
           <p class="text-sm">No execution logs found yet.</p>
-          <p class="text-xs text-gray-500 mt-1">Click "Run" on the header to execute this workflow!</p>
+          <p class="text-xs text-gray-500 mt-1">
+            Click "Run" on the header to execute this workflow!
+          </p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[60vh]">
           <!-- History List -->
-          <div class="col-span-1 border-r dark:border-gray-700 overflow-y-auto space-y-2 pr-2 max-h-[55vh]">
+          <div
+            class="col-span-1 border-r dark:border-gray-700 overflow-y-auto space-y-2 pr-2 max-h-[55vh]"
+          >
             <div
               v-for="item in logHistory"
               :key="item.id"
               class="p-2.5 rounded-lg border text-xs cursor-pointer transition select-none"
-              :class="selectedLogId === item.id ? 'border-accent bg-accent/10 font-semibold' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'"
+              :class="
+                selectedLogId === item.id
+                  ? 'border-accent bg-accent/10 font-semibold'
+                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
+              "
               @click="selectLog(item.id)"
             >
               <div class="flex items-center justify-between">
-                <span class="truncate max-w-[130px]">{{ item.name || 'Workflow Run' }}</span>
+                <span class="truncate max-w-[130px]">{{
+                  item.name || 'Workflow Run'
+                }}</span>
                 <span
                   class="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold"
                   :class="{
-                    'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300': item.status === 'completed',
-                    'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300': item.status === 'running' || item.status === 'queued',
-                    'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300': item.status === 'error',
+                    'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300':
+                      item.status === 'completed',
+                    'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300':
+                      item.status === 'running' || item.status === 'queued',
+                    'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300':
+                      item.status === 'error',
                   }"
                 >
                   {{ item.status }}
                 </span>
               </div>
-              <div class="text-gray-400 text-[11px] mt-1">{{ item.createdAt || item.updatedAt }}</div>
+              <div class="text-gray-400 text-[11px] mt-1">
+                {{ item.createdAt || item.updatedAt }}
+              </div>
             </div>
           </div>
 
           <!-- Log Detail & Output -->
           <div class="col-span-2 overflow-y-auto pl-2 space-y-3 max-h-[55vh]">
             <div v-if="selectedLogDetails" class="space-y-3">
-              <div class="flex items-center justify-between text-xs text-gray-500 border-b pb-2 dark:border-gray-700">
-                <span>Job ID: <code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded font-mono">{{ selectedLogDetails.job?.id || selectedLogId }}</code></span>
-                <span v-if="selectedLogDetails.job?.duration">Duration: {{ selectedLogDetails.job.duration }}ms</span>
+              <div
+                class="flex items-center justify-between text-xs text-gray-500 border-b pb-2 dark:border-gray-700"
+              >
+                <span
+                  >Job ID:
+                  <code
+                    class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded font-mono"
+                    >{{ selectedLogDetails.job?.id || selectedLogId }}</code
+                  ></span
+                >
+                <span v-if="selectedLogDetails.job?.duration"
+                  >Duration: {{ selectedLogDetails.job.duration }}ms</span
+                >
               </div>
 
               <!-- Logs Stream -->
               <div>
                 <h4 class="text-xs font-semibold mb-1">Step Logs</h4>
-                <div class="space-y-1 font-mono text-xs max-h-52 overflow-y-auto bg-gray-900 text-gray-100 p-3 rounded-lg">
-                  <div v-for="(log, idx) in (selectedLogDetails.logs || [])" :key="idx" class="flex items-start space-x-2 py-0.5">
-                    <span class="text-gray-500 select-none">[{{ idx + 1 }}]</span>
-                    <span :class="log.type === 'error' ? 'text-red-400 font-bold' : log.type === 'warn' ? 'text-yellow-400' : 'text-green-400'">
+                <div
+                  class="space-y-1 font-mono text-xs max-h-52 overflow-y-auto bg-gray-900 text-gray-100 p-3 rounded-lg"
+                >
+                  <div
+                    v-for="(log, idx) in selectedLogDetails.logs || []"
+                    :key="idx"
+                    class="flex items-start space-x-2 py-0.5"
+                  >
+                    <span class="text-gray-500 select-none"
+                      >[{{ idx + 1 }}]</span
+                    >
+                    <span
+                      :class="
+                        log.type === 'error'
+                          ? 'text-red-400 font-bold'
+                          : log.type === 'warn'
+                          ? 'text-yellow-400'
+                          : 'text-green-400'
+                      "
+                    >
                       {{ log.message || JSON.stringify(log) }}
                     </span>
                   </div>
-                  <div v-if="(!selectedLogDetails.logs || selectedLogDetails.logs.length === 0)" class="text-gray-500 italic">
+                  <div
+                    v-if="
+                      !selectedLogDetails.logs ||
+                      selectedLogDetails.logs.length === 0
+                    "
+                    class="text-gray-500 italic"
+                  >
                     No step logs recorded for this run.
                   </div>
                 </div>
@@ -360,11 +427,17 @@
               <!-- Result Table/Variables -->
               <div v-if="selectedLogDetails.results">
                 <h4 class="text-xs font-semibold mb-1">Execution Results</h4>
-                <pre class="text-[11px] bg-gray-100 dark:bg-gray-800 p-2.5 rounded max-h-40 overflow-auto font-mono">{{ JSON.stringify(selectedLogDetails.results, null, 2) }}</pre>
+                <pre
+                  class="text-[11px] bg-gray-100 dark:bg-gray-800 p-2.5 rounded max-h-40 overflow-auto font-mono"
+                  >{{
+                    JSON.stringify(selectedLogDetails.results, null, 2)
+                  }}</pre
+                >
               </div>
             </div>
             <div v-else class="text-center py-14 text-gray-400 text-xs">
-              Select a run from the left list to view step logs and execution output.
+              Select a run from the left list to view step logs and execution
+              output.
             </div>
           </div>
         </div>
@@ -374,11 +447,17 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, provide, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import {
+  ref,
+  computed,
+  reactive,
+  provide,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue';
 import { customAlphabet } from 'nanoid';
-import cloneDeep from 'lodash.clonedeep';
 import defu from 'defu';
-import { defaultWorkflow, studioState, setAutomaWorkflow, notifyWorkflowChange } from './standalone-bridge';
 import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
 import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
 import WorkflowDetailsCard from '@/components/newtab/workflow/WorkflowDetailsCard.vue';
@@ -396,6 +475,12 @@ import { GraphLayoutService } from '@/services/graphLayout.service';
 import { getBlocks } from '@/utils/getSharedData';
 import { excludeGroupBlocks } from '@/utils/shared';
 import { parseJSON } from '@/utils/helper';
+import {
+  defaultWorkflow,
+  studioState,
+  setAutomaWorkflow,
+  notifyWorkflowChange,
+} from './standalone-bridge';
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 7);
 
@@ -438,6 +523,74 @@ const editState = reactive({
   blockData: {},
 });
 
+function syncWorkflowFromCanvas() {
+  if (!editorInstance.value) return;
+  const nodes = editorInstance.value.getNodes?.value || [];
+  const edges = editorInstance.value.getEdges?.value || [];
+  workflow.value.drawflow = {
+    ...(workflow.value.drawflow || {}),
+    nodes: JSON.parse(JSON.stringify(nodes)),
+    edges: JSON.parse(JSON.stringify(edges)),
+  };
+  notifyWorkflowChange(workflow.value);
+}
+
+async function selectLog(id) {
+  selectedLogId.value = id;
+  selectedLogDetails.value = null;
+  try {
+    const res = await fetch(`http://127.0.0.1:8765/api/history/${id}/logs`);
+    if (res.ok) {
+      selectedLogDetails.value = await res.json();
+    }
+  } catch (err) {
+    console.warn('[Studio] Failed to fetch log details:', err);
+  }
+}
+
+async function fetchLogs() {
+  loadingLogs.value = true;
+  try {
+    const res = await fetch('http://127.0.0.1:8765/api/history');
+    if (res.ok) {
+      const items = await res.json();
+      logHistory.value = Array.isArray(items) ? items : [];
+      if (logHistory.value.length > 0 && !selectedLogId.value) {
+        selectLog(logHistory.value[0].id);
+      }
+    }
+  } catch (err) {
+    console.warn('[Studio] Failed to fetch logs from daemon:', err);
+  } finally {
+    loadingLogs.value = false;
+  }
+}
+
+async function clearHistory() {
+  try {
+    await fetch('http://127.0.0.1:8765/api/history', { method: 'DELETE' });
+    logHistory.value = [];
+    selectedLogId.value = null;
+    selectedLogDetails.value = null;
+  } catch (err) {
+    console.warn('[Studio] Failed to clear history:', err);
+  }
+}
+
+function goToBlock(blockId) {
+  if (!editorInstance.value) return;
+  const allNodes = editorInstance.value.getNodes?.value || [];
+  const node = allNodes.find((n) => n.id === blockId);
+  if (node && node.position) {
+    if (editorInstance.value.setCenter) {
+      editorInstance.value.setCenter(node.position.x, node.position.y, {
+        zoom: 1.2,
+        duration: 800,
+      });
+    }
+  }
+}
+
 function openModal(name) {
   if (name === 'table') modals.table = true;
   else if (name === 'global-data') modals.globalData = true;
@@ -458,7 +611,9 @@ function onEditorInit(editor) {
   editor.onEdgeDoubleClick?.(({ edge }) => {
     editor.removeEdges([edge]);
     if (workflow.value.drawflow?.edges) {
-      const idx = workflow.value.drawflow.edges.findIndex((e) => e.id === edge.id);
+      const idx = workflow.value.drawflow.edges.findIndex(
+        (e) => e.id === edge.id
+      );
       if (idx !== -1) workflow.value.drawflow.edges.splice(idx, 1);
     }
     notifyWorkflowChange(workflow.value);
@@ -479,14 +634,19 @@ function onEditorInit(editor) {
     }
 
     const isNotTargetHandle = !target?.closest?.('.vue-flow__handle.target');
-    const targetNode = isNotTargetHandle && target?.closest?.('.vue-flow__node');
+    const targetNode =
+      isNotTargetHandle && target?.closest?.('.vue-flow__node');
 
     if (targetNode && targetNode.dataset?.id !== nodeToConnect.nodeId) {
       const nodeId = targetNode.dataset.id;
-      const nodeData = editor.getNode?.value ? editor.getNode.value(nodeId) : editor.findNode?.(nodeId);
+      const nodeData = editor.getNode?.value
+        ? editor.getNode.value(nodeId)
+        : editor.findNode?.(nodeId);
 
       if (nodeData && nodeData.handleBounds?.target?.length >= 1) {
-        const targetHandle = nodeData.handleBounds.target.find((item) => item.id);
+        const targetHandle = nodeData.handleBounds.target.find(
+          (item) => item.id
+        );
         if (!targetHandle) return;
 
         const newEdge = {
@@ -519,7 +679,9 @@ function onEditorInit(editor) {
     }
     if (workflow.value.drawflow?.nodes) {
       nodes.forEach((dragged) => {
-        const target = workflow.value.drawflow.nodes.find((n) => n.id === dragged.id);
+        const target = workflow.value.drawflow.nodes.find(
+          (n) => n.id === dragged.id
+        );
         if (target && dragged.position) {
           target.position = { ...dragged.position };
         }
@@ -621,7 +783,10 @@ function updateWorkflowDetails(partial) {
 }
 
 function updateWorkflowSettings(settings) {
-  workflow.value.settings = Object.assign(workflow.value.settings || {}, settings);
+  workflow.value.settings = Object.assign(
+    workflow.value.settings || {},
+    settings
+  );
   notifyWorkflowChange(workflow.value);
 }
 
@@ -737,7 +902,9 @@ function onDropInEditor(event) {
     document.querySelector('.vue-flow') ||
     document.querySelector('.vue-flow__transformationpane') ||
     document.querySelector('main');
-  const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
+  const editorRect = canvasEl
+    ? canvasEl.getBoundingClientRect()
+    : { left: 0, top: 0 };
 
   const position = editorInstance.value.project({
     x: event.clientX - editorRect.left,
@@ -746,7 +913,9 @@ function onDropInEditor(event) {
 
   const isTriggerExists =
     block.id === 'trigger' &&
-    (editorInstance.value.getNodes?.value || []).some((node) => node.label === 'trigger');
+    (editorInstance.value.getNodes?.value || []).some(
+      (node) => node.label === 'trigger'
+    );
   if (isTriggerExists) return;
 
   const nodeEl = DroppedNode.isNode(event.target);
@@ -790,18 +959,6 @@ function onDropInEditor(event) {
   syncWorkflowFromCanvas();
 }
 
-function syncWorkflowFromCanvas() {
-  if (!editorInstance.value) return;
-  const nodes = editorInstance.value.getNodes?.value || [];
-  const edges = editorInstance.value.getEdges?.value || [];
-  workflow.value.drawflow = {
-    ...(workflow.value.drawflow || {}),
-    nodes: JSON.parse(JSON.stringify(nodes)),
-    edges: JSON.parse(JSON.stringify(edges)),
-  };
-  notifyWorkflowChange(workflow.value);
-}
-
 // Auto Align with Dagre Graph Layout
 function autoAlign() {
   const editor = editorRef.value || editorInstance.value;
@@ -809,8 +966,14 @@ function autoAlign() {
 
   state.animateBlocks = true;
 
-  const nodes = editorRef.value?.getNodes?.() || editorInstance.value?.getNodes?.value || [];
-  const edges = editorRef.value?.getEdges?.() || editorInstance.value?.getEdges?.value || [];
+  const nodes =
+    editorRef.value?.getNodes?.() ||
+    editorInstance.value?.getNodes?.value ||
+    [];
+  const edges =
+    editorRef.value?.getEdges?.() ||
+    editorInstance.value?.getEdges?.value ||
+    [];
 
   const nodeChanges = GraphLayoutService.computeDagreLayout(nodes, edges);
 
@@ -830,9 +993,12 @@ function autoAlign() {
 // Robust Selection Helpers
 function getSelectedNodes() {
   if (!editorInstance.value) return [];
-  
-  const allNodes = editorInstance.value.getNodes?.value || editorInstance.value.nodes?.value || [];
-  
+
+  const allNodes =
+    editorInstance.value.getNodes?.value ||
+    editorInstance.value.nodes?.value ||
+    [];
+
   // 1. Direct getSelectedNodes
   let selected = editorInstance.value.getSelectedNodes?.value;
   if (Array.isArray(selected) && selected.length > 0) return selected;
@@ -864,8 +1030,11 @@ function getSelectedNodes() {
 
 function getSelectedEdges() {
   if (!editorInstance.value) return [];
-  const allEdges = editorInstance.value.getEdges?.value || editorInstance.value.edges?.value || [];
-  
+  const allEdges =
+    editorInstance.value.getEdges?.value ||
+    editorInstance.value.edges?.value ||
+    [];
+
   let selected = editorInstance.value.getSelectedEdges?.value;
   if (Array.isArray(selected) && selected.length > 0) return selected;
   if (typeof editorInstance.value.getSelectedEdges === 'function') {
@@ -902,13 +1071,21 @@ function copyElements(nodes, edges, initialPos) {
       y: (node.position?.y || 0) + 40,
     };
 
-    if (initialPos && (initialPos.clientX !== undefined || initialPos.x !== undefined)) {
+    if (
+      initialPos &&
+      (initialPos.clientX !== undefined || initialPos.x !== undefined)
+    ) {
       if (index === 0) {
         firstNodePos = { x: node.position?.x || 0, y: node.position?.y || 0 };
-        const canvasEl = document.querySelector('.vue-flow') || document.querySelector('main');
-        const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
-        const clientX = initialPos.clientX !== undefined ? initialPos.clientX : initialPos.x;
-        const clientY = initialPos.clientY !== undefined ? initialPos.clientY : initialPos.y;
+        const canvasEl =
+          document.querySelector('.vue-flow') || document.querySelector('main');
+        const editorRect = canvasEl
+          ? canvasEl.getBoundingClientRect()
+          : { left: 0, top: 0 };
+        const clientX =
+          initialPos.clientX !== undefined ? initialPos.clientX : initialPos.x;
+        const clientY =
+          initialPos.clientY !== undefined ? initialPos.clientY : initialPos.y;
         const projectedPos = editorInstance.value.project({
           x: clientX - editorRect.left,
           y: clientY - editorRect.top,
@@ -917,8 +1094,8 @@ function copyElements(nodes, edges, initialPos) {
       } else {
         const xDistance = (node.position?.x || 0) - firstNodePos.x;
         const yDistance = (node.position?.y || 0) - firstNodePos.y;
-        nodePos.x = nodePos.x + xDistance;
-        nodePos.y = nodePos.y + yDistance;
+        nodePos.x += xDistance;
+        nodePos.y += yDistance;
       }
     }
 
@@ -945,8 +1122,12 @@ function copyElements(nodes, edges, initialPos) {
       selected: true,
       target: targetId,
       source: sourceId,
-      targetHandle: edge.targetHandle ? edge.targetHandle.replace(edge.target, targetId) : `${targetId}-input-1`,
-      sourceHandle: edge.sourceHandle ? edge.sourceHandle.replace(edge.source, sourceId) : `${sourceId}-output-1`,
+      targetHandle: edge.targetHandle
+        ? edge.targetHandle.replace(edge.target, targetId)
+        : `${targetId}-input-1`,
+      sourceHandle: edge.sourceHandle
+        ? edge.sourceHandle.replace(edge.source, sourceId)
+        : `${sourceId}-output-1`,
       class: edge.class || '',
     });
     return acc;
@@ -970,12 +1151,20 @@ function duplicateElements(ctxData) {
 
   if (!nodes || nodes.length === 0) return;
 
-  const { nodes: newNodes, edges: newEdges } = copyElements(nodes, edges, ctxData?.position);
+  const { nodes: newNodes, edges: newEdges } = copyElements(
+    nodes,
+    edges,
+    ctxData?.position
+  );
 
   const allNodes = editorInstance.value.getNodes?.value || [];
-  allNodes.forEach((n) => (n.selected = false));
+  allNodes.forEach((n) => {
+    n.selected = false;
+  });
   const allEdges = editorInstance.value.getEdges?.value || [];
-  allEdges.forEach((e) => (e.selected = false));
+  allEdges.forEach((e) => {
+    e.selected = false;
+  });
 
   editorInstance.value.addNodes(newNodes);
   if (newEdges.length > 0) {
@@ -1019,7 +1208,9 @@ function copySelectedElements(ctxData) {
   try {
     const text = JSON.stringify(payload);
     navigator.clipboard?.writeText(text).catch(() => {});
-  } catch (e) {}
+  } catch (e) {
+    // Ignored
+  }
 }
 
 async function pasteCopiedElements(position) {
@@ -1035,17 +1226,32 @@ async function pasteCopiedElements(position) {
         clipboardData = parsed;
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    // Ignored
+  }
 
-  if (!clipboardData || !clipboardData.data || !clipboardData.data.nodes?.length) return;
+  if (
+    !clipboardData ||
+    !clipboardData.data ||
+    !clipboardData.data.nodes?.length
+  )
+    return;
 
   const { nodes: sourceNodes, edges: sourceEdges } = clipboardData.data;
-  const { nodes: newNodes, edges: newEdges } = copyElements(sourceNodes, sourceEdges, position);
+  const { nodes: newNodes, edges: newEdges } = copyElements(
+    sourceNodes,
+    sourceEdges,
+    position
+  );
 
   const allNodes = editorInstance.value.getNodes?.value || [];
-  allNodes.forEach((n) => (n.selected = false));
+  allNodes.forEach((n) => {
+    n.selected = false;
+  });
   const allEdges = editorInstance.value.getEdges?.value || [];
-  allEdges.forEach((e) => (e.selected = false));
+  allEdges.forEach((e) => {
+    e.selected = false;
+  });
 
   editorInstance.value.addNodes(newNodes);
   if (newEdges.length > 0) {
@@ -1065,7 +1271,10 @@ function groupBlocks(ctxData) {
   if (!editorInstance.value) return;
 
   const position = ctxData?.position;
-  const nodes = (ctxData?.nodes && ctxData.nodes.length > 0) ? ctxData.nodes : getSelectedNodes();
+  const nodes =
+    ctxData?.nodes && ctxData.nodes.length > 0
+      ? ctxData.nodes
+      : getSelectedNodes();
   if (!nodes || nodes.length === 0) return;
 
   const nodesToDelete = [];
@@ -1086,12 +1295,18 @@ function groupBlocks(ctxData) {
   if (groupBlocksList.length === 0) return;
 
   const blocks = getBlocks();
-  const { component, data } = blocks['blocks-group'] || { component: 'BlockGroup', data: {} };
+  const { component, data } = blocks['blocks-group'] || {
+    component: 'BlockGroup',
+    data: {},
+  };
 
   let projectedPos = { x: 100, y: 100 };
   if (position && position.clientX !== undefined) {
-    const canvasEl = document.querySelector('.vue-flow') || document.querySelector('main');
-    const editorRect = canvasEl ? canvasEl.getBoundingClientRect() : { left: 0, top: 0 };
+    const canvasEl =
+      document.querySelector('.vue-flow') || document.querySelector('main');
+    const editorRect = canvasEl
+      ? canvasEl.getBoundingClientRect()
+      : { left: 0, top: 0 };
     projectedPos = editorInstance.value.project({
       x: position.clientX - editorRect.left,
       y: position.clientY - editorRect.top,
@@ -1119,7 +1334,10 @@ function groupBlocks(ctxData) {
 function ungroupBlocks(ctxData) {
   if (!editorInstance.value) return;
 
-  const nodes = (ctxData?.nodes && ctxData.nodes.length > 0) ? ctxData.nodes : getSelectedNodes();
+  const nodes =
+    ctxData?.nodes && ctxData.nodes.length > 0
+      ? ctxData.nodes
+      : getSelectedNodes();
   const [node] = nodes || [];
   if (!node || node.label !== 'blocks-group') return;
 
@@ -1165,79 +1383,41 @@ function ungroupBlocks(ctxData) {
   syncWorkflowFromCanvas();
 }
 
-async function fetchLogs() {
-  loadingLogs.value = true;
-  try {
-    const res = await fetch('http://127.0.0.1:8765/api/history');
-    if (res.ok) {
-      const items = await res.json();
-      logHistory.value = Array.isArray(items) ? items : [];
-      if (logHistory.value.length > 0 && !selectedLogId.value) {
-        selectLog(logHistory.value[0].id);
-      }
-    }
-  } catch (err) {
-    console.warn('[Studio] Failed to fetch logs from daemon:', err);
-  } finally {
-    loadingLogs.value = false;
-  }
-}
-
-async function selectLog(id) {
-  selectedLogId.value = id;
-  selectedLogDetails.value = null;
-  try {
-    const res = await fetch(`http://127.0.0.1:8765/api/history/${id}/logs`);
-    if (res.ok) {
-      selectedLogDetails.value = await res.json();
-    }
-  } catch (err) {
-    console.warn('[Studio] Failed to fetch log details:', err);
-  }
-}
-
-async function clearHistory() {
-  try {
-    await fetch('http://127.0.0.1:8765/api/history', { method: 'DELETE' });
-    logHistory.value = [];
-    selectedLogId.value = null;
-    selectedLogDetails.value = null;
-  } catch (err) {
-    console.warn('[Studio] Failed to clear history:', err);
-  }
-}
-
-function goToBlock(blockId) {
-  if (!editorInstance.value) return;
-  const allNodes = editorInstance.value.getNodes?.value || [];
-  const node = allNodes.find((n) => n.id === blockId);
-  if (node && node.position) {
-    if (editorInstance.value.setCenter) {
-      editorInstance.value.setCenter(node.position.x, node.position.y, { zoom: 1.2, duration: 800 });
-    }
-  }
-}
-
 function exportJson() {
-  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(workflow.value, null, 2));
+  const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
+    JSON.stringify(workflow.value, null, 2)
+  )}`;
   const downloadAnchor = document.createElement('a');
   downloadAnchor.setAttribute('href', dataStr);
-  downloadAnchor.setAttribute('download', `${workflow.value.name || 'workflow'}.automa.json`);
+  downloadAnchor.setAttribute(
+    'download',
+    `${workflow.value.name || 'workflow'}.automa.json`
+  );
   document.body.appendChild(downloadAnchor);
   downloadAnchor.click();
   downloadAnchor.remove();
 }
 
 function runWorkflow() {
-  window.parent?.postMessage({ type: 'automa:run-workflow', data: workflow.value }, '*');
+  window.parent?.postMessage(
+    { type: 'automa:run-workflow', data: workflow.value },
+    '*'
+  );
   if (window.vscode) {
-    window.vscode.postMessage({ type: 'automa:run-workflow', data: workflow.value });
+    window.vscode.postMessage({
+      type: 'automa:run-workflow',
+      data: workflow.value,
+    });
   }
 }
 
 // Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z)
 function onKeydown(e) {
-  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) return;
+  if (
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) ||
+    e.target.isContentEditable
+  )
+    return;
 
   const isMod = e.ctrlKey || e.metaKey;
   const key = e.key.toLowerCase();
@@ -1269,7 +1449,11 @@ function onKeydown(e) {
 
 function onWindowMessage(e) {
   if (!e || !e.data || typeof e.data !== 'object') return;
-  if (e.data.type === 'automa:load-workflow' && e.data.data && typeof e.data.data === 'object') {
+  if (
+    e.data.type === 'automa:load-workflow' &&
+    e.data.data &&
+    typeof e.data.data === 'object'
+  ) {
     loadWorkflowData(e.data.data);
   }
 }

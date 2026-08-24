@@ -1,5 +1,8 @@
 <template>
-  <div data-testid="workflow-details-card" class="mb-2 mt-2 flex items-start px-3 text-xs">
+  <div
+    data-testid="workflow-details-card"
+    class="mb-2 mt-2 flex items-start px-3 text-xs"
+  >
     <ui-popover class="mr-2 h-7">
       <template #trigger>
         <span
@@ -37,7 +40,10 @@
       </div>
     </ui-popover>
     <div class="flex-1 overflow-hidden min-w-0">
-      <p data-testid="workflow-name-display" class="text-overflow text-xs font-semibold leading-tight text-gray-900 dark:text-gray-100">
+      <p
+        data-testid="workflow-name-display"
+        class="text-overflow text-xs font-semibold leading-tight text-gray-900 dark:text-gray-100"
+      >
         {{ workflow.name }}
       </p>
       <p
@@ -52,15 +58,18 @@
   </div>
   <ui-input
     id="search-input"
-    data-testid="workflow-search-input"
     v-model="query"
+    data-testid="workflow-search-input"
     :placeholder="`${t('common.search')}... (${
       shortcut['action:search'].readable
     })`"
     prepend-icon="riSearch2Line"
     class="mt-1 mb-2 w-full px-3 text-xs"
   />
-  <div data-testid="workflow-blocks-scroll-area" class="scroll relative flex-1 overflow-auto bg-scroll px-3 text-xs">
+  <div
+    data-testid="workflow-blocks-scroll-area"
+    class="scroll relative flex-1 overflow-auto bg-scroll px-3 text-xs"
+  >
     <workflow-block-list
       v-if="pinnedBlocksList.length > 0"
       :model-value="true"

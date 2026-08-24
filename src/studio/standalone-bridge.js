@@ -102,7 +102,11 @@ export const studioState = reactive({
 class VsCodeHostAdapter {
   constructor() {
     try {
-      this.api = typeof window !== 'undefined' && typeof window.acquireVsCodeApi === 'function' ? window.acquireVsCodeApi() : null;
+      this.api =
+        typeof window !== 'undefined' &&
+        typeof window.acquireVsCodeApi === 'function'
+          ? window.acquireVsCodeApi()
+          : null;
     } catch {
       this.api = null;
     }
@@ -117,8 +121,15 @@ class VsCodeHostAdapter {
 
 class IframeHostAdapter {
   notifyChange(payload) {
-    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'automa:workflow-changed', data: payload }, '*');
+    if (
+      typeof window !== 'undefined' &&
+      window.parent &&
+      window.parent !== window
+    ) {
+      window.parent.postMessage(
+        { type: 'automa:workflow-changed', data: payload },
+        '*'
+      );
     }
   }
 }
@@ -126,7 +137,9 @@ class IframeHostAdapter {
 class StandaloneHostAdapter {
   notifyChange(payload) {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('automa:workflow-changed', { detail: payload }));
+      window.dispatchEvent(
+        new CustomEvent('automa:workflow-changed', { detail: payload })
+      );
     }
   }
 }
@@ -158,7 +171,8 @@ export const setAutomaWorkflow = setWorkflowData;
 // Global API
 if (typeof window !== 'undefined') {
   window.setAutomaWorkflow = setWorkflowData;
-  window.getAutomaWorkflow = () => JSON.parse(JSON.stringify(studioState.currentWorkflow));
+  window.getAutomaWorkflow = () =>
+    JSON.parse(JSON.stringify(studioState.currentWorkflow));
 
   // Listen to postMessage from parent
   window.addEventListener('message', (event) => {

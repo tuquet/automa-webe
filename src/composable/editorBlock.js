@@ -15,7 +15,10 @@ export function useEditorBlock(label) {
     const details = blocks[label];
     if (details) {
       block.details = { id: label, ...details };
-      block.category = categories[details.category] || { color: 'bg-accent', name: details.category || 'General' };
+      block.category = categories[details.category] || {
+        color: 'bg-accent',
+        name: details.category || 'General',
+      };
     }
   });
 
