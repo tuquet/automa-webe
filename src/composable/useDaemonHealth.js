@@ -9,10 +9,39 @@ const state = reactive({
   browsers: [],
   metrics: null,
   lastChecked: null,
+  activeBlockId: null,
 });
 
 let isChecking = false;
-let checkInterval = null;
+let eventSource = null;
+const eventListeners = new Set();
+
+async function fetchBrowsers() {
+  try {
+    const res = await fetch(`${state.baseUrl}/api/browsers`, {
+      headers: { Accept: 'application/json' },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      state.browsers = Array.isArray(data) ? data : [];
+    }
+  } catch (_) {
+    // Ignored
+  }
+}
+
+async function fetchMetrics() {
+  try {
+    const res = await fetch(`${state.baseUrl}/api/system/metrics`, {
+      headers: { Accept: 'application/json' },
+    });
+    if (res.ok) {
+      state.metrics = await res.json();
+    }
+  } catch (_) {
+    // Ignored
+  }
+}
 
 async function checkHealth() {
   if (isChecking) return;
@@ -52,45 +81,56 @@ async function checkHealth() {
   }
 }
 
-async function fetchBrowsers() {
+function initEventStream() {
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
+  if (eventSource) return;
+
   try {
-    const res = await fetch(`${state.baseUrl}/api/browsers`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      state.browsers = Array.isArray(data) ? data : [];
-    }
+    eventSource = new EventSource(`${state.baseUrl}/api/events`);
+
+    eventSource.onopen = () => {
+      state.status = 'online';
+      state.lastChecked = new Date();
+      fetchBrowsers();
+      fetchMetrics();
+    };
+
+    eventSource.onerror = () => {
+      state.status = 'offline';
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload.blockId) {
+          state.activeBlockId = payload.blockId;
+        }
+        eventListeners.forEach((listener) => {
+          try {
+            listener(payload);
+          } catch (_) {
+            // Ignored
+          }
+        });
+      } catch (_) {
+        // Ignored
+      }
+    };
   } catch (_) {
-    // Ignore fetch error
+    state.status = 'offline';
   }
 }
 
-async function fetchMetrics() {
-  try {
-    const res = await fetch(`${state.baseUrl}/api/system/metrics`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      state.metrics = await res.json();
-    }
-  } catch (_) {
-    // Ignore fetch error
+function closeEventStream() {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
   }
 }
 
-function startPolling(intervalMs = 5000) {
-  checkHealth();
-  if (!checkInterval) {
-    checkInterval = setInterval(checkHealth, intervalMs);
-  }
-}
-
-function stopPolling() {
-  if (checkInterval) {
-    clearInterval(checkInterval);
-    checkInterval = null;
-  }
+function addEventListener(cb) {
+  eventListeners.add(cb);
+  return () => eventListeners.delete(cb);
 }
 
 export function useDaemonHealth() {
@@ -100,7 +140,8 @@ export function useDaemonHealth() {
     checkHealth,
     fetchBrowsers,
     fetchMetrics,
-    startPolling,
-    stopPolling,
+    initEventStream,
+    closeEventStream,
+    addEventListener,
   };
 }

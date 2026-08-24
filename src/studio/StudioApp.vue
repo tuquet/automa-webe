@@ -89,22 +89,44 @@
           data-testid="btn-logs"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
           title="Execution Logs & History"
-          @click="openModal('logs')"
+          @click="openLogsModal"
         >
           <v-remixicon name="riHistoryLine" size="14" />
           <span class="hidden lg:inline">Logs</span>
           <span
-            v-if="logHistory.length > 0"
+            v-if="logsCount > 0"
             data-testid="logs-count-badge"
             class="px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-semibold"
           >
-            {{ logHistory.length }}
+            {{ logsCount }}
           </span>
         </button>
 
         <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"></div>
 
         <studio-daemon-status />
+
+        <button
+          data-testid="btn-save-workflow"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition"
+          :class="[
+            daemonState.status === 'online'
+              ? 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
+              : 'opacity-50 cursor-not-allowed text-gray-400 border-gray-200 dark:border-gray-800',
+          ]"
+          :disabled="daemonState.status !== 'online'"
+          :title="
+            daemonState.status === 'online'
+              ? currentFilePath
+                ? `Save to Vault (${currentFilePath}) [Ctrl+S]`
+                : 'Save to Vault / Export [Ctrl+S]'
+              : 'Daemon Offline - Cannot save to Vault'
+          "
+          @click="saveWorkflowToVault"
+        >
+          <v-remixicon name="riSaveLine" size="14" />
+          <span class="hidden sm:inline">Save</span>
+        </button>
 
         <button
           data-testid="btn-export-json"
@@ -122,9 +144,13 @@
           :class="[
             daemonState.status === 'online'
               ? 'bg-accent hover:bg-accent/90 text-white'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600'
+              : 'bg-gray-200 dark:bg-gray-700 text-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600',
           ]"
-          :title="daemonState.status === 'online' ? 'Execute Workflow via Automa Core Daemon' : 'Daemon Offline - Cannot execute'"
+          :title="
+            daemonState.status === 'online'
+              ? 'Execute Workflow via Automa Core Daemon'
+              : 'Daemon Offline - Cannot execute'
+          "
           @click="runWorkflow"
         >
           <v-remixicon name="riPlayLine" size="14" />
@@ -132,6 +158,22 @@
         </button>
       </div>
     </header>
+
+    <!-- Offline Preview Mode Banner -->
+    <div
+      v-if="daemonState.status === 'offline'"
+      data-testid="banner-offline-preview"
+      class="bg-amber-500/10 border-b border-amber-500/20 px-4 py-1.5 flex items-center justify-between text-xs text-amber-700 dark:text-amber-300 shrink-0"
+    >
+      <div class="flex items-center space-x-2">
+        <v-remixicon name="riAlertLine" size="14" class="text-amber-500" />
+        <span>
+          Automa Core Daemon is offline. You are currently in
+          <strong>Preview / View-Only Mode</strong>. Backend execution and Vault
+          saving are disabled.
+        </span>
+      </div>
+    </div>
 
     <!-- Main Studio Workspace -->
     <div class="flex-1 flex overflow-hidden relative">
@@ -286,174 +328,8 @@
       />
     </ui-modal>
 
-    <!-- Logs Modal -->
-    <ui-modal
-      v-model="modals.logs"
-      title="Execution Logs & History"
-      content-class="max-w-4xl"
-    >
-      <div class="space-y-4 text-gray-900 dark:text-gray-100">
-        <div
-          class="flex items-center justify-between border-b pb-2 dark:border-gray-700"
-        >
-          <div class="flex items-center space-x-2">
-            <span class="text-sm font-semibold">Execution History</span>
-            <button
-              class="p-1 text-gray-500 hover:text-accent rounded transition"
-              title="Refresh Logs"
-              @click="fetchLogs"
-            >
-              <v-remixicon name="riRefreshLine" size="16" />
-            </button>
-          </div>
-          <button
-            v-if="logHistory.length > 0"
-            class="px-2.5 py-1 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded border border-red-200 dark:border-red-800 transition"
-            @click="clearHistory"
-          >
-            Clear History
-          </button>
-        </div>
-
-        <div v-if="loadingLogs" class="text-center py-8 text-gray-400">
-          <v-remixicon
-            name="riLoader4Line"
-            class="animate-spin inline-block mr-2"
-            size="20"
-          />
-          Loading logs from daemon...
-        </div>
-
-        <div
-          v-else-if="logHistory.length === 0"
-          class="text-center py-10 text-gray-400"
-        >
-          <v-remixicon
-            name="riInboxLine"
-            size="36"
-            class="mx-auto mb-2 opacity-50"
-          />
-          <p class="text-sm">No execution logs found yet.</p>
-          <p class="text-xs text-gray-500 mt-1">
-            Click "Run" on the header to execute this workflow!
-          </p>
-        </div>
-
-        <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[60vh]">
-          <!-- History List -->
-          <div
-            class="col-span-1 border-r dark:border-gray-700 overflow-y-auto space-y-2 pr-2 max-h-[55vh]"
-          >
-            <div
-              v-for="item in logHistory"
-              :key="item.id"
-              class="p-2.5 rounded-lg border text-xs cursor-pointer transition select-none"
-              :class="
-                selectedLogId === item.id
-                  ? 'border-accent bg-accent/10 font-semibold'
-                  : 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800'
-              "
-              @click="selectLog(item.id)"
-            >
-              <div class="flex items-center justify-between">
-                <span class="truncate max-w-[130px]">{{
-                  item.name || 'Workflow Run'
-                }}</span>
-                <span
-                  class="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold"
-                  :class="{
-                    'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300':
-                      item.status === 'completed',
-                    'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300':
-                      item.status === 'running' || item.status === 'queued',
-                    'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300':
-                      item.status === 'error',
-                  }"
-                >
-                  {{ item.status }}
-                </span>
-              </div>
-              <div class="text-gray-400 text-[11px] mt-1">
-                {{ item.createdAt || item.updatedAt }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Log Detail & Output -->
-          <div class="col-span-2 overflow-y-auto pl-2 space-y-3 max-h-[55vh]">
-            <div v-if="selectedLogDetails" class="space-y-3">
-              <div
-                class="flex items-center justify-between text-xs text-gray-500 border-b pb-2 dark:border-gray-700"
-              >
-                <span
-                  >Job ID:
-                  <code
-                    class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded font-mono"
-                    >{{ selectedLogDetails.job?.id || selectedLogId }}</code
-                  ></span
-                >
-                <span v-if="selectedLogDetails.job?.duration"
-                  >Duration: {{ selectedLogDetails.job.duration }}ms</span
-                >
-              </div>
-
-              <!-- Logs Stream -->
-              <div>
-                <h4 class="text-xs font-semibold mb-1">Step Logs</h4>
-                <div
-                  class="space-y-1 font-mono text-xs max-h-52 overflow-y-auto bg-gray-900 text-gray-100 p-3 rounded-lg"
-                >
-                  <div
-                    v-for="(log, idx) in selectedLogDetails.logs || []"
-                    :key="idx"
-                    class="flex items-start space-x-2 py-0.5"
-                  >
-                    <span class="text-gray-500 select-none"
-                      >[{{ idx + 1 }}]</span
-                    >
-                    <span
-                      :class="
-                        log.type === 'error'
-                          ? 'text-red-400 font-bold'
-                          : log.type === 'warn'
-                          ? 'text-yellow-400'
-                          : 'text-green-400'
-                      "
-                    >
-                      {{ log.message || JSON.stringify(log) }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="
-                      !selectedLogDetails.logs ||
-                      selectedLogDetails.logs.length === 0
-                    "
-                    class="text-gray-500 italic"
-                  >
-                    No step logs recorded for this run.
-                  </div>
-                </div>
-              </div>
-
-              <!-- Result Table/Variables -->
-              <div v-if="selectedLogDetails.results">
-                <h4 class="text-xs font-semibold mb-1">Execution Results</h4>
-                <pre
-                  class="text-[11px] bg-gray-100 dark:bg-gray-800 p-2.5 rounded max-h-40 overflow-auto font-mono"
-                  >{{
-                    JSON.stringify(selectedLogDetails.results, null, 2)
-                  }}</pre
-                >
-              </div>
-            </div>
-            <div v-else class="text-center py-14 text-gray-400 text-xs">
-              Select a run from the left list to view step logs and execution
-              output.
-            </div>
-          </div>
-        </div>
-      </div>
-    </ui-modal>
+    <!-- Full-featured Native Automa Logs Dialog -->
+    <app-logs />
 
     <!-- Run Workflow Modal -->
     <ui-modal
@@ -465,29 +341,34 @@
         <div
           class="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 rounded-lg border border-emerald-200 dark:border-emerald-800/60"
         >
-          <p class="font-semibold text-emerald-800 dark:text-emerald-300 mb-0.5 flex items-center">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+          <p
+            class="font-semibold text-emerald-800 dark:text-emerald-300 mb-0.5 flex items-center"
+          >
+            <span
+              class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"
+            ></span>
             Automa Core Daemon (Online)
           </p>
           <p class="text-emerald-700/80 dark:text-emerald-400 text-[11px]">
-            Target endpoint: <span class="font-mono">{{ daemonState.baseUrl }}/api/jobs</span>
+            Target endpoint:
+            <span class="font-mono">{{ daemonState.baseUrl }}/api/jobs</span>
           </p>
         </div>
 
         <div>
-          <label class="block font-semibold mb-1 text-gray-700 dark:text-gray-300">
+          <label
+            class="block font-semibold mb-1 text-gray-700 dark:text-gray-300"
+          >
             Target Browser Profile
           </label>
           <select
             v-model="runModalState.browserId"
             class="w-full px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 dark:text-gray-100"
           >
-            <option value="daemon_worker">⚡ Default Chromium (Daemon Worker)</option>
-            <option
-              v-for="b in daemonState.browsers"
-              :key="b.id"
-              :value="b.id"
-            >
+            <option value="daemon_worker">
+              ⚡ Default Chromium (Daemon Worker)
+            </option>
+            <option v-for="b in daemonState.browsers" :key="b.id" :value="b.id">
               🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
             </option>
           </select>
@@ -502,7 +383,9 @@
           </ui-checkbox>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+        <div
+          class="flex justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700"
+        >
           <ui-button @click="runModalState.show = false">Cancel</ui-button>
           <ui-button
             variant="accent"
@@ -539,13 +422,17 @@ import WorkflowSettings from '@/components/newtab/workflow/WorkflowSettings.vue'
 import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalCtxMenu.vue';
 import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
 import StudioDaemonStatus from '@/components/newtab/workflow/StudioDaemonStatus.vue';
+import AppLogs from '@/components/newtab/app/AppLogs.vue';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { useCommandManager } from '@/composable/commandManager';
 import { useSidebarResize } from '@/composable/useSidebarResize';
 import { useWorkflowAutocomplete } from '@/composable/useWorkflowAutocomplete';
 import { useDaemonHealth } from '@/composable/useDaemonHealth';
+import { useLiveQuery } from '@/composable/liveQuery';
 import { useToast } from 'vue-toastification';
+import emitter from '@/lib/mitt';
+import dbLogs from '@/db/logs';
 import { GraphLayoutService } from '@/services/graphLayout.service';
 import { getBlocks } from '@/utils/getSharedData';
 import { excludeGroupBlocks } from '@/utils/shared';
@@ -578,11 +465,13 @@ const runModalState = reactive({
   isSubmitting: false,
 });
 
-// Logs, Execution & Debugging State
-const logHistory = ref([]);
-const selectedLogId = ref(null);
-const selectedLogDetails = ref(null);
-const loadingLogs = ref(false);
+const currentFilePath = ref('');
+const isSaving = ref(false);
+const activeRunningBlockId = ref(null);
+
+// Logs State via Native IndexedDB Dexie
+const logsArr = useLiveQuery(() => dbLogs.items.toArray());
+const logsCount = computed(() => (logsArr.value || []).length);
 const workflowStates = ref([]);
 
 // Dynamic Autocomplete Provider via Composable
@@ -621,46 +510,11 @@ function syncWorkflowFromCanvas() {
   notifyWorkflowChange(workflow.value);
 }
 
-async function selectLog(id) {
-  selectedLogId.value = id;
-  selectedLogDetails.value = null;
-  try {
-    const res = await fetch(`http://127.0.0.1:8765/api/history/${id}/logs`);
-    if (res.ok) {
-      selectedLogDetails.value = await res.json();
-    }
-  } catch (err) {
-    console.warn('[Studio] Failed to fetch log details:', err);
-  }
-}
-
-async function fetchLogs() {
-  loadingLogs.value = true;
-  try {
-    const res = await fetch('http://127.0.0.1:8765/api/history');
-    if (res.ok) {
-      const items = await res.json();
-      logHistory.value = Array.isArray(items) ? items : [];
-      if (logHistory.value.length > 0 && !selectedLogId.value) {
-        selectLog(logHistory.value[0].id);
-      }
-    }
-  } catch (err) {
-    console.warn('[Studio] Failed to fetch logs from daemon:', err);
-  } finally {
-    loadingLogs.value = false;
-  }
-}
-
-async function clearHistory() {
-  try {
-    await fetch('http://127.0.0.1:8765/api/history', { method: 'DELETE' });
-    logHistory.value = [];
-    selectedLogId.value = null;
-    selectedLogDetails.value = null;
-  } catch (err) {
-    console.warn('[Studio] Failed to clear history:', err);
-  }
+function openLogsModal() {
+  emitter.emit('ui:logs', {
+    show: true,
+    workflowId: workflow.value?.id || '',
+  });
 }
 
 function goToBlock(blockId) {
@@ -681,10 +535,7 @@ function openModal(name) {
   if (name === 'table') modals.table = true;
   else if (name === 'global-data') modals.globalData = true;
   else if (name === 'settings') modals.settings = true;
-  else if (name === 'logs') {
-    modals.logs = true;
-    fetchLogs();
-  }
+  else if (name === 'logs') openLogsModal();
 }
 
 function onEditorInit(editor) {
@@ -847,20 +698,17 @@ function onEditBlock(nodeProps) {
 
   if (blockType === 'wait-connections' && editorInstance.value) {
     const edges = editorInstance.value.getEdges?.value || [];
-    const connections = edges.reduce(
-      (acc, { target, sourceNode, source }) => {
-        if (target !== editState.blockData.blockId) return acc;
+    const connections = edges.reduce((acc, { target, sourceNode, source }) => {
+      if (target !== editState.blockData.blockId) return acc;
 
-        const sourceLabel = sourceNode?.label || '';
-        const blockName = blocks[sourceLabel]?.name || sourceLabel;
-        acc.push({
-          id: source,
-          name: blockName,
-        });
-        return acc;
-      },
-      []
-    );
+      const sourceLabel = sourceNode?.label || '';
+      const blockName = blocks[sourceLabel]?.name || sourceLabel;
+      acc.push({
+        id: source,
+        name: blockName,
+      });
+      return acc;
+    }, []);
     editState.blockData.connections = connections;
   }
 
@@ -1506,6 +1354,64 @@ function exportJson() {
   downloadAnchor.remove();
 }
 
+async function loadWorkflowFromVault(path) {
+  if (!path) return;
+  currentFilePath.value = path;
+  try {
+    const res = await fetch(
+      `${daemonState.baseUrl}/api/vault/workflow?path=${encodeURIComponent(
+        path
+      )}`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      loadWorkflowData(data);
+      toast.success(`Loaded workflow from Vault: ${path.split(/[\\/]/).pop()}`);
+    } else {
+      const err = await res.json();
+      toast.error(`Failed to load workflow: ${err.message || 'Unknown error'}`);
+    }
+  } catch (e) {
+    toast.error(`Error loading workflow: ${e.message}`);
+  }
+}
+
+async function saveWorkflowToVault() {
+  if (daemonState.status !== 'online') {
+    toast.warning('Automa Core is offline. Exporting JSON file locally...');
+    exportJson();
+    return;
+  }
+  if (!currentFilePath.value) {
+    exportJson();
+    return;
+  }
+  isSaving.value = true;
+  syncWorkflowFromCanvas();
+  try {
+    const res = await fetch(`${daemonState.baseUrl}/api/vault/workflow`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        path: currentFilePath.value,
+        content: workflow.value,
+      }),
+    });
+    if (res.ok) {
+      toast.success(
+        `Saved to Vault: ${currentFilePath.value.split(/[\\/]/).pop()}`
+      );
+    } else {
+      const err = await res.json();
+      toast.error(`Failed to save: ${err.message || 'Unknown error'}`);
+    }
+  } catch (e) {
+    toast.error(`Error saving workflow: ${e.message}`);
+  } finally {
+    isSaving.value = false;
+  }
+}
+
 function runWorkflow() {
   if (daemonState.status === 'online') {
     runModalState.show = true;
@@ -1526,6 +1432,63 @@ function runWorkflow() {
   );
 }
 
+async function syncJobLogs(jobId, baseUrl) {
+  let finished = false;
+  let pollCount = 0;
+
+  const interval = setInterval(async () => {
+    pollCount += 1;
+    if (pollCount > 180 || finished) {
+      clearInterval(interval);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${baseUrl}/api/jobs/${jobId}/logs`);
+      if (res.ok) {
+        const logs = await res.json();
+        if (Array.isArray(logs)) {
+          for (let i = 0; i < logs.length; i += 1) {
+            const item = logs[i];
+            const historyId = `${jobId}_${i}`;
+            const existing = await dbLogs.histories.get(historyId);
+            if (!existing) {
+              await dbLogs.histories.put({
+                id: historyId,
+                logId: jobId,
+                name: item.block_name || item.name || 'Block',
+                blockId: item.block_id || item.blockId || '',
+                description: item.description || '',
+                duration: item.duration || 0,
+                status: item.type === 'error' ? 'error' : 'success',
+                message: item.message || '',
+                startedAt: item.timestamp || Date.now(),
+                endedAt: (item.timestamp || Date.now()) + (item.duration || 0),
+              });
+            }
+          }
+        }
+      }
+
+      const jobRes = await fetch(`${baseUrl}/api/jobs/${jobId}`);
+      if (jobRes.ok) {
+        const job = await jobRes.json();
+        if (['completed', 'error', 'failed', 'stopped'].includes(job.status)) {
+          finished = true;
+          clearInterval(interval);
+          await dbLogs.items.update(jobId, {
+            endedAt: Date.now(),
+            status: job.status === 'completed' ? 'success' : 'error',
+            message: job.error_message || '',
+          });
+        }
+      }
+    } catch (_) {
+      // Ignored
+    }
+  }, 1000);
+}
+
 async function submitWorkflowExecution() {
   runModalState.isSubmitting = true;
   try {
@@ -1537,6 +1500,9 @@ async function submitWorkflowExecution() {
         closeBrowserOnFinish: runModalState.closeBrowserOnFinish,
       },
     };
+    if (currentFilePath.value) {
+      payload.workflowPath = currentFilePath.value;
+    }
 
     const res = await fetch(`${daemonState.baseUrl}/api/jobs`, {
       method: 'POST',
@@ -1548,8 +1514,22 @@ async function submitWorkflowExecution() {
     if (res.ok && data.jobId) {
       toast.success(`Workflow job started! (ID: ${data.jobId.slice(0, 8)})`);
       runModalState.show = false;
-      openModal('logs');
-      fetchLogs();
+
+      // Save initial running record to Dexie dbLogs
+      await dbLogs.items.put({
+        id: data.jobId,
+        name: workflow.value?.name || 'Workflow Run',
+        startedAt: Date.now(),
+        endedAt: 0,
+        workflowId: workflow.value?.id || '',
+        status: 'running',
+      });
+
+      // Trigger full native Automa logs modal
+      openLogsModal();
+
+      // Background log synchronizer
+      syncJobLogs(data.jobId, daemonState.baseUrl);
     } else {
       toast.error(data.message || 'Failed to submit workflow execution job');
     }
@@ -1560,7 +1540,7 @@ async function submitWorkflowExecution() {
   }
 }
 
-// Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+Shift+Z)
+// Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+S)
 function onKeydown(e) {
   if (
     ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) ||
@@ -1571,7 +1551,10 @@ function onKeydown(e) {
   const isMod = e.ctrlKey || e.metaKey;
   const key = e.key.toLowerCase();
 
-  if (isMod && key === 'c') {
+  if (isMod && key === 's') {
+    saveWorkflowToVault();
+    e.preventDefault();
+  } else if (isMod && key === 'c') {
     copySelectedElements();
     e.preventDefault();
   } else if (isMod && key === 'v') {
@@ -1607,14 +1590,34 @@ function onWindowMessage(e) {
   }
 }
 
+let cleanupEventListener = null;
+
 onMounted(() => {
   window.addEventListener('keydown', onKeydown);
   window.addEventListener('message', onWindowMessage);
+
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fileParam = urlParams.get('file') || urlParams.get('path');
+    if (fileParam) {
+      currentFilePath.value = fileParam;
+      loadWorkflowFromVault(fileParam);
+    }
+  }
+
+  const { addEventListener } = useDaemonHealth();
+  cleanupEventListener = addEventListener((data) => {
+    if (data?.blockId) {
+      activeRunningBlockId.value = data.blockId;
+      goToBlock(data.blockId);
+    }
+  });
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeydown);
   window.removeEventListener('message', onWindowMessage);
+  if (cleanupEventListener) cleanupEventListener();
   stopDrag();
 });
 </script>

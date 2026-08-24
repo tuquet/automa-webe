@@ -38,15 +38,17 @@ import { computed, onMounted, onUnmounted } from 'vue';
 import { useDaemonHealth } from '@/composable/useDaemonHealth';
 import { useToast } from 'vue-toastification';
 
-const { state, checkHealth, startPolling, stopPolling } = useDaemonHealth();
+const { state, checkHealth, initEventStream, closeEventStream } =
+  useDaemonHealth();
 const toast = useToast();
 
 onMounted(() => {
-  startPolling(4000);
+  initEventStream();
+  checkHealth();
 });
 
 onUnmounted(() => {
-  stopPolling();
+  closeEventStream();
 });
 
 const labelText = computed(() => {
