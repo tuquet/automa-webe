@@ -46,24 +46,17 @@ if (typeof window !== 'undefined') {
   };
 }
 
+import { createRouter, createMemoryHistory } from 'vue-router';
+
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div></div>' } }],
+});
+
 const head = createHead();
 const app = createApp(StudioApp);
 
-// Safe RouterLink fallback for standalone environment
-const RouterLinkMock = {
-  props: ['to'],
-  setup(props, { slots }) {
-    return () =>
-      h(
-        'span',
-        { class: 'cursor-pointer' },
-        slots.default ? slots.default() : []
-      );
-  },
-};
-app.component('RouterLink', RouterLinkMock);
-app.component('RouterLink', RouterLinkMock);
-
+app.use(router);
 app.use(head);
 app.use(compsUi);
 app.use(pinia);

@@ -533,6 +533,7 @@ function clearActiveItem() {
   activeLog.value = null;
 }
 function translateLog(log) {
+  if (!log) return { name: 'Block Step', message: '' };
   const copyLog = { ...log };
   const getTranslatation = (path, def) => {
     const params = typeof path === 'string' ? { path } : path;
@@ -540,12 +541,16 @@ function translateLog(log) {
     return te(params.path) ? t(params.path, params.params) : def;
   };
 
+  const blockDefName = blocks[log.name]?.name || log.name || 'Block';
+
   if (['finish', 'stop'].includes(log.type)) {
-    copyLog.name = t(`log.types.${log.type}`);
+    copyLog.name = te(`log.types.${log.type}`)
+      ? t(`log.types.${log.type}`)
+      : log.type;
   } else {
     copyLog.name = getTranslatation(
       `workflow.blocks.${log.name}.name`,
-      blocks[log.name].name
+      blockDefName
     );
   }
 
@@ -555,7 +560,7 @@ function translateLog(log) {
 
   copyLog.message = getTranslatation(
     { path: `log.messages.${log.message}`, params: log },
-    log.message
+    log.message || ''
   );
 
   return copyLog;

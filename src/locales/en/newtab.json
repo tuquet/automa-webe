@@ -499,6 +499,7 @@
     "description": {
       "text": "{status} on {date} in {duration}",
       "status": {
+        "running": "Running",
         "success": "Succeeded",
         "error": "Failed",
         "stopped": "Stopped"

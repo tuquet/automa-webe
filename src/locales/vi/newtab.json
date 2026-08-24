@@ -428,6 +428,7 @@
     "description": {
       "text": "{status} vào {date} trong {duration}",
       "status": {
+        "running": "Đang chạy",
         "success": "Thành công",
         "error": "Thất bại",
         "stopped": "Đã dừng lại"

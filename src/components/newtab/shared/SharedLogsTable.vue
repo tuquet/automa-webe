@@ -110,11 +110,11 @@
           </td>
           <td class="text-right">
             <span
-              :class="statusColors[log.status]"
+              :class="statusColors[log.status] || 'bg-gray-200 dark:bg-gray-700'"
               :title="log.status === 'error' ? getErrorMessage(log) : null"
-              class="inline-block w-24 rounded-md py-1 text-center text-sm dark:text-black"
+              class="inline-block w-24 rounded-md py-1 text-center text-sm dark:text-black font-medium capitalize"
             >
-              {{ t(`logStatus.${log.status}`) }}
+              {{ te(`logStatus.${log.status}`) ? t(`logStatus.${log.status}`) : log.status }}
             </span>
           </td>
           <slot name="item-append" :log="log" />
@@ -148,9 +148,10 @@ defineEmits(['select']);
 const { t, te } = useI18n();
 
 const statusColors = {
-  error: 'bg-red-200 dark:bg-red-300',
-  success: 'bg-green-200 dark:bg-green-300',
-  stopped: 'bg-yellow-200 dark:bg-yellow-300',
+  running: 'bg-amber-200 dark:bg-amber-300 text-amber-900',
+  error: 'bg-red-200 dark:bg-red-300 text-red-900',
+  success: 'bg-green-200 dark:bg-green-300 text-green-900',
+  stopped: 'bg-yellow-200 dark:bg-yellow-300 text-yellow-900',
 };
 const state = reactive({
   selected: [],

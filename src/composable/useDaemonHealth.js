@@ -145,3 +145,6 @@ export function useDaemonHealth() {
     addEventListener,
   };
 }
+
+export const useAutomaCoreHealth = useDaemonHealth;
+export const useCoreHealth = useDaemonHealth;

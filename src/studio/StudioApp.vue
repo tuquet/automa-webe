@@ -85,7 +85,13 @@
           <span class="hidden lg:inline">Settings</span>
         </button>
 
+        <div
+          v-if="automaCoreState.status === 'online'"
+          class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"
+        ></div>
+
         <button
+          v-if="automaCoreState.status === 'online'"
           data-testid="btn-logs"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
           title="Execution Logs & History"
@@ -102,25 +108,16 @@
           </span>
         </button>
 
-        <div class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"></div>
-
-        <studio-daemon-status />
+        <studio-core-status />
 
         <button
+          v-if="automaCoreState.status === 'online'"
           data-testid="btn-save-workflow"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition"
-          :class="[
-            daemonState.status === 'online'
-              ? 'border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200'
-              : 'opacity-50 cursor-not-allowed text-gray-400 border-gray-200 dark:border-gray-800',
-          ]"
-          :disabled="daemonState.status !== 'online'"
+          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
           :title="
-            daemonState.status === 'online'
-              ? currentFilePath
-                ? `Save to Vault (${currentFilePath}) [Ctrl+S]`
-                : 'Save to Vault / Export [Ctrl+S]'
-              : 'Daemon Offline - Cannot save to Vault'
+            currentFilePath
+              ? `Save to Vault (${currentFilePath}) [Ctrl+S]`
+              : 'Save to Vault / Export [Ctrl+S]'
           "
           @click="saveWorkflowToVault"
         >
@@ -129,6 +126,7 @@
         </button>
 
         <button
+          v-if="automaCoreState.status === 'online'"
           data-testid="btn-export-json"
           class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
           title="Export Workflow JSON"
@@ -139,18 +137,10 @@
         </button>
 
         <button
+          v-if="automaCoreState.status === 'online'"
           data-testid="btn-run-workflow"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1.5 shadow-sm transition"
-          :class="[
-            daemonState.status === 'online'
-              ? 'bg-accent hover:bg-accent/90 text-white'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-500 hover:bg-gray-300 dark:hover:bg-gray-600',
-          ]"
-          :title="
-            daemonState.status === 'online'
-              ? 'Execute Workflow via Automa Core Daemon'
-              : 'Daemon Offline - Cannot execute'
-          "
+          class="px-3 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1.5 shadow-sm transition bg-accent hover:bg-accent/90 text-white"
+          title="Execute Workflow via automa-core"
           @click="runWorkflow"
         >
           <v-remixicon name="riPlayLine" size="14" />
@@ -158,22 +148,6 @@
         </button>
       </div>
     </header>
-
-    <!-- Offline Preview Mode Banner -->
-    <div
-      v-if="daemonState.status === 'offline'"
-      data-testid="banner-offline-preview"
-      class="bg-amber-500/10 border-b border-amber-500/20 px-4 py-1.5 flex items-center justify-between text-xs text-amber-700 dark:text-amber-300 shrink-0"
-    >
-      <div class="flex items-center space-x-2">
-        <v-remixicon name="riAlertLine" size="14" class="text-amber-500" />
-        <span>
-          Automa Core Daemon is offline. You are currently in
-          <strong>Preview / View-Only Mode</strong>. Backend execution and Vault
-          saving are disabled.
-        </span>
-      </div>
-    </div>
 
     <!-- Main Studio Workspace -->
     <div class="flex-1 flex overflow-hidden relative">
@@ -347,11 +321,11 @@
             <span
               class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"
             ></span>
-            Automa Core Daemon (Online)
+            automa-core (Online)
           </p>
           <p class="text-emerald-700/80 dark:text-emerald-400 text-[11px]">
             Target endpoint:
-            <span class="font-mono">{{ daemonState.baseUrl }}/api/jobs</span>
+            <span class="font-mono">{{ automaCoreState.baseUrl }}/api/jobs</span>
           </p>
         </div>
 
@@ -366,9 +340,9 @@
             class="w-full px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 dark:text-gray-100"
           >
             <option value="daemon_worker">
-              ⚡ Default Chromium (Daemon Worker)
+              ⚡ Default Chromium (Core Worker)
             </option>
-            <option v-for="b in daemonState.browsers" :key="b.id" :value="b.id">
+            <option v-for="b in automaCoreState.browsers" :key="b.id" :value="b.id">
               🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
             </option>
           </select>
@@ -383,19 +357,30 @@
           </ui-checkbox>
         </div>
 
-        <div
-          class="flex justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700"
-        >
-          <ui-button @click="runModalState.show = false">Cancel</ui-button>
+        <div class="flex justify-end space-x-2 pt-2">
+          <ui-button variant="secondary" @click="runModalState.show = false">
+            Cancel
+          </ui-button>
           <ui-button
             variant="accent"
             :loading="runModalState.isSubmitting"
             @click="submitWorkflowExecution"
           >
-            <v-remixicon name="riPlayLine" class="mr-1.5" size="14" />
-            <span>Execute Workflow</span>
+            Execute Workflow
           </ui-button>
         </div>
+      </div>
+    </ui-modal>
+
+    <!-- Execution Logs Modal -->
+    <ui-modal
+      v-model="modals.logs"
+      title="Execution Logs & History"
+      custom-content
+      content-class="max-w-4xl"
+    >
+      <div class="h-[600px] flex flex-col p-4 bg-white dark:bg-gray-800">
+        <app-logs />
       </div>
     </ui-modal>
   </div>
@@ -412,6 +397,7 @@ import {
   onBeforeUnmount,
 } from 'vue';
 import { customAlphabet } from 'nanoid';
+import cloneDeep from 'lodash.clonedeep';
 import defu from 'defu';
 import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
 import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
@@ -421,14 +407,14 @@ import WorkflowGlobalData from '@/components/newtab/workflow/WorkflowGlobalData.
 import WorkflowSettings from '@/components/newtab/workflow/WorkflowSettings.vue';
 import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalCtxMenu.vue';
 import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
-import StudioDaemonStatus from '@/components/newtab/workflow/StudioDaemonStatus.vue';
+import StudioCoreStatus from '@/components/newtab/workflow/StudioCoreStatus.vue';
 import AppLogs from '@/components/newtab/app/AppLogs.vue';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { useCommandManager } from '@/composable/commandManager';
 import { useSidebarResize } from '@/composable/useSidebarResize';
 import { useWorkflowAutocomplete } from '@/composable/useWorkflowAutocomplete';
-import { useDaemonHealth } from '@/composable/useDaemonHealth';
+import { useAutomaCoreHealth } from '@/composable/useAutomaCoreHealth';
 import { useLiveQuery } from '@/composable/liveQuery';
 import { useToast } from 'vue-toastification';
 import emitter from '@/lib/mitt';
@@ -454,7 +440,7 @@ let editorCommands = null;
 const commandManager = useCommandManager();
 let internalClipboard = null;
 const toast = useToast();
-const { state: daemonState } = useDaemonHealth();
+const { state: automaCoreState } = useAutomaCoreHealth();
 
 // Execution & Run Modal State
 const runModalState = reactive({
@@ -1359,7 +1345,7 @@ async function loadWorkflowFromVault(path) {
   currentFilePath.value = path;
   try {
     const res = await fetch(
-      `${daemonState.baseUrl}/api/vault/workflow?path=${encodeURIComponent(
+      `${automaCoreState.baseUrl}/api/vault/workflow?path=${encodeURIComponent(
         path
       )}`
     );
@@ -1377,7 +1363,7 @@ async function loadWorkflowFromVault(path) {
 }
 
 async function saveWorkflowToVault() {
-  if (daemonState.status !== 'online') {
+  if (automaCoreState.status !== 'online') {
     toast.warning('Automa Core is offline. Exporting JSON file locally...');
     exportJson();
     return;
@@ -1389,7 +1375,7 @@ async function saveWorkflowToVault() {
   isSaving.value = true;
   syncWorkflowFromCanvas();
   try {
-    const res = await fetch(`${daemonState.baseUrl}/api/vault/workflow`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/vault/workflow`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1413,7 +1399,7 @@ async function saveWorkflowToVault() {
 }
 
 function runWorkflow() {
-  if (daemonState.status === 'online') {
+  if (automaCoreState.status === 'online') {
     runModalState.show = true;
     return;
   }
@@ -1436,6 +1422,13 @@ async function syncJobLogs(jobId, baseUrl) {
   let finished = false;
   let pollCount = 0;
 
+  // Initialize Dexie sub-tables
+  await Promise.all([
+    dbLogs.histories.put({ logId: jobId, data: [] }),
+    dbLogs.logsData.put({ logId: jobId, data: { table: [], variables: {} } }),
+    dbLogs.ctxData.put({ logId: jobId, data: {} }),
+  ]);
+
   const interval = setInterval(async () => {
     pollCount += 1;
     if (pollCount > 180 || finished) {
@@ -1444,42 +1437,59 @@ async function syncJobLogs(jobId, baseUrl) {
     }
 
     try {
-      const res = await fetch(`${baseUrl}/api/jobs/${jobId}/logs`);
+      // 1. Fetch step logs from history
+      const res = await fetch(`${baseUrl}/api/history/${jobId}/logs`);
       if (res.ok) {
-        const logs = await res.json();
-        if (Array.isArray(logs)) {
-          for (let i = 0; i < logs.length; i += 1) {
-            const item = logs[i];
-            const historyId = `${jobId}_${i}`;
-            const existing = await dbLogs.histories.get(historyId);
-            if (!existing) {
-              await dbLogs.histories.put({
-                id: historyId,
-                logId: jobId,
-                name: item.block_name || item.name || 'Block',
-                blockId: item.block_id || item.blockId || '',
-                description: item.description || '',
-                duration: item.duration || 0,
-                status: item.type === 'error' ? 'error' : 'success',
-                message: item.message || '',
-                startedAt: item.timestamp || Date.now(),
-                endedAt: (item.timestamp || Date.now()) + (item.duration || 0),
-              });
-            }
-          }
+        const details = await res.json();
+        if (details?.logs && Array.isArray(details.logs)) {
+          const formattedLogs = details.logs.map((item, idx) => {
+            const rawName = item.name || item.block_name || item.label || '';
+            const desc =
+              item.description ||
+              (item.message && item.message !== 'log' ? item.message : '') ||
+              '';
+            const msg =
+              item.message && item.message !== 'log' ? item.message : '';
+            return {
+              id: String(item.id || idx),
+              name: rawName || 'Block Step',
+              blockId: item.blockId || item.block_id || '',
+              type: item.type === 'error' ? 'error' : 'success',
+              duration: item.duration || 0,
+              timestamp:
+                item.timestamp ||
+                (item.created_at
+                  ? new Date(item.created_at).getTime()
+                  : Date.now()),
+              message: msg,
+              description: desc,
+            };
+          });
+
+          await dbLogs.histories.put({
+            logId: jobId,
+            data: formattedLogs,
+          });
+        }
+
+        if (details?.results) {
+          await dbLogs.logsData.put({
+            logId: jobId,
+            data: details.results,
+          });
         }
       }
 
-      const jobRes = await fetch(`${baseUrl}/api/jobs/${jobId}`);
-      if (jobRes.ok) {
-        const job = await jobRes.json();
-        if (['completed', 'error', 'failed', 'stopped'].includes(job.status)) {
+      // 2. Fetch current job running status
+      const statusRes = await fetch(`${baseUrl}/api/jobs/${jobId}/status`);
+      if (statusRes.ok) {
+        const statusData = await statusRes.json();
+        if (['completed', 'error', 'failed', 'stopped'].includes(statusData.status)) {
           finished = true;
           clearInterval(interval);
           await dbLogs.items.update(jobId, {
             endedAt: Date.now(),
-            status: job.status === 'completed' ? 'success' : 'error',
-            message: job.error_message || '',
+            status: statusData.status === 'completed' ? 'success' : 'error',
           });
         }
       }
@@ -1504,7 +1514,7 @@ async function submitWorkflowExecution() {
       payload.workflowPath = currentFilePath.value;
     }
 
-    const res = await fetch(`${daemonState.baseUrl}/api/jobs`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -1529,7 +1539,7 @@ async function submitWorkflowExecution() {
       openLogsModal();
 
       // Background log synchronizer
-      syncJobLogs(data.jobId, daemonState.baseUrl);
+      syncJobLogs(data.jobId, automaCoreState.baseUrl);
     } else {
       toast.error(data.message || 'Failed to submit workflow execution job');
     }
@@ -1605,11 +1615,23 @@ onMounted(() => {
     }
   }
 
-  const { addEventListener } = useDaemonHealth();
-  cleanupEventListener = addEventListener((data) => {
-    if (data?.blockId) {
+  const { addEventListener } = useAutomaCoreHealth();
+  cleanupEventListener = addEventListener(async (data) => {
+    if (!data) return;
+    if (data.blockId) {
       activeRunningBlockId.value = data.blockId;
       goToBlock(data.blockId);
+    }
+    const jobId = data.jobId || data.job_id;
+    if (jobId && (data.event_type === 'workflow_finished' || data.type === 'finished' || data.status === 'completed')) {
+      try {
+        await dbLogs.items.update(jobId, {
+          endedAt: Date.now(),
+          status: data.status === 'error' ? 'error' : 'success',
+        });
+      } catch (_) {
+        // Ignored
+      }
     }
   });
 });

@@ -25,13 +25,16 @@ config.plugins = config.plugins.filter((plugin) => {
   return true;
 });
 
-// 4. Add standalone studio HtmlWebpackPlugin
+// 4. Add standalone studio HtmlWebpackPlugin & Vue 3 feature flags
 config.plugins.push(
   new HtmlWebpackPlugin({
     template: path.resolve(__dirname, 'src/studio/index.html'),
     filename: 'index.html',
     chunks: ['studio'],
     minify: false,
+  }),
+  new webpack.DefinePlugin({
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
   })
 );
 

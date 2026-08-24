@@ -70,6 +70,7 @@
     "mostUsed": "Most used"
   },
   "logStatus": {
+    "running": "running",
     "stopped": "stopped",
     "error": "error",
     "success": "success"

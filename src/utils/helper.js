@@ -200,13 +200,24 @@ export function fileSaver(filename, data) {
 }
 
 export function countDuration(started, ended) {
-  const duration = Math.round((ended - started) / 1000);
+  let diffMs = 0;
+  if (!started && !ended) {
+    return '0s';
+  }
+  if (!started || started === 0) {
+    diffMs = Math.max(0, ended || 0);
+  } else {
+    const end = !ended || ended === 0 ? Date.now() : ended;
+    diffMs = Math.max(0, end - started);
+  }
+
+  const duration = Math.round(diffMs / 1000);
   const minutes = Math.floor(duration / 60);
   const seconds = Math.floor(duration % 60);
 
   const getText = (num, suffix) => (num > 0 ? `${num}${suffix}` : '');
-
-  return `${getText(minutes, 'm')} ${seconds}s`;
+  const res = `${getText(minutes, 'm')} ${seconds}s`.trim();
+  return res || '0s';
 }
 
 export function toCamelCase(str, capitalize = false) {

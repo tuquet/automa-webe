@@ -63,6 +63,7 @@
     "createdAt": "Ngày tạo"
   },
   "logStatus": {
+    "running": "đang chạy",
     "stopped": "đã dừng lại",
     "error": "bị lỗi",
     "success": "thành công"

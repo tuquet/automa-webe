@@ -21,12 +21,16 @@ function translateLog(log) {
       : def;
   };
 
+  const blockDefName = blocks[log.name]?.name || log.name || 'Block';
+
   if (['finish', 'stop'].includes(log.type)) {
-    copyLog.name = vueI18n.global.t(`log.types.${log.type}`);
+    copyLog.name = vueI18n.global.te(`log.types.${log.type}`)
+      ? vueI18n.global.t(`log.types.${log.type}`)
+      : log.type;
   } else {
     copyLog.name = getTranslatation(
       `workflow.blocks.${log.name}.name`,
-      blocks[log.name].name
+      blockDefName
     );
   }
 
@@ -36,7 +40,7 @@ function translateLog(log) {
 
   copyLog.message = getTranslatation(
     { path: `log.messages.${log.message}`, params: log },
-    log.message
+    log.message || ''
   );
 
   return copyLog;
