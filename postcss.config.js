@@ -1,7 +1,6 @@
 module.exports = {
-  plugins: {
-    'tailwindcss/nesting': {},
-    tailwindcss: {},
-    autoprefixer: {},
-  },
+  plugins: [
+    require(require.resolve('tailwindcss', { paths: [__dirname] })),
+    require('autoprefixer'),
+  ],
 };
