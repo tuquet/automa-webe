@@ -61,7 +61,13 @@ config.module.rules.push({
   },
 });
 
-// 7. In-memory cache for fast dev watch and stable compilation
+// 7. Disable heavy terser minimization for fast, reliable builds
+config.optimization = {
+  ...config.optimization,
+  minimize: false,
+};
+
+// 8. In-memory cache for fast dev watch and stable compilation
 config.cache = true;
 
 module.exports = config;
