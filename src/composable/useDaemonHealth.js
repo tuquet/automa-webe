@@ -1,4 +1,5 @@
 import { reactive, readonly } from 'vue';
+import { health, getBrowsers, getMetrics } from '@automa/types/api';
 
 const state = reactive({
   status: 'checking', // 'online' | 'offline' | 'checking'
@@ -18,12 +19,11 @@ const eventListeners = new Set();
 
 async function fetchBrowsers() {
   try {
-    const res = await fetch(`${state.baseUrl}/api/v1/browsers`, {
-      headers: { Accept: 'application/json' },
+    const res = await getBrowsers({
+      baseUrl: state.baseUrl,
     });
-    if (res.ok) {
-      const data = await res.json();
-      state.browsers = Array.isArray(data) ? data : [];
+    if (res.data) {
+      state.browsers = Array.isArray(res.data) ? res.data : [];
     }
   } catch (_) {
     // Ignored
@@ -32,11 +32,11 @@ async function fetchBrowsers() {
 
 async function fetchMetrics() {
   try {
-    const res = await fetch(`${state.baseUrl}/api/v1/system/metrics`, {
-      headers: { Accept: 'application/json' },
+    const res = await getMetrics({
+      baseUrl: state.baseUrl,
     });
-    if (res.ok) {
-      state.metrics = await res.json();
+    if (res.data) {
+      state.metrics = res.data;
     }
   } catch (_) {
     // Ignored
@@ -52,18 +52,16 @@ async function checkHealth() {
   const timeoutId = setTimeout(() => controller.abort(), 2500);
 
   try {
-    const res = await fetch(`${state.baseUrl}/api/v1/health`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+    const res = await health({
+      baseUrl: state.baseUrl,
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
 
-    if (res.ok) {
-      const data = await res.json();
+    if (res.data) {
       state.latency = Math.round(performance.now() - start);
       state.status = 'online';
-      state.version = data.version || '0.1.0';
+      state.version = res.data?.version || '0.1.0';
       state.lastChecked = new Date();
 
       // Fetch active browser profiles in background
