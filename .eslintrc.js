@@ -5,12 +5,14 @@ module.exports = {
   root: true,
   parserOptions: {
     parser: '@babel/eslint-parser',
+    requireConfigFile: false,
   },
   env: {
     browser: true,
     webextensions: true,
   },
   ignorePatterns: [
+    'packages/**',
     'src/lib/google-*',
     'business/**',
     'webpack.*.js',
@@ -34,6 +36,7 @@ module.exports = {
         config: './webpack.config.js',
       },
     },
+    'import/ignore': ['@automa/types', 'node_modules'],
   },
   // add your custom rules here
   globals: {
@@ -50,6 +53,7 @@ module.exports = {
     'func-names': 'off',
     'vue/v-on-event-hyphenation': 'off',
     'import/no-named-default': 'off',
+    'import/named': 'off',
     'no-restricted-syntax': 'off',
     'vue/multi-word-component-names': 'off',
     'prettier/prettier': [

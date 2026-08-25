@@ -1447,7 +1447,8 @@ async function loadWorkflowFromStorage(path) {
         `Loaded workflow from Storage: ${path.split(/[\\/]/).pop()}`
       );
     } else {
-      toast.error(`Failed to load workflow: ${res.error?.message || 'Unknown error'}`);
+      const errMsg = res.error?.message || 'Unknown error';
+      toast.error(`Failed to load workflow: ${errMsg}`);
     }
   } catch (e) {
     toast.error(`Error loading workflow: ${e.message}`);
@@ -1586,7 +1587,7 @@ async function submitWorkflowExecution() {
       body: payload,
     });
 
-    const data = res.data;
+    const { data } = res;
     if (data && data.jobId) {
       toast.success(`Workflow job started! (ID: ${data.jobId.slice(0, 8)})`);
       runModalState.show = false;
