@@ -96,6 +96,22 @@ Thanks to everyone who has submitted issues, made suggestions, and generally hel
   <img src="https://contrib.rocks/image?repo=AutomaApp/automa" />
 </a>
 
+## 📚 BẢNG THUẬT NGỮ CỐT LÕI (EXTENSION & STUDIO TERMINOLOGY)
+
+| Thuật Ngữ Chuẩn (Canonical Term) | Thành Phần Code Đại Diện | Mô Tả Kỹ Thuật Ngắn Gọn |
+| :--- | :--- | :--- |
+| **Automa Studio** | `StudioApp.vue`, `studio-entry.js` | Ứng dụng Web Standalone độc lập dựng trên Vue 3 & `@vue-flow/core`, cho phép kéo thả thiết kế workflow và chỉnh sửa node trực quan. |
+| **Block** | `BlockBase.vue`, `Edit<Name>.vue` | Khối chức năng cơ bản trong workflow (như `trigger`, `new-tab`, `click-element`), chứa metadata, inputs, outputs và form cấu hình. |
+| **Drawflow** | `workflow.drawflow`, `getNodes`/`getEdges` | Cấu trúc dữ liệu JSON biểu diễn đồ thị luồng gồm danh sách `nodes` (toạ độ x/y, blockId, data) và `edges` (đường nối giữa các handles). |
+| **Offscreen Document** | `offscreen.html`, `WorkflowEngine.js` | Ngữ cảnh DOM ẩn chạy ngầm trong Chrome MV3, đóng vai trò engine thực thi workflow và xử lý Javascript sandbox an toàn. |
+| **Service Worker** | `background/index.js` | Điểm nhập trung tâm của Extension xử lý message routing (`MessageListener`), nhận lệnh SSE từ Rust Daemon và kích hoạt Offscreen. |
+| **Two-way Data Binding** | `v-model:data`, `updateBlockData` | Cơ chế đồng bộ dữ liệu hai chiều tức thì giữa form cấu hình `WorkflowEditBlock.vue` và dữ liệu node trên canvas `workflow.drawflow`. |
+| **Smart Live Reload** | `pollBundleUpdate` | Cơ chế tự động thăm dò header `Last-Modified`/`ETag` của `studio.bundle.js` để tự làm mới trang ngay khi Webpack watch compile xong. |
+| **AppLogs** | `AppLogs.vue`, `src/db/logs.js` | Hệ thống quản lý nhật ký thực thi 3 tab (Timeline block, Table Data, Variables) lưu trữ trong cơ sở dữ liệu IndexedDB của trình duyệt. |
+| **Singleton Guard** | `isWorkerDaemonInitialized` | Cờ Singleton đảm bảo chỉ duy nhất 1 kết nối SSE reader loop hoạt động trong suốt vòng đời trình duyệt để tránh chạy trùng lặp tác vụ. |
+
+---
+
 ## License
 Source code in this repository is variously licensed under the GNU Affero General Public License (AGPL), or the [Automa Commercial License](https://extension.automa.site/license/commercial/).
 
