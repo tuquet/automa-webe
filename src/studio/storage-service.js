@@ -4,6 +4,17 @@
  */
 
 import dbStorage from '@/db/storage';
+import {
+  getTables,
+  addTable,
+  deleteTable,
+  getTableRows,
+  getVariables,
+  addVariable,
+  deleteVariable,
+  getCredentials,
+  listStorageFiles,
+} from '@automa/types/api';
 
 const DAEMON_BASE_URL = 'http://127.0.0.1:8765';
 const SYNC_QUEUE_KEY = '__automa_storage_sync_queue';
@@ -49,7 +60,7 @@ export function enqueueSyncAction(action) {
  */
 export async function flushSyncQueue() {
   const queue = getSyncQueue();
-  if (queue.length === 0) return;
+  if (!queue.length) return;
 
   const remaining = [];
   for (const item of queue) {
@@ -75,24 +86,19 @@ export async function flushSyncQueue() {
 
 export async function fetchStorageTables() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      const tables = await res.json();
-      if (Array.isArray(tables)) {
-        // Sync cache to Dexie
-        const items = tables.map((t) => ({
-          id: t.id,
-          name: t.name || 'Untitled Table',
-          createdAt: t.createdAt || t.created_at || Date.now(),
-          modifiedAt: t.modifiedAt || t.modified_at || Date.now(),
-          columns: t.columns || [],
-        }));
-        await dbStorage.tablesItems.clear();
-        await dbStorage.tablesItems.bulkPut(items);
-        return items;
-      }
+    const res = await getTables({ baseUrl: DAEMON_BASE_URL });
+    if (res.data && Array.isArray(res.data)) {
+      // Sync cache to Dexie
+      const items = res.data.map((t) => ({
+        id: t.id,
+        name: t.name || 'Untitled Table',
+        createdAt: t.createdAt || t.created_at || Date.now(),
+        modifiedAt: t.modifiedAt || t.modified_at || Date.now(),
+        columns: t.columns || [],
+      }));
+      await dbStorage.tablesItems.clear();
+      await dbStorage.tablesItems.bulkPut(items);
+      return items;
     }
   } catch (_) {
     // Fallback to cache
@@ -108,13 +114,12 @@ export async function createStorageTable(tableData) {
   };
 
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const res = await addTable({
+      baseUrl: DAEMON_BASE_URL,
+      body: payload,
     });
-    if (res.ok) {
-      const created = await res.json();
+    if (res.data) {
+      const created = res.data;
       const item = {
         id: created.id || String(Date.now()),
         name: created.name || payload.name,
@@ -146,8 +151,9 @@ export async function createStorageTable(tableData) {
 
 export async function deleteStorageTable(tableId) {
   try {
-    await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables/${tableId}`, {
-      method: 'DELETE',
+    await deleteTable({
+      baseUrl: DAEMON_BASE_URL,
+      path: { id: tableId },
     });
   } catch (_) {
     enqueueSyncAction({
@@ -161,14 +167,12 @@ export async function deleteStorageTable(tableId) {
 
 export async function fetchStorageTableRows(tableId) {
   try {
-    const res = await fetch(
-      `${DAEMON_BASE_URL}/api/v1/storage/tables/${tableId}/rows`,
-      {
-        headers: { Accept: 'application/json' },
-      }
-    );
-    if (res.ok) {
-      return await res.json();
+    const res = await getTableRows({
+      baseUrl: DAEMON_BASE_URL,
+      path: { id: tableId },
+    });
+    if (res.data) {
+      return res.data;
     }
   } catch (_) {
     // Fallback to cache
@@ -186,21 +190,16 @@ export async function fetchStorageTableRows(tableId) {
 
 export async function fetchStorageVariables() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      const vars = await res.json();
-      if (Array.isArray(vars)) {
-        const items = vars.map((v) => ({
-          id: v.id || v.name || v.key,
-          name: v.name || v.key || '',
-          value: v.value ?? '',
-        }));
-        await dbStorage.variables.clear();
-        await dbStorage.variables.bulkPut(items);
-        return items;
-      }
+    const res = await getVariables({ baseUrl: DAEMON_BASE_URL });
+    if (res.data && Array.isArray(res.data)) {
+      const items = res.data.map((v) => ({
+        id: v.id || v.name || v.key,
+        name: v.name || v.key || '',
+        value: v.value ?? '',
+      }));
+      await dbStorage.variables.clear();
+      await dbStorage.variables.bulkPut(items);
+      return items;
     }
   } catch (_) {
     // Fallback to cache
@@ -216,13 +215,12 @@ export async function createStorageVariable(varData) {
   };
 
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const res = await addVariable({
+      baseUrl: DAEMON_BASE_URL,
+      body: payload,
     });
-    if (res.ok) {
-      const created = await res.json();
+    if (res.data) {
+      const created = res.data;
       const item = {
         id: created.id || payload.name,
         name: payload.name,
@@ -250,8 +248,9 @@ export async function createStorageVariable(varData) {
 
 export async function deleteStorageVariable(varId) {
   try {
-    await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables/${varId}`, {
-      method: 'DELETE',
+    await deleteVariable({
+      baseUrl: DAEMON_BASE_URL,
+      path: { id: varId },
     });
   } catch (_) {
     enqueueSyncAction({
@@ -269,21 +268,16 @@ export async function deleteStorageVariable(varId) {
 
 export async function fetchStorageCredentials() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/credentials`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      const creds = await res.json();
-      if (Array.isArray(creds)) {
-        const items = creds.map((c) => ({
-          id: c.id || c.name || c.key,
-          name: c.name || c.key || '',
-          value: c.value ?? '',
-        }));
-        await dbStorage.credentials.clear();
-        await dbStorage.credentials.bulkPut(items);
-        return items;
-      }
+    const res = await getCredentials({ baseUrl: DAEMON_BASE_URL });
+    if (res.data && Array.isArray(res.data)) {
+      const items = res.data.map((c) => ({
+        id: c.id || c.name || c.key,
+        name: c.name || c.key || '',
+        value: c.value ?? '',
+      }));
+      await dbStorage.credentials.clear();
+      await dbStorage.credentials.bulkPut(items);
+      return items;
     }
   } catch (_) {
     // Fallback to cache
@@ -297,11 +291,9 @@ export async function fetchStorageCredentials() {
 
 export async function fetchStorageFiles() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/files`, {
-      headers: { Accept: 'application/json' },
-    });
-    if (res.ok) {
-      return await res.json();
+    const res = await listStorageFiles({ baseUrl: DAEMON_BASE_URL });
+    if (res.data && Array.isArray(res.data)) {
+      return res.data;
     }
   } catch (_) {
     // Ignored

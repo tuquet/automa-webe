@@ -469,6 +469,12 @@ import {
 } from 'vue';
 import { customAlphabet } from 'nanoid';
 import defu from 'defu';
+import {
+  getWorkflow,
+  saveWorkflow,
+  lintWorkflow,
+  submitJob,
+} from '@automa/types/api';
 import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
 import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
 import WorkflowDetailsCard from '@/components/newtab/workflow/WorkflowDetailsCard.vue';
@@ -1431,20 +1437,17 @@ async function loadWorkflowFromStorage(path) {
   if (!path) return;
   currentFilePath.value = path;
   try {
-    const res = await fetch(
-      `${
-        automaCoreState.baseUrl
-      }/api/v1/storage/workflow?path=${encodeURIComponent(path)}`
-    );
-    if (res.ok) {
-      const data = await res.json();
-      loadWorkflowData(data);
+    const res = await getWorkflow({
+      baseUrl: automaCoreState.baseUrl,
+      query: { path },
+    });
+    if (res.data) {
+      loadWorkflowData(res.data);
       toast.success(
         `Loaded workflow from Storage: ${path.split(/[\\/]/).pop()}`
       );
     } else {
-      const err = await res.json();
-      toast.error(`Failed to load workflow: ${err.message || 'Unknown error'}`);
+      toast.error(`Failed to load workflow: ${res.error?.message || 'Unknown error'}`);
     }
   } catch (e) {
     toast.error(`Error loading workflow: ${e.message}`);
@@ -1464,21 +1467,19 @@ async function saveWorkflowToStorage() {
   isSaving.value = true;
   syncWorkflowFromCanvas();
   try {
-    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/storage/workflow`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await saveWorkflow({
+      baseUrl: automaCoreState.baseUrl,
+      body: {
         path: currentFilePath.value,
         content: workflow.value,
-      }),
+      },
     });
-    if (res.ok) {
+    if (res.data !== undefined && !res.error) {
       toast.success(
         `Saved to Storage: ${currentFilePath.value.split(/[\\/]/).pop()}`
       );
     } else {
-      const err = await res.json();
-      toast.error(`Failed to save: ${err.message || 'Unknown error'}`);
+      toast.error(`Failed to save: ${res.error?.message || 'Unknown error'}`);
     }
   } catch (e) {
     toast.error(`Error saving workflow: ${e.message}`);
@@ -1510,16 +1511,14 @@ const runLiveLint = debounce(async () => {
   if (automaCoreState.status !== 'online' || !workflow.value?.drawflow) return;
   isLinting.value = true;
   try {
-    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/lint`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    const res = await lintWorkflow({
+      baseUrl: automaCoreState.baseUrl,
+      body: {
         workflow: workflow.value,
-      }),
+      },
     });
-    if (res.ok) {
-      const data = await res.json();
-      lintIssues.value = data.issues || [];
+    if (res.data) {
+      lintIssues.value = res.data.issues || [];
     }
   } catch (_) {
     // Ignored
@@ -1582,14 +1581,13 @@ async function submitWorkflowExecution() {
       payload.workflowPath = currentFilePath.value;
     }
 
-    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/jobs`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const res = await submitJob({
+      baseUrl: automaCoreState.baseUrl,
+      body: payload,
     });
 
-    const data = await res.json();
-    if (res.ok && data.jobId) {
+    const data = res.data;
+    if (data && data.jobId) {
       toast.success(`Workflow job started! (ID: ${data.jobId.slice(0, 8)})`);
       runModalState.show = false;
 
