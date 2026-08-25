@@ -2,188 +2,36 @@
   <div
     class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none"
   >
-    <!-- Top Header Bar -->
-    <header
-      data-testid="studio-header"
-      class="h-12 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 px-4 flex items-center justify-between z-30 shrink-0"
+    <!-- Top Header Bar Component -->
+    <studio-header
+      :show-sidebar="state.showSidebar"
+      :automa-core-status="automaCoreState.status"
+      :current-file-path="currentFilePath"
+      :lint-issues-count="lintIssues.length"
+      :logs-count="logsCount"
+      @toggle-sidebar="state.showSidebar = !state.showSidebar"
+      @open-storage-explorer="modals.storageFiles = true"
+      @open-file-picker="openFilePicker"
+      @new-workflow="createNewWorkflow"
+      @trigger-lint="triggerManualLint"
+      @open-modal="openModal($event)"
+      @save-workflow="saveWorkflowToStorage"
+      @export-json="exportJson"
+      @run-workflow="runWorkflow"
     >
-      <!-- Left Section: Sidebar Toggle, New/Open File, & Workflow Name -->
-      <div class="flex items-center space-x-3">
-        <button
-          data-testid="btn-toggle-sidebar"
-          class="p-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-          :title="state.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'"
-          @click="state.showSidebar = !state.showSidebar"
-        >
-          <v-remixicon
-            :name="state.showSidebar ? 'riSideBarFill' : 'riSideBarLine'"
-            size="18"
-          />
-        </button>
-
-        <!-- File Open & New Buttons -->
-        <div class="flex items-center space-x-1">
-          <button
-            v-if="automaCoreState.status === 'online'"
-            data-testid="btn-storage-explorer"
-            class="px-2 py-1 text-xs font-medium rounded-md border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent flex items-center space-x-1 transition"
-            title="Browse and Open Workflows from Storage workspace"
-            @click="modals.storageFiles = true"
-          >
-            <v-remixicon name="riArchiveLine" size="14" />
-            <span class="hidden md:inline">Storage Explorer</span>
-          </button>
-
-          <button
-            data-testid="btn-open-file"
-            class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
-            title="Open Workflow JSON File from Computer (or Drag & Drop file onto Canvas)"
-            @click="openFilePicker"
-          >
-            <v-remixicon name="riFolderOpenLine" size="14" />
-            <span class="hidden md:inline">Open File</span>
-          </button>
-          <input
-            ref="fileInputRef"
-            data-testid="file-picker-input"
-            type="file"
-            accept=".json,.automa.json"
-            class="hidden"
-            @change="onFileSelected"
-          />
-
-          <button
-            data-testid="btn-new-workflow"
-            class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
-            title="Create New Blank Workflow"
-            @click="createNewWorkflow"
-          >
-            <v-remixicon name="riAddLine" size="14" />
-            <span class="hidden md:inline">New</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Right Section: Data, Modals & Execution -->
-      <div class="flex items-center space-x-2">
-        <button
-          v-if="automaCoreState.status === 'online'"
-          data-testid="btn-live-lint"
-          class="px-2 py-1 text-xs font-medium rounded-md border flex items-center space-x-1 transition"
-          :class="
-            lintIssues.length > 0
-              ? 'border-amber-500/50 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400'
-              : 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'
-          "
-          :title="
-            lintIssues.length > 0
-              ? `Lint: ${lintIssues.length} issue(s) detected`
-              : 'Lint: All schema checks passed'
-          "
-          @click="triggerManualLint"
-        >
-          <v-remixicon
-            :name="lintIssues.length > 0 ? 'riAlertLine' : 'riCheckLine'"
-            size="13"
-          />
-          <span class="hidden xl:inline">{{
-            lintIssues.length > 0 ? `${lintIssues.length} Issues` : 'Valid'
-          }}</span>
-        </button>
-
-        <button
-          data-testid="btn-table-data"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          title="Workflow Data Table"
-          @click="openModal('table')"
-        >
-          <v-remixicon name="riFileListLine" size="14" />
-          <span class="hidden lg:inline">Table Data</span>
-        </button>
-
-        <button
-          data-testid="btn-global-data"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          title="Global Data / Variables"
-          @click="openModal('global-data')"
-        >
-          <v-remixicon name="riDatabase2Line" size="14" />
-          <span class="hidden lg:inline">Global Data</span>
-        </button>
-
-        <button
-          data-testid="btn-settings"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          title="Workflow Settings"
-          @click="openModal('settings')"
-        >
-          <v-remixicon name="riSettings3Line" size="14" />
-          <span class="hidden lg:inline">Settings</span>
-        </button>
-
-        <div
-          v-if="automaCoreState.status === 'online'"
-          class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-1"
-        ></div>
-
-        <button
-          v-if="automaCoreState.status === 'online'"
-          data-testid="btn-logs"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          title="Execution Logs & History"
-          @click="openLogsModal"
-        >
-          <v-remixicon name="riHistoryLine" size="14" />
-          <span class="hidden lg:inline">Logs</span>
-          <span
-            v-if="logsCount > 0"
-            data-testid="logs-count-badge"
-            class="px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-semibold"
-          >
-            {{ logsCount }}
-          </span>
-        </button>
-
+      <template #status>
         <studio-core-status />
+      </template>
+    </studio-header>
 
-        <button
-          v-if="automaCoreState.status === 'online'"
-          data-testid="btn-save-workflow"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
-          :title="
-            currentFilePath
-              ? `Save to Storage (${currentFilePath}) [Ctrl+S]`
-              : 'Save to Storage / Export [Ctrl+S]'
-          "
-          @click="saveWorkflowToStorage"
-        >
-          <v-remixicon name="riSaveLine" size="14" />
-          <span class="hidden sm:inline">Save</span>
-        </button>
-
-        <button
-          v-if="automaCoreState.status === 'online'"
-          data-testid="btn-export-json"
-          class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
-          title="Export Workflow JSON"
-          @click="exportJson"
-        >
-          <v-remixicon name="riDownloadLine" size="14" />
-          <span class="hidden sm:inline">Export</span>
-        </button>
-
-        <button
-          v-if="automaCoreState.status === 'online'"
-          data-testid="btn-run-workflow"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1.5 shadow-sm transition bg-accent hover:bg-accent/90 text-white"
-          title="Execute Workflow via automa-core"
-          @click="runWorkflow"
-        >
-          <v-remixicon name="riPlayLine" size="14" />
-          <span>Run</span>
-        </button>
-      </div>
-    </header>
+    <input
+      ref="fileInputRef"
+      data-testid="file-picker-input"
+      type="file"
+      accept=".json,.automa.json"
+      class="hidden"
+      @change="onFileSelected"
+    />
 
     <!-- Main Studio Workspace -->
     <div class="flex-1 flex overflow-hidden relative">
@@ -357,78 +205,19 @@
     <!-- Full-featured Native Automa Logs Dialog -->
     <app-logs />
 
-    <!-- Run Workflow Modal -->
-    <ui-modal
+    <!-- Run Workflow Modal Component -->
+    <run-workflow-modal
       v-model="runModalState.show"
-      title="Execute Workflow"
-      content-class="max-w-md"
-    >
-      <div class="space-y-4 py-1 text-xs">
-        <div
-          class="p-3 bg-emerald-50/80 dark:bg-emerald-950/40 rounded-lg border border-emerald-200 dark:border-emerald-800/60"
-        >
-          <p
-            class="font-semibold text-emerald-800 dark:text-emerald-300 mb-0.5 flex items-center"
-          >
-            <span
-              class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"
-            ></span>
-            automa-core (Online)
-          </p>
-          <p class="text-emerald-700/80 dark:text-emerald-400 text-[11px]">
-            Target endpoint:
-            <span class="font-mono"
-              >{{ automaCoreState.baseUrl }}/api/v1/jobs</span
-            >
-          </p>
-        </div>
-
-        <div>
-          <label
-            class="block font-semibold mb-1 text-gray-700 dark:text-gray-300"
-          >
-            Target Browser Profile
-          </label>
-          <select
-            v-model="runModalState.browserId"
-            class="w-full px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 dark:text-gray-100"
-          >
-            <option value="daemon_worker">
-              ⚡ Default Chromium (Core Worker)
-            </option>
-            <option
-              v-for="b in automaCoreState.browsers"
-              :key="b.id"
-              :value="b.id"
-            >
-              🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
-            </option>
-          </select>
-        </div>
-
-        <div class="space-y-2 pt-1">
-          <ui-checkbox v-model="runModalState.headless">
-            Run in Headless Mode (Hidden Browser)
-          </ui-checkbox>
-          <ui-checkbox v-model="runModalState.closeBrowserOnFinish">
-            Close Browser when Workflow Finishes
-          </ui-checkbox>
-        </div>
-
-        <div class="flex justify-end space-x-2 pt-2">
-          <ui-button variant="secondary" @click="runModalState.show = false">
-            Cancel
-          </ui-button>
-          <ui-button
-            variant="accent"
-            :loading="runModalState.isSubmitting"
-            @click="submitWorkflowExecution"
-          >
-            Execute Workflow
-          </ui-button>
-        </div>
-      </div>
-    </ui-modal>
+      :automa-core-state="automaCoreState"
+      :run-modal-state="runModalState"
+      :is-params-valid="isParamsValid"
+      @update:browser-id="runModalState.browserId = $event"
+      @update:headless="runModalState.headless = $event"
+      @update:close-browser-on-finish="
+        runModalState.closeBrowserOnFinish = $event
+      "
+      @execute="submitWorkflowExecution"
+    />
 
     <!-- Execution Logs Modal -->
     <ui-modal
@@ -499,7 +288,10 @@ import { GraphLayoutService } from '@/services/graphLayout.service';
 import { getBlocks } from '@/utils/getSharedData';
 import { excludeGroupBlocks } from '@/utils/shared';
 import { parseJSON } from '@/utils/helper';
-import StorageFileExplorer from './StorageFileExplorer.vue';
+import StorageFileExplorer from './components/StorageFileExplorer.vue';
+import StudioHeader from './components/StudioHeader.vue';
+import RunWorkflowModal from './components/RunWorkflowModal.vue';
+import { sanitizeWorkflowAST } from './composables/useStudioWorkflow';
 import {
   defaultWorkflow,
   studioState,
@@ -526,6 +318,21 @@ const runModalState = reactive({
   headless: false,
   closeBrowserOnFinish: false,
   isSubmitting: false,
+  parameters: [],
+});
+
+const isParamsValid = computed(() => {
+  if (!runModalState.parameters || !runModalState.parameters.length) {
+    return true;
+  }
+  for (const param of runModalState.parameters) {
+    const isMissing =
+      param.value === undefined || param.value === '' || param.value === null;
+    if (param.data?.required && isMissing) {
+      return false;
+    }
+  }
+  return true;
 });
 
 const currentFilePath = ref('');
@@ -853,16 +660,17 @@ function onDragoverEditor(event) {
   }
 }
 
-// File Loading & Canvas Drop Handler
+// File Loading & Canvas Drop Handler (with Auto-Sanitization)
 async function loadWorkflowData(content) {
   if (!content || typeof content !== 'object') return;
-  setAutomaWorkflow(content);
+  const sanitized = sanitizeWorkflowAST(content);
+  setAutomaWorkflow(sanitized);
   closeEditingSidebar();
   await nextTick();
   const editor = editorRef.value || editorInstance.value;
   if (editor) {
-    const nodes = content.drawflow?.nodes || content.nodes || [];
-    const edges = content.drawflow?.edges || content.edges || [];
+    const nodes = sanitized.drawflow?.nodes || sanitized.nodes || [];
+    const edges = sanitized.drawflow?.edges || sanitized.edges || [];
     if (editor.setNodes) editor.setNodes(nodes);
     if (editor.setEdges) editor.setEdges(edges);
     if (editor.fitView) editor.fitView();
@@ -1547,8 +1355,30 @@ watch(
   { deep: true }
 );
 
+function resolveParamDefault(p) {
+  if (p.value !== undefined && p.value !== '') {
+    return p.value;
+  }
+  if (p.defaultValue !== undefined) {
+    return p.defaultValue;
+  }
+  if (p.type === 'checkbox') {
+    return false;
+  }
+  return '';
+}
+
 function runWorkflow() {
   if (automaCoreState.status === 'online') {
+    // Extract parameters from Trigger block if defined
+    const triggerNode = workflow.value?.drawflow?.nodes?.find(
+      (n) => n.label === 'trigger' || n.type === 'trigger'
+    );
+    const params = triggerNode?.data?.parameters || [];
+    runModalState.parameters = JSON.parse(JSON.stringify(params)).map((p) => ({
+      ...p,
+      value: resolveParamDefault(p),
+    }));
     runModalState.show = true;
     return;
   }
@@ -1570,12 +1400,25 @@ function runWorkflow() {
 async function submitWorkflowExecution() {
   runModalState.isSubmitting = true;
   try {
+    // Clone workflow to inject runtime parameters
+    const clonedWf = JSON.parse(JSON.stringify(workflow.value));
+    if (runModalState.parameters && runModalState.parameters.length > 0) {
+      const triggerNode = clonedWf.drawflow?.nodes?.find(
+        (n) => n.label === 'trigger' || n.type === 'trigger'
+      );
+      if (triggerNode) {
+        if (!triggerNode.data) triggerNode.data = {};
+        triggerNode.data.parameters = runModalState.parameters;
+      }
+    }
+
     const payload = {
-      workflowData: workflow.value,
+      workflowData: clonedWf,
       options: {
         browserId: runModalState.browserId,
         headless: runModalState.headless,
         closeBrowserOnFinish: runModalState.closeBrowserOnFinish,
+        checkParams: false,
       },
     };
     if (currentFilePath.value) {

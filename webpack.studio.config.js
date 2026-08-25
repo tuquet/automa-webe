@@ -53,7 +53,15 @@ config.resolve.alias['@business$'] = path.resolve(
 );
 config.resolve.alias['@business'] = path.resolve(__dirname, 'business/dev');
 
-// 6. Disable cache to guarantee clean build
+// 6. Disable fullySpecified for ESM modules resolution (e.g. @automa/types)
+config.module.rules.push({
+  test: /\.m?js$/,
+  resolve: {
+    fullySpecified: false,
+  },
+});
+
+// 7. Disable cache to guarantee clean build
 config.cache = false;
 
 module.exports = config;
