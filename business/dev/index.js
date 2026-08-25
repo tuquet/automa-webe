@@ -17,7 +17,7 @@ function initOffscreenDaemon(messageListener) {
   if (isOffscreenDaemonInitialized) return;
   isOffscreenDaemonInitialized = true;
 
-  console.log('[Automa Daemon] Initializing offscreen monkey-patches...');
+  console.log('[Automa Core] Initializing offscreen monkey-patches...');
 
   const originalAddLogHistory = WorkflowEngine.prototype.addLogHistory;
   WorkflowEngine.prototype.addLogHistory = function (detail) {
@@ -59,7 +59,7 @@ async function initWorkerDaemon(message) {
   if (isWorkerDaemonInitialized) return;
   isWorkerDaemonInitialized = true;
 
-  console.log('[Automa Daemon Worker] Initializing SSE connection...');
+  console.log('[Automa Core Worker] Initializing SSE connection...');
   const eventSource = null;
 
   async function connect() {
@@ -76,10 +76,10 @@ async function initWorkerDaemon(message) {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8765/api/internal/worker/events?browserId=${browserId}`
+        `http://127.0.0.1:8765/api/v1/internal/worker/events?browserId=${browserId}`
       );
       console.log(
-        `[Automa Daemon Worker] Connected to Rust Daemon (Browser: ${browserId}).`
+        `[Automa Core Worker] Connected to Automa Core (Browser: ${browserId}).`
       );
       const reader = response.body.getReader();
       const decoder = new TextDecoder('utf-8');
@@ -146,7 +146,7 @@ async function initWorkerDaemon(message) {
                       err
                     );
                     fetch(
-                      `http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`,
+                      `http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`,
                       {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -186,7 +186,7 @@ async function initWorkerDaemon(message) {
   if (message && typeof message.on === 'function') {
     message.on('daemon:log', async (payload) => {
       try {
-        await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`, {
+        await fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload.data),
@@ -198,7 +198,7 @@ async function initWorkerDaemon(message) {
 
     message.on('daemon:finish', async (payload) => {
       try {
-        await fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/status`, {
+        await fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/status`, {
           method: 'PATCH',
         });
       } catch (e) {
@@ -215,7 +215,7 @@ async function initWorkerDaemon(message) {
       ) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
-          fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/logs`, {
+          fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload.data),
@@ -227,7 +227,7 @@ async function initWorkerDaemon(message) {
       ) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
-          fetch(`http://127.0.0.1:8765/api/jobs/${payload.jobId}/status`, {
+          fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/status`, {
             method: 'PATCH',
           }).catch(console.error);
         }

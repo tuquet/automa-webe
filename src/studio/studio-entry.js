@@ -1,5 +1,6 @@
-import { createApp, h } from 'vue';
+import { createApp } from 'vue';
 import { createHead } from '@vueuse/head';
+import { createRouter, createMemoryHistory } from 'vue-router';
 import StudioApp from './StudioApp.vue';
 import pinia from '../lib/pinia';
 import compsUi from '../lib/compsUi';
@@ -46,11 +47,11 @@ if (typeof window !== 'undefined') {
   };
 }
 
-import { createRouter, createMemoryHistory } from 'vue-router';
-
 const router = createRouter({
   history: createMemoryHistory(),
-  routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div></div>' } }],
+  routes: [
+    { path: '/:pathMatch(.*)*', component: { template: '<div></div>' } },
+  ],
 });
 
 const head = createHead();

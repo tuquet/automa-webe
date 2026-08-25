@@ -70,12 +70,25 @@
           v-if="automaCoreState.status === 'online'"
           data-testid="btn-live-lint"
           class="px-2 py-1 text-xs font-medium rounded-md border flex items-center space-x-1 transition"
-          :class="lintIssues.length > 0 ? 'border-amber-500/50 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400' : 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'"
-          :title="lintIssues.length > 0 ? `Lint: ${lintIssues.length} issue(s) detected` : 'Lint: All schema checks passed'"
+          :class="
+            lintIssues.length > 0
+              ? 'border-amber-500/50 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400'
+              : 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'
+          "
+          :title="
+            lintIssues.length > 0
+              ? `Lint: ${lintIssues.length} issue(s) detected`
+              : 'Lint: All schema checks passed'
+          "
           @click="triggerManualLint"
         >
-          <v-remixicon :name="lintIssues.length > 0 ? 'riAlertLine' : 'riCheckLine'" size="13" />
-          <span class="hidden xl:inline">{{ lintIssues.length > 0 ? `${lintIssues.length} Issues` : 'Valid' }}</span>
+          <v-remixicon
+            :name="lintIssues.length > 0 ? 'riAlertLine' : 'riCheckLine'"
+            size="13"
+          />
+          <span class="hidden xl:inline">{{
+            lintIssues.length > 0 ? `${lintIssues.length} Issues` : 'Valid'
+          }}</span>
         </button>
 
         <button
@@ -266,8 +279,14 @@
             <button
               data-testid="btn-canvas-auto-focus"
               class="control-button mr-2 transition"
-              :class="autoFocusEnabled ? 'text-accent font-semibold' : 'text-gray-400'"
-              :title="autoFocusEnabled ? 'Auto-focus Active Node (Enabled)' : 'Auto-focus Active Node (Disabled)'"
+              :class="
+                autoFocusEnabled ? 'text-accent font-semibold' : 'text-gray-400'
+              "
+              :title="
+                autoFocusEnabled
+                  ? 'Auto-focus Active Node (Enabled)'
+                  : 'Auto-focus Active Node (Disabled)'
+              "
               @click="autoFocusEnabled = !autoFocusEnabled"
             >
               <v-remixicon name="riFocus3Line" />
@@ -358,7 +377,9 @@
           </p>
           <p class="text-emerald-700/80 dark:text-emerald-400 text-[11px]">
             Target endpoint:
-            <span class="font-mono">{{ automaCoreState.baseUrl }}/api/jobs</span>
+            <span class="font-mono"
+              >{{ automaCoreState.baseUrl }}/api/v1/jobs</span
+            >
           </p>
         </div>
 
@@ -375,7 +396,11 @@
             <option value="daemon_worker">
               ⚡ Default Chromium (Core Worker)
             </option>
-            <option v-for="b in automaCoreState.browsers" :key="b.id" :value="b.id">
+            <option
+              v-for="b in automaCoreState.browsers"
+              :key="b.id"
+              :value="b.id"
+            >
               🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
             </option>
           </select>
@@ -443,7 +468,6 @@ import {
   onBeforeUnmount,
 } from 'vue';
 import { customAlphabet } from 'nanoid';
-import cloneDeep from 'lodash.clonedeep';
 import defu from 'defu';
 import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
 import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
@@ -455,7 +479,6 @@ import EditorLocalCtxMenu from '@/components/newtab/workflow/editor/EditorLocalC
 import EditorDebugging from '@/components/newtab/workflow/editor/EditorDebugging.vue';
 import StudioCoreStatus from '@/components/newtab/workflow/StudioCoreStatus.vue';
 import AppLogs from '@/components/newtab/app/AppLogs.vue';
-import StorageFileExplorer from './StorageFileExplorer.vue';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { useCommandManager } from '@/composable/commandManager';
@@ -470,6 +493,7 @@ import { GraphLayoutService } from '@/services/graphLayout.service';
 import { getBlocks } from '@/utils/getSharedData';
 import { excludeGroupBlocks } from '@/utils/shared';
 import { parseJSON } from '@/utils/helper';
+import StorageFileExplorer from './StorageFileExplorer.vue';
 import {
   defaultWorkflow,
   studioState,
@@ -1408,14 +1432,16 @@ async function loadWorkflowFromStorage(path) {
   currentFilePath.value = path;
   try {
     const res = await fetch(
-      `${automaCoreState.baseUrl}/api/storage/workflow?path=${encodeURIComponent(
-        path
-      )}`
+      `${
+        automaCoreState.baseUrl
+      }/api/v1/storage/workflow?path=${encodeURIComponent(path)}`
     );
     if (res.ok) {
       const data = await res.json();
       loadWorkflowData(data);
-      toast.success(`Loaded workflow from Storage: ${path.split(/[\\/]/).pop()}`);
+      toast.success(
+        `Loaded workflow from Storage: ${path.split(/[\\/]/).pop()}`
+      );
     } else {
       const err = await res.json();
       toast.error(`Failed to load workflow: ${err.message || 'Unknown error'}`);
@@ -1438,7 +1464,7 @@ async function saveWorkflowToStorage() {
   isSaving.value = true;
   syncWorkflowFromCanvas();
   try {
-    const res = await fetch(`${automaCoreState.baseUrl}/api/storage/workflow`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/storage/workflow`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1471,13 +1497,20 @@ function onStorageFileSelected(file) {
 // Backward compatibility alias
 const loadWorkflowFromVault = loadWorkflowFromStorage;
 const saveWorkflowToVault = saveWorkflowToStorage;
-const onVaultFileSelected = onStorageFileSelected;
+
+function debounce(fn, wait = 300) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), wait);
+  };
+}
 
 const runLiveLint = debounce(async () => {
   if (automaCoreState.status !== 'online' || !workflow.value?.drawflow) return;
   isLinting.value = true;
   try {
-    const res = await fetch(`${automaCoreState.baseUrl}/api/lint`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/lint`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1500,7 +1533,9 @@ function triggerManualLint() {
   if (lintIssues.value.length === 0) {
     toast.success('Lint Check: Workflow schema and DAG structure are valid!');
   } else {
-    toast.warning(`Lint Check: ${lintIssues.value.length} potential issue(s) detected.`);
+    toast.warning(
+      `Lint Check: ${lintIssues.value.length} potential issue(s) detected.`
+    );
   }
 }
 
@@ -1528,7 +1563,7 @@ function runWorkflow() {
   }
 
   toast.error(
-    'Rust Daemon is offline. Please launch the backend server (task: "Serve: Live Studio") to run workflows.'
+    'Automa Core is offline. Please launch the backend server (task: "Serve: Live Studio" or pnpm run dev:all) to run workflows.'
   );
 }
 
@@ -1547,7 +1582,7 @@ async function submitWorkflowExecution() {
       payload.workflowPath = currentFilePath.value;
     }
 
-    const res = await fetch(`${automaCoreState.baseUrl}/api/jobs`, {
+    const res = await fetch(`${automaCoreState.baseUrl}/api/v1/jobs`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -1571,7 +1606,10 @@ async function submitWorkflowExecution() {
       // Initialize Dexie sub-tables
       await Promise.all([
         dbLogs.histories.put({ logId: data.jobId, data: [] }),
-        dbLogs.logsData.put({ logId: data.jobId, data: { table: [], variables: {} } }),
+        dbLogs.logsData.put({
+          logId: data.jobId,
+          data: { table: [], variables: {} },
+        }),
         dbLogs.ctxData.put({ logId: data.jobId, data: {} }),
       ]);
 
@@ -1670,7 +1708,10 @@ onMounted(() => {
       const msg = data.message || data.data?.message;
       if (msg) {
         try {
-          const entry = (await dbLogs.histories.get(jobId)) || { logId: jobId, data: [] };
+          const entry = (await dbLogs.histories.get(jobId)) || {
+            logId: jobId,
+            data: [],
+          };
           const list = Array.isArray(entry.data) ? entry.data : [];
           list.push({
             id: String(list.length + 1),
@@ -1687,12 +1728,20 @@ onMounted(() => {
         }
       }
 
-      if (data.event_type === 'workflow_finished' || data.type === 'finished' || data.status === 'completed' || data.status === 'error') {
+      if (
+        data.event_type === 'workflow_finished' ||
+        data.type === 'finished' ||
+        data.status === 'completed' ||
+        data.status === 'error'
+      ) {
         activeRunningBlockId.value = null;
         try {
           await dbLogs.items.update(jobId, {
             endedAt: Date.now(),
-            status: (data.status === 'error' || data.type === 'error') ? 'error' : 'success',
+            status:
+              data.status === 'error' || data.type === 'error'
+                ? 'error'
+                : 'success',
           });
         } catch (_) {
           // Ignored
@@ -1733,7 +1782,8 @@ onBeforeUnmount(() => {
   border-radius: 8px;
 }
 @keyframes pulse-node {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 3px #10b981, 0 0 15px rgba(16, 185, 129, 0.5);
   }
   50% {

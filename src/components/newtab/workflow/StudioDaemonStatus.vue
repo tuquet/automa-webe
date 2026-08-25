@@ -1,5 +1,8 @@
 <template>
-  <div v-if="state.status === 'online'" class="relative inline-flex items-center">
+  <div
+    v-if="state.status === 'online'"
+    class="relative inline-flex items-center"
+  >
     <button
       data-testid="btn-automa-core-status"
       class="px-2 py-1 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition-colors shadow-sm"
@@ -30,11 +33,11 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted } from 'vue';
-import { useDaemonHealth } from '@/composable/useDaemonHealth';
+import { useAutomaCoreHealth } from '@/composable/useAutomaCoreHealth';
 import { useToast } from 'vue-toastification';
 
 const { state, checkHealth, initEventStream, closeEventStream } =
-  useDaemonHealth();
+  useAutomaCoreHealth();
 const toast = useToast();
 
 onMounted(() => {

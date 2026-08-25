@@ -86,7 +86,8 @@ export default {
 .checkbox-ui__mark {
   width: 100%;
   height: 100%;
-  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    box-shadow 150ms ease;
   display: flex;
   align-items: center;
   justify-content: center;

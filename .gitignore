@@ -1,33 +1,49 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+# Dependencies
+/node_modules/
 
-# dependencies
-/node_modules
+# Testing & Coverage
+/coverage/
 
-# testing
-/coverage
+# Production Build Outputs
+/build/
+/build-zip/
+/dist/
 
-# production
-/build
-/build-zip
-dist
-
-# misc
-.DS_Store
+# Turborepo & Cache
+.turbo/
 .eslintcache
+.history/
+
+# Environment Variables
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
-.history
-*.log
 
-# secrets
+# Logs & Local Databases
+*.log
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.automa/
+
+# Secrets & Prod-only Business Stubs
 secrets.production.js
 secrets.development.js
 get-pass-key.js
 getPassKey.js
+/business/prod/
+/business/test/
 
-/business/prod
-/business/test
+# Temporary / Scratch Files
+scratch/
 
-.idea
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+

@@ -18,7 +18,7 @@ const eventListeners = new Set();
 
 async function fetchBrowsers() {
   try {
-    const res = await fetch(`${state.baseUrl}/api/browsers`, {
+    const res = await fetch(`${state.baseUrl}/api/v1/browsers`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {
@@ -32,7 +32,7 @@ async function fetchBrowsers() {
 
 async function fetchMetrics() {
   try {
-    const res = await fetch(`${state.baseUrl}/api/system/metrics`, {
+    const res = await fetch(`${state.baseUrl}/api/v1/system/metrics`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {
@@ -52,7 +52,7 @@ async function checkHealth() {
   const timeoutId = setTimeout(() => controller.abort(), 2500);
 
   try {
-    const res = await fetch(`${state.baseUrl}/api/health`, {
+    const res = await fetch(`${state.baseUrl}/api/v1/health`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
       signal: controller.signal,
@@ -82,11 +82,12 @@ async function checkHealth() {
 }
 
 function initEventStream() {
-  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined')
+    return;
   if (eventSource) return;
 
   try {
-    eventSource = new EventSource(`${state.baseUrl}/api/events`);
+    eventSource = new EventSource(`${state.baseUrl}/api/v1/events`);
 
     eventSource.onopen = () => {
       state.status = 'online';

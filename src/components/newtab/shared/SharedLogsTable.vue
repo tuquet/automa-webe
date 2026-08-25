@@ -110,11 +110,17 @@
           </td>
           <td class="text-right">
             <span
-              :class="statusColors[log.status] || 'bg-gray-200 dark:bg-gray-700'"
+              :class="
+                statusColors[log.status] || 'bg-gray-200 dark:bg-gray-700'
+              "
               :title="log.status === 'error' ? getErrorMessage(log) : null"
               class="inline-block w-24 rounded-md py-1 text-center text-sm dark:text-black font-medium capitalize"
             >
-              {{ te(`logStatus.${log.status}`) ? t(`logStatus.${log.status}`) : log.status }}
+              {{
+                te(`logStatus.${log.status}`)
+                  ? t(`logStatus.${log.status}`)
+                  : log.status
+              }}
             </span>
           </td>
           <slot name="item-append" :log="log" />

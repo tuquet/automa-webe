@@ -20,7 +20,9 @@
           </span>
         </template>
         <div class="w-56 text-xs">
-          <p class="mb-2 font-medium">{{ t('workflow.sidebar.workflowIcon') }}</p>
+          <p class="mb-2 font-medium">
+            {{ t('workflow.sidebar.workflowIcon') }}
+          </p>
           <div class="mb-2 grid grid-cols-5 gap-1">
             <span
               v-for="icon in icons"

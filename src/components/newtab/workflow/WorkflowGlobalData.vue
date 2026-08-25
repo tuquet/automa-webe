@@ -1,26 +1,43 @@
 <template>
   <div class="global-data flex flex-col space-y-3">
-    <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2">
+    <div
+      class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2"
+    >
       <div class="flex space-x-2">
         <button
           class="px-3 py-1.5 text-xs font-semibold rounded-lg transition"
-          :class="activeTab === 'local' ? 'bg-accent text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+          :class="
+            activeTab === 'local'
+              ? 'bg-accent text-white shadow-sm'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+          "
           @click="activeTab = 'local'"
         >
           Local JSON Data
         </button>
         <button
           class="px-3 py-1.5 text-xs font-semibold rounded-lg transition flex items-center space-x-1"
-          :class="activeTab === 'storage' ? 'bg-accent text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+          :class="
+            activeTab === 'storage'
+              ? 'bg-accent text-white shadow-sm'
+              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+          "
           @click="loadStorageVariables"
         >
           <span>Storage Variables</span>
-          <span v-if="storageVars.length > 0" class="px-1.5 py-0.5 rounded-full text-[10px] bg-white/20">
+          <span
+            v-if="storageVars.length > 0"
+            class="px-1.5 py-0.5 rounded-full text-[10px] bg-white/20"
+          >
             {{ storageVars.length }}
           </span>
         </button>
       </div>
-      <p v-if="activeTab === 'local'" class="text-xs text-gray-500" title="Characters limit">
+      <p
+        v-if="activeTab === 'local'"
+        class="text-xs text-gray-500"
+        title="Characters limit"
+      >
         {{ globalData.length }}/{{ maxLength.toLocaleString() }}
       </p>
     </div>
@@ -35,22 +52,36 @@
     </div>
 
     <!-- Tab 2: Storage Shared Variables & Credentials List -->
-    <div v-else class="space-y-3 overflow-y-auto" style="max-height: calc(100vh - 14rem); min-height: 300px">
-      <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 text-xs">
+    <div
+      v-else
+      class="space-y-3 overflow-y-auto"
+      style="max-height: calc(100vh - 14rem); min-height: 300px"
+    >
+      <div
+        class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 text-xs"
+      >
         <p class="text-gray-600 dark:text-gray-300 font-medium mb-1">
           💡 Click any token below to copy expression to clipboard:
         </p>
         <p class="text-[11px] text-gray-500 dark:text-gray-400">
-          Variables are securely stored in SQLite Storage and accessible across all workflows in campaign.
+          Variables are securely stored in SQLite Storage and accessible across
+          all workflows in campaign.
         </p>
       </div>
 
-      <div v-if="isLoadingStorage" class="py-8 text-center text-xs text-gray-500">
+      <div
+        v-if="isLoadingStorage"
+        class="py-8 text-center text-xs text-gray-500"
+      >
         Loading Storage variables...
       </div>
 
-      <div v-else-if="storageVars.length === 0" class="py-8 text-center text-xs text-gray-500">
-        No variables stored in SQLite Storage yet. (Add variables via automa-vscode or daemon API).
+      <div
+        v-else-if="storageVars.length === 0"
+        class="py-8 text-center text-xs text-gray-500"
+      >
+        No variables stored in SQLite Storage yet. (Add variables via
+        automa-vscode or daemon API).
       </div>
 
       <div v-else class="grid grid-cols-1 gap-2">
@@ -63,8 +94,11 @@
             <span class="font-mono font-semibold text-xs text-accent truncate">
               &#123;&#123;variables.{{ v.name }}&#125;&#125;
             </span>
-            <span class="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
-              Value: {{ String(v.value).slice(0, 40) }}{{ String(v.value).length > 40 ? '...' : '' }}
+            <span
+              class="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5"
+            >
+              Value: {{ String(v.value).slice(0, 40)
+              }}{{ String(v.value).length > 40 ? '...' : '' }}
             </span>
           </div>
 
@@ -100,7 +134,9 @@ const emit = defineEmits(['update']);
 
 const toast = useToast();
 const maxLength = 1e4;
-const globalData = ref(`${props.workflow.globalData || '{\n\t"key": "value"\n}'}`);
+const globalData = ref(
+  `${props.workflow.globalData || '{\n\t"key": "value"\n}'}`
+);
 const activeTab = ref('local');
 const storageVars = ref([]);
 const isLoadingStorage = ref(false);

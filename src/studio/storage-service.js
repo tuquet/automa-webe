@@ -75,7 +75,7 @@ export async function flushSyncQueue() {
 
 export async function fetchStorageTables() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/tables`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {
@@ -108,7 +108,7 @@ export async function createStorageTable(tableData) {
   };
 
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/tables`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -127,7 +127,7 @@ export async function createStorageTable(tableData) {
     }
   } catch (_) {
     enqueueSyncAction({
-      endpoint: '/api/storage/tables',
+      endpoint: '/api/v1/storage/tables',
       method: 'POST',
       payload,
     });
@@ -146,12 +146,12 @@ export async function createStorageTable(tableData) {
 
 export async function deleteStorageTable(tableId) {
   try {
-    await fetch(`${DAEMON_BASE_URL}/api/storage/tables/${tableId}`, {
+    await fetch(`${DAEMON_BASE_URL}/api/v1/storage/tables/${tableId}`, {
       method: 'DELETE',
     });
   } catch (_) {
     enqueueSyncAction({
-      endpoint: `/api/storage/tables/${tableId}`,
+      endpoint: `/api/v1/storage/tables/${tableId}`,
       method: 'DELETE',
     });
   }
@@ -161,16 +161,22 @@ export async function deleteStorageTable(tableId) {
 
 export async function fetchStorageTableRows(tableId) {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/tables/${tableId}/rows`, {
-      headers: { Accept: 'application/json' },
-    });
+    const res = await fetch(
+      `${DAEMON_BASE_URL}/api/v1/storage/tables/${tableId}/rows`,
+      {
+        headers: { Accept: 'application/json' },
+      }
+    );
     if (res.ok) {
       return await res.json();
     }
   } catch (_) {
     // Fallback to cache
   }
-  const cachedData = await dbStorage.tablesData.where('tableId').equals(tableId).first();
+  const cachedData = await dbStorage.tablesData
+    .where('tableId')
+    .equals(tableId)
+    .first();
   return cachedData?.rows || [];
 }
 
@@ -180,7 +186,7 @@ export async function fetchStorageTableRows(tableId) {
 
 export async function fetchStorageVariables() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/variables`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {
@@ -210,7 +216,7 @@ export async function createStorageVariable(varData) {
   };
 
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/variables`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -227,7 +233,7 @@ export async function createStorageVariable(varData) {
     }
   } catch (_) {
     enqueueSyncAction({
-      endpoint: '/api/storage/variables',
+      endpoint: '/api/v1/storage/variables',
       method: 'POST',
       payload,
     });
@@ -244,12 +250,12 @@ export async function createStorageVariable(varData) {
 
 export async function deleteStorageVariable(varId) {
   try {
-    await fetch(`${DAEMON_BASE_URL}/api/storage/variables/${varId}`, {
+    await fetch(`${DAEMON_BASE_URL}/api/v1/storage/variables/${varId}`, {
       method: 'DELETE',
     });
   } catch (_) {
     enqueueSyncAction({
-      endpoint: `/api/storage/variables/${varId}`,
+      endpoint: `/api/v1/storage/variables/${varId}`,
       method: 'DELETE',
     });
   }
@@ -263,7 +269,7 @@ export async function deleteStorageVariable(varId) {
 
 export async function fetchStorageCredentials() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/credentials`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/credentials`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {
@@ -291,7 +297,7 @@ export async function fetchStorageCredentials() {
 
 export async function fetchStorageFiles() {
   try {
-    const res = await fetch(`${DAEMON_BASE_URL}/api/storage/files`, {
+    const res = await fetch(`${DAEMON_BASE_URL}/api/v1/storage/files`, {
       headers: { Accept: 'application/json' },
     });
     if (res.ok) {

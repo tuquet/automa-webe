@@ -1,2 +1,4 @@
-export * from './useDaemonHealth';
-export { useDaemonHealth as useAutomaCoreHealth } from './useDaemonHealth';
+export {
+  useDaemonHealth,
+  useDaemonHealth as useAutomaCoreHealth,
+} from './useDaemonHealth';
