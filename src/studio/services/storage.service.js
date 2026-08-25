@@ -6,18 +6,19 @@
 import dbStorage from '@/db/storage';
 import {
   client,
-  getTables,
-  addTable,
-  deleteTable,
-  getTableRows,
-  getVariables,
-  addVariable,
-  deleteVariable,
-  getCredentials,
-  listStorageFiles,
+  getStorageTables as apiGetStorageTables,
+  addStorageTable as apiAddStorageTable,
+  deleteStorageTable as apiDeleteStorageTable,
+  getStorageTableRows as apiGetStorageTableRows,
+  getStorageVariables as apiGetStorageVariables,
+  addStorageVariable as apiAddStorageVariable,
+  deleteStorageVariable as apiDeleteStorageVariable,
+  getStorageCredentials as apiGetStorageCredentials,
+  listStorageFiles as apiListStorageFiles,
 } from '@automa/types/api';
 
 const DAEMON_BASE_URL = 'http://127.0.0.1:8765';
+
 const SYNC_QUEUE_KEY = '__automa_storage_sync_queue';
 
 /**
@@ -102,7 +103,7 @@ export async function flushSyncQueue() {
 
 export async function fetchStorageTables() {
   try {
-    const res = await getTables({ baseUrl: DAEMON_BASE_URL });
+    const res = await apiGetStorageTables({ baseUrl: DAEMON_BASE_URL });
     if (res.data && Array.isArray(res.data)) {
       // Sync cache to Dexie
       const items = res.data.map((t) => ({
@@ -130,7 +131,7 @@ export async function createStorageTable(tableData) {
   };
 
   try {
-    const res = await addTable({
+    const res = await apiAddStorageTable({
       baseUrl: DAEMON_BASE_URL,
       body: payload,
     });
@@ -167,7 +168,7 @@ export async function createStorageTable(tableData) {
 
 export async function deleteStorageTable(tableId) {
   try {
-    await deleteTable({
+    await apiDeleteStorageTable({
       baseUrl: DAEMON_BASE_URL,
       path: { id: tableId },
     });
@@ -183,7 +184,7 @@ export async function deleteStorageTable(tableId) {
 
 export async function fetchStorageTableRows(tableId) {
   try {
-    const res = await getTableRows({
+    const res = await apiGetStorageTableRows({
       baseUrl: DAEMON_BASE_URL,
       path: { id: tableId },
     });
@@ -206,7 +207,7 @@ export async function fetchStorageTableRows(tableId) {
 
 export async function fetchStorageVariables() {
   try {
-    const res = await getVariables({ baseUrl: DAEMON_BASE_URL });
+    const res = await apiGetStorageVariables({ baseUrl: DAEMON_BASE_URL });
     if (res.data && Array.isArray(res.data)) {
       const items = res.data.map((v) => ({
         id: v.id || v.name || v.key,
@@ -231,7 +232,7 @@ export async function createStorageVariable(varData) {
   };
 
   try {
-    const res = await addVariable({
+    const res = await apiAddStorageVariable({
       baseUrl: DAEMON_BASE_URL,
       body: payload,
     });
@@ -264,7 +265,7 @@ export async function createStorageVariable(varData) {
 
 export async function deleteStorageVariable(varId) {
   try {
-    await deleteVariable({
+    await apiDeleteStorageVariable({
       baseUrl: DAEMON_BASE_URL,
       path: { id: varId },
     });
@@ -284,7 +285,7 @@ export async function deleteStorageVariable(varId) {
 
 export async function fetchStorageCredentials() {
   try {
-    const res = await getCredentials({ baseUrl: DAEMON_BASE_URL });
+    const res = await apiGetStorageCredentials({ baseUrl: DAEMON_BASE_URL });
     if (res.data && Array.isArray(res.data)) {
       const items = res.data.map((c) => ({
         id: c.id || c.name || c.key,
@@ -307,7 +308,7 @@ export async function fetchStorageCredentials() {
 
 export async function fetchStorageFiles() {
   try {
-    const res = await listStorageFiles({ baseUrl: DAEMON_BASE_URL });
+    const res = await apiListStorageFiles({ baseUrl: DAEMON_BASE_URL });
     if (res.data && Array.isArray(res.data)) {
       return res.data;
     }
@@ -316,12 +317,3 @@ export async function fetchStorageFiles() {
   }
   return [];
 }
-
-// Backward compatibility aliases
-export const fetchTables = fetchStorageTables;
-export const createTable = createStorageTable;
-export const deleteTableService = deleteStorageTable;
-export const fetchVariables = fetchStorageVariables;
-export const createVariable = createStorageVariable;
-export const deleteVariableService = deleteStorageVariable;
-export const fetchCredentials = fetchStorageCredentials;

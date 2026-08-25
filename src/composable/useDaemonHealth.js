@@ -1,5 +1,5 @@
 import { reactive, readonly } from 'vue';
-import { health, getBrowsers, getMetrics } from '@automa/types/api';
+import { getHealth, getBrowsers, getSystemMetrics } from '@automa/types/api';
 
 const state = reactive({
   status: 'checking', // 'online' | 'offline' | 'checking'
@@ -32,7 +32,7 @@ async function fetchBrowsers() {
 
 async function fetchMetrics() {
   try {
-    const res = await getMetrics({
+    const res = await getSystemMetrics({
       baseUrl: state.baseUrl,
     });
     if (res.data) {
@@ -52,7 +52,7 @@ async function checkHealth() {
   const timeoutId = setTimeout(() => controller.abort(), 2500);
 
   try {
-    const res = await health({
+    const res = await getHealth({
       baseUrl: state.baseUrl,
       signal: controller.signal,
     });
