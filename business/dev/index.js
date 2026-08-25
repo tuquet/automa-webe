@@ -1,6 +1,9 @@
 import { sendMessage } from '@/utils/message';
 import BackgroundWorkflowUtils from '@/background/BackgroundWorkflowUtils';
 import WorkflowEngine from '@/workflowEngine/WorkflowEngine';
+import { workerSse, appendJobLog, finishJob } from '@automa/types/api';
+
+const DAEMON_BASE_URL = 'http://127.0.0.1:8765';
 
 let isWorkerDaemonInitialized = false;
 let isOffscreenDaemonInitialized = false;
@@ -60,7 +63,6 @@ async function initWorkerDaemon(message) {
   isWorkerDaemonInitialized = true;
 
   console.log('[Automa Core Worker] Initializing SSE connection...');
-  const eventSource = null;
 
   async function connect() {
     let browserId = 'daemon_worker';
@@ -70,101 +72,94 @@ async function initWorkerDaemon(message) {
         const config = await configRes.json();
         if (config.browserId) browserId = config.browserId;
       }
-    } catch (e) {
+    } catch (_) {
       // Ignored
     }
 
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8765/api/v1/internal/worker/events?browserId=${browserId}`
-      );
+      const { stream } = await workerSse({
+        baseUrl: DAEMON_BASE_URL,
+        query: { browserId },
+      });
       console.log(
         `[Automa Core Worker] Connected to Automa Core (Browser: ${browserId}).`
       );
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let buffer = '';
 
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop(); // keep the incomplete line in buffer
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const dataStr = line.slice(6);
-            try {
-              const payload = JSON.parse(dataStr);
-              if (payload.jobId && payload.workflowData) {
-                console.log(
-                  `[Automa Daemon Worker] Received Job ${payload.jobId}`
-                );
-
-                const triggerNode =
-                  payload.workflowData.drawflow?.nodes?.find(
-                    (n) => n.label === 'trigger' || n.type === 'trigger'
-                  ) ||
-                  payload.workflowData.nodes?.find(
-                    (n) => n.label === 'trigger' || n.type === 'trigger'
-                  );
-                const defaultVars = {};
-                if (triggerNode?.data?.parameters) {
-                  triggerNode.data.parameters.forEach((param) => {
-                    if (param.name && param.defaultValue !== undefined) {
-                      defaultVars[param.name] = param.defaultValue;
-                    }
-                  });
-                }
-                const mergedVars = {
-                  ...defaultVars,
-                  ...(payload.options?.variables || {}),
-                };
-
-                console.log(
-                  `[Automa Daemon Worker] Invoking executeWorkflow for ${payload.jobId}...`
-                );
-                BackgroundWorkflowUtils.instance
-                  .executeWorkflow(payload.workflowData, {
-                    jobId: payload.jobId,
-                    isDaemonJob: true,
-                    checkParams: false,
-                    data: {
-                      variables: mergedVars,
-                    },
-                  })
-                  .then(() => {
-                    console.log(
-                      `[Automa Daemon Worker] executeWorkflow FINISHED for ${payload.jobId}`
-                    );
-                  })
-                  .catch((err) => {
-                    console.error(
-                      '[Automa Daemon Worker] executeWorkflow error:',
-                      err
-                    );
-                    fetch(
-                      `http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`,
-                      {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          type: 'error',
-                          message: `executeWorkflow failed: ${String(err)}`,
-                        }),
-                      }
-                    ).catch(console.error);
-                  });
-              }
-            } catch (e) {
-              console.error(
-                '[Automa Daemon Worker] Error parsing job payload:',
-                e
-              );
-            }
+      for await (const event of stream) {
+        let payload;
+        if (typeof event === 'string') {
+          try {
+            payload = JSON.parse(event);
+          } catch (_) {
+            // Ignored
           }
+        } else if (event && event.data) {
+          try {
+            payload =
+              typeof event.data === 'string'
+                ? JSON.parse(event.data)
+                : event.data;
+          } catch (_) {
+            // Ignored
+          }
+        } else {
+          payload = event;
+        }
+
+        if (payload && payload.jobId && payload.workflowData) {
+          console.log(`[Automa Daemon Worker] Received Job ${payload.jobId}`);
+
+          const triggerNode =
+            payload.workflowData.drawflow?.nodes?.find(
+              (n) => n.label === 'trigger' || n.type === 'trigger'
+            ) ||
+            payload.workflowData.nodes?.find(
+              (n) => n.label === 'trigger' || n.type === 'trigger'
+            );
+          const defaultVars = {};
+          if (triggerNode?.data?.parameters) {
+            triggerNode.data.parameters.forEach((param) => {
+              if (param.name && param.defaultValue !== undefined) {
+                defaultVars[param.name] = param.defaultValue;
+              }
+            });
+          }
+          const mergedVars = {
+            ...defaultVars,
+            ...(payload.options?.variables || {}),
+          };
+
+          console.log(
+            `[Automa Daemon Worker] Invoking executeWorkflow for ${payload.jobId}...`
+          );
+          BackgroundWorkflowUtils.instance
+            .executeWorkflow(payload.workflowData, {
+              jobId: payload.jobId,
+              isDaemonJob: true,
+              checkParams: false,
+              data: {
+                variables: mergedVars,
+              },
+            })
+            .then(() => {
+              console.log(
+                `[Automa Daemon Worker] executeWorkflow FINISHED for ${payload.jobId}`
+              );
+            })
+            .catch((err) => {
+              console.error(
+                '[Automa Daemon Worker] executeWorkflow error:',
+                err
+              );
+              appendJobLog({
+                baseUrl: DAEMON_BASE_URL,
+                path: { job_id: payload.jobId },
+                body: {
+                  type: 'error',
+                  message: `executeWorkflow failed: ${String(err)}`,
+                },
+              }).catch(console.error);
+            });
         }
       }
 
@@ -186,10 +181,10 @@ async function initWorkerDaemon(message) {
   if (message && typeof message.on === 'function') {
     message.on('daemon:log', async (payload) => {
       try {
-        await fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload.data),
+        await appendJobLog({
+          baseUrl: DAEMON_BASE_URL,
+          path: { job_id: payload.jobId },
+          body: payload.data,
         });
       } catch (e) {
         console.error('[Automa Daemon] Failed to push log', e);
@@ -198,8 +193,9 @@ async function initWorkerDaemon(message) {
 
     message.on('daemon:finish', async (payload) => {
       try {
-        await fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/status`, {
-          method: 'PATCH',
+        await finishJob({
+          baseUrl: DAEMON_BASE_URL,
+          path: { job_id: payload.jobId },
         });
       } catch (e) {
         console.error('[Automa Daemon] Failed to finish job', e);
@@ -215,10 +211,10 @@ async function initWorkerDaemon(message) {
       ) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
-          fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/logs`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload.data),
+          appendJobLog({
+            baseUrl: DAEMON_BASE_URL,
+            path: { job_id: payload.jobId },
+            body: payload.data,
           }).catch(console.error);
         }
       } else if (
@@ -227,8 +223,9 @@ async function initWorkerDaemon(message) {
       ) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
-          fetch(`http://127.0.0.1:8765/api/v1/jobs/${payload.jobId}/status`, {
-            method: 'PATCH',
+          finishJob({
+            baseUrl: DAEMON_BASE_URL,
+            path: { job_id: payload.jobId },
           }).catch(console.error);
         }
       }

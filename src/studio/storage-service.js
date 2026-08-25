@@ -5,6 +5,7 @@
 
 import dbStorage from '@/db/storage';
 import {
+  client,
   getTables,
   addTable,
   deleteTable,
@@ -65,12 +66,27 @@ export async function flushSyncQueue() {
   const remaining = [];
   for (const item of queue) {
     try {
-      const res = await fetch(`${DAEMON_BASE_URL}${item.endpoint}`, {
-        method: item.method || 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: item.payload ? JSON.stringify(item.payload) : undefined,
-      });
-      if (!res.ok) {
+      const method = (item.method || 'POST').toLowerCase();
+      let res;
+      if (method === 'delete') {
+        res = await client.delete({
+          baseUrl: DAEMON_BASE_URL,
+          url: item.endpoint,
+        });
+      } else if (method === 'patch') {
+        res = await client.patch({
+          baseUrl: DAEMON_BASE_URL,
+          url: item.endpoint,
+          body: item.payload,
+        });
+      } else {
+        res = await client.post({
+          baseUrl: DAEMON_BASE_URL,
+          url: item.endpoint,
+          body: item.payload,
+        });
+      }
+      if (res.error) {
         remaining.push(item);
       }
     } catch (_) {
