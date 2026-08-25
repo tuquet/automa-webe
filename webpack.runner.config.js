@@ -17,8 +17,8 @@ config.output.publicPath = '/';
 // 3. Remove HtmlWebpackPlugin for UI entries and update CopyWebpackPlugin
 config.plugins = config.plugins.filter((plugin) => {
   if (plugin.constructor.name === 'HtmlWebpackPlugin') {
-    const chunk = plugin.userOptions?.chunks?.[0];
-    if (chunk && uiEntries.includes(chunk)) {
+    const chunks = plugin.userOptions?.chunks;
+    if (Array.isArray(chunks) && chunks.some((c) => uiEntries.includes(c))) {
       return false; // Remove this plugin
     }
   }
@@ -83,8 +83,8 @@ config.entry.offscreen = [
   config.entry.offscreen,
 ];
 
-// 5. Disable cache to guarantee fresh runner build
-config.cache = false;
+// 5. In-memory cache for fast dev watch and stable compilation
+config.cache = true;
 
 // 7. Generate an empty dummy.html for CLI background execution without triggering listeners
 config.plugins.push(

@@ -130,10 +130,10 @@ const options = {
         test: /\.js$/,
         use: [
           {
-            loader: 'source-map-loader',
-          },
-          {
             loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+            },
           },
         ],
         exclude: /node_modules/,
@@ -165,7 +165,9 @@ const options = {
       verbose: false,
     }),
     // expose and write the allowed env vars on the compiled bundle
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: env.NODE_ENV || 'development',
+    }),
     new CopyWebpackPlugin({
       patterns: [
         {
@@ -265,12 +267,15 @@ const options = {
 
 if (env.NODE_ENV === 'development') {
   options.devtool = 'cheap-module-source-map';
+  options.cache = true;
 } else {
+  options.cache = true;
   options.optimization = {
     minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
+        parallel: true,
       }),
     ],
   };

@@ -61,7 +61,7 @@ config.module.rules.push({
   },
 });
 
-// 7. Disable cache to guarantee clean build
-config.cache = false;
+// 7. In-memory cache for fast dev watch and stable compilation
+config.cache = true;
 
 module.exports = config;
