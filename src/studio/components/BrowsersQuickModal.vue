@@ -112,6 +112,7 @@
             >
             <select
               v-model="newBrowser.browser_type"
+              data-testid="select-browser-type"
               class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
             >
               <option value="chromium">Chromium</option>

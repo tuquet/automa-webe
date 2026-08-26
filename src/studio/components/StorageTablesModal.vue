@@ -18,6 +18,7 @@
             <span class="font-medium text-gray-500">Table:</span>
             <select
               v-model="activeTableId"
+              data-testid="select-storage-table"
               class="px-2 py-1 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent font-medium"
               @change="onTableSelect"
             >

@@ -35,7 +35,7 @@
       <div class="flex items-center space-x-0.5 sm:space-x-1">
         <button
           id="btn.workflow.create"
-          data-testid="btn-new-workflow"
+          data-testid="btn-create-workflow"
           class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
           title="Create New Blank Workflow"
           @click="$emit('newWorkflow')"
@@ -104,6 +104,7 @@
     <div
       ref="workflowDropdownRef"
       class="flex-1 flex justify-center max-w-[160px] sm:max-w-xs md:max-w-md mx-1 sm:mx-2 relative"
+      data-testid="select-storage-workflow"
     >
       <button
         id="btn.workflow.select_dropdown"
@@ -331,7 +332,7 @@
       <button
         v-if="automaCoreStatus === 'online'"
         id="btn.history.view_logs"
-        data-testid="btn-logs"
+        data-testid="btn-view-job-logs"
         class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="Execution Logs & History"
         @click="$emit('openModal', 'logs')"
