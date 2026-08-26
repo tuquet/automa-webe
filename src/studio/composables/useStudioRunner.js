@@ -26,11 +26,13 @@ export function useStudioRunner(automaCoreState) {
       const res = await lintWorkflow({
         baseUrl: automaCoreState.baseUrl,
         body: {
-          workflow: workflow || {},
+          nodes: workflow?.drawflow?.nodes || workflow?.nodes || [],
+          edges: workflow?.drawflow?.edges || workflow?.edges || [],
+          drawflow: workflow?.drawflow || null,
         },
       });
-      if (res.data && res.data.diagnostics) {
-        lintIssues.value = res.data.diagnostics;
+      if (res.data && res.data.issues) {
+        lintIssues.value = res.data.issues;
       } else {
         lintIssues.value = [];
       }
@@ -77,7 +79,6 @@ export function useStudioRunner(automaCoreState) {
     runModalState.isSubmitting = true;
     try {
       const payload = {
-        name: workflow.name || 'Untitled Execution',
         workflowData: workflow,
         options: {
           browserId: runModalState.browserId,
@@ -85,6 +86,9 @@ export function useStudioRunner(automaCoreState) {
           closeBrowserOnFinish: runModalState.closeBrowserOnFinish,
         },
       };
+      if (currentFilePath) {
+        payload.workflowPath = currentFilePath;
+      }
 
       const res = await submitJob({
         baseUrl: automaCoreState.baseUrl,
@@ -92,7 +96,9 @@ export function useStudioRunner(automaCoreState) {
       });
 
       if (res.data && res.data.jobId) {
-        toast.success(`Workflow submitted! Job ID: ${res.data.jobId}`);
+        toast.success(
+          `Workflow submitted! Job ID: ${res.data.jobId.slice(0, 8)}`
+        );
         runModalState.show = false;
         if (typeof onFinish === 'function') {
           onFinish(res.data.jobId);

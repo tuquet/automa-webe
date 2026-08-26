@@ -58,6 +58,8 @@ function initOffscreenDaemon(messageListener) {
   };
 }
 
+let currentDaemonBaseUrl = DAEMON_BASE_URL;
+
 async function initWorkerDaemon(message) {
   if (isWorkerDaemonInitialized) return;
   isWorkerDaemonInitialized = true;
@@ -66,11 +68,18 @@ async function initWorkerDaemon(message) {
 
   async function connect() {
     let browserId = 'daemon_worker';
+    let daemonBaseUrl = DAEMON_BASE_URL;
     try {
       const configRes = await fetch(chrome.runtime.getURL('daemon.json'));
       if (configRes.ok) {
         const config = await configRes.json();
         if (config.browserId) browserId = config.browserId;
+        if (config.baseUrl) {
+          daemonBaseUrl = config.baseUrl;
+        } else if (config.port) {
+          daemonBaseUrl = `http://127.0.0.1:${config.port}`;
+        }
+        currentDaemonBaseUrl = daemonBaseUrl;
       }
     } catch (_) {
       // Ignored
@@ -78,7 +87,7 @@ async function initWorkerDaemon(message) {
 
     try {
       const { stream } = await workerSse({
-        baseUrl: DAEMON_BASE_URL,
+        baseUrl: daemonBaseUrl,
         query: { browserId },
       });
       console.log(
@@ -152,7 +161,7 @@ async function initWorkerDaemon(message) {
                 err
               );
               appendJobLog({
-                baseUrl: DAEMON_BASE_URL,
+                baseUrl: currentDaemonBaseUrl,
                 path: { job_id: payload.jobId },
                 body: {
                   type: 'error',
@@ -182,7 +191,7 @@ async function initWorkerDaemon(message) {
     message.on('daemon:log', async (payload) => {
       try {
         await appendJobLog({
-          baseUrl: DAEMON_BASE_URL,
+          baseUrl: currentDaemonBaseUrl,
           path: { job_id: payload.jobId },
           body: payload.data,
         });
@@ -194,7 +203,7 @@ async function initWorkerDaemon(message) {
     message.on('daemon:finish', async (payload) => {
       try {
         await finishJob({
-          baseUrl: DAEMON_BASE_URL,
+          baseUrl: currentDaemonBaseUrl,
           path: { job_id: payload.jobId },
         });
       } catch (e) {
@@ -212,7 +221,7 @@ async function initWorkerDaemon(message) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
           appendJobLog({
-            baseUrl: DAEMON_BASE_URL,
+            baseUrl: currentDaemonBaseUrl,
             path: { job_id: payload.jobId },
             body: payload.data,
           }).catch(console.error);
@@ -224,7 +233,7 @@ async function initWorkerDaemon(message) {
         const payload = msg.body || msg.payload || msg.data;
         if (payload?.jobId) {
           finishJob({
-            baseUrl: DAEMON_BASE_URL,
+            baseUrl: currentDaemonBaseUrl,
             path: { job_id: payload.jobId },
           }).catch(console.error);
         }

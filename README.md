@@ -96,10 +96,27 @@ Thanks to everyone who has submitted issues, made suggestions, and generally hel
   <img src="https://contrib.rocks/image?repo=AutomaApp/automa" />
 </a>
 
-## 📚 BẢNG THUẬT NGỮ CỐT LÕI (EXTENSION & STUDIO TERMINOLOGY)
+## 🏛️ KIẾN TRÚC `automa-webe:runner` VS `automa-webe:studio` (2 REUSABLE BUILD TARGETS)
+
+`automa-webe` cung cấp 2 gói artifact cốt lõi tái sử dụng cho toàn bộ hệ sinh thái (`automa-core`, `automa-vsce`, `automa-desk`):
+
+| Chiều So Sánh | `automa-webe:runner` (Headless Engine) | `automa-webe:studio` (Visual Canvas) |
+| :--- | :--- | :--- |
+| **Artifact Output** | `dist/cli-runner` | `dist/studio` |
+| **Lệnh Đóng Gói** | `pnpm run build:runner` (`webpack.runner.config.js`) | `pnpm run build:studio` (`webpack.studio.config.js`) |
+| **Bản Chất Kỹ Thuật** | **Headless Browser Execution Engine**: Extension MV3 chạy ngầm trong Chromium (Headless/Headful) | **Standalone Web Canvas Application**: Ứng dụng Web SPA độc lập dựng trên Vue 3 & `@vue-flow/core` |
+| **Ngữ Cảnh Thực Thi** | Chạy trong Chrome Offscreen Document (`offscreen.html`) để thực thi 61 DOM automation block handlers | Phục vụ trực tiếp qua HTTP bởi Daemon tại `http://127.0.0.1:8765/studio/` hoặc nhúng qua iframe vào Custom Editor VS Code |
+| **Giao Thức Giao Tiếp** | Kết nối 1 chiều qua SSE (`/api/v1/internal/worker/events`) để nhận jobs và stream kết quả thực thi | Kết nối REST API (`/api/v1/...`) cho CRUD/Linting, SSE (`/api/events`) cho live logs, và 2-way postMessage Host Bridge |
+| **Quy Tắc Tái Sử Dụng** | `automa-core` sideload trực tiếp khi chạy jobs. Tuyệt đối không duplicate mã nguồn runner. | `automa-vsce` và `automa-desk` nhúng trực tiếp làm UI Canvas chính. Tuyệt đối không duplicate canvas. |
+
+---
+
+## 📚 BẢNG THUẬT NGỮ CỐT LÕI (CANONICAL TERMINOLOGY)
 
 | Thuật Ngữ Chuẩn (Canonical Term) | Thành Phần Code Đại Diện | Mô Tả Kỹ Thuật Ngắn Gọn |
 | :--- | :--- | :--- |
+| **`automa-webe:runner`** | `dist/cli-runner`, `inject-offscreen.js` | Headless Execution Engine đóng gói sẵn cho automa-core sideload vào Chromium. |
+| **`automa-webe:studio`** | `dist/studio`, `StudioApp.vue` | Standalone Web Canvas Studio phục vụ kịch bản đồ họa và nhúng vào VS Code/Desktop. |
 | **Automa Studio** | `StudioApp.vue`, `studio-entry.js` | Ứng dụng Web Standalone độc lập dựng trên Vue 3 & `@vue-flow/core`, cho phép kéo thả thiết kế workflow và chỉnh sửa node trực quan. |
 | **Block** | `BlockBase.vue`, `Edit<Name>.vue` | Khối chức năng cơ bản trong workflow (như `trigger`, `new-tab`, `click-element`), chứa metadata, inputs, outputs và form cấu hình. |
 | **Drawflow** | `workflow.drawflow`, `getNodes`/`getEdges` | Cấu trúc dữ liệu JSON biểu diễn đồ thị luồng gồm danh sách `nodes` (toạ độ x/y, blockId, data) và `edges` (đường nối giữa các handles). |
@@ -107,7 +124,7 @@ Thanks to everyone who has submitted issues, made suggestions, and generally hel
 | **Service Worker** | `background/index.js` | Điểm nhập trung tâm của Extension xử lý message routing (`MessageListener`), nhận lệnh SSE từ Rust Daemon và kích hoạt Offscreen. |
 | **Two-way Data Binding** | `v-model:data`, `updateBlockData` | Cơ chế đồng bộ dữ liệu hai chiều tức thì giữa form cấu hình `WorkflowEditBlock.vue` và dữ liệu node trên canvas `workflow.drawflow`. |
 | **Smart Live Reload** | `pollBundleUpdate` | Cơ chế tự động thăm dò header `Last-Modified`/`ETag` của `studio.bundle.js` để tự làm mới trang ngay khi Webpack watch compile xong. |
-| **AppLogs** | `AppLogs.vue`, `src/db/logs.js` | Hệ thống quản lý nhật ký thực thi 3 tab (Timeline block, Table Data, Variables) lưu trữ trong cơ sở dữ liệu IndexedDB của trình duyệt. |
+| **AppLogs** | `AppLogs.vue`, `src/db/logs.js` | Hệ thống quản lý nhật ký thực thi 3 tab (Timeline block, Table Data, Variables) đồng bộ trực tiếp với SQLite DB qua Daemon API. |
 | **Singleton Guard** | `isWorkerDaemonInitialized` | Cờ Singleton đảm bảo chỉ duy nhất 1 kết nối SSE reader loop hoạt động trong suốt vòng đời trình duyệt để tránh chạy trùng lặp tác vụ. |
 
 ---
@@ -116,3 +133,4 @@ Thanks to everyone who has submitted issues, made suggestions, and generally hel
 Source code in this repository is variously licensed under the GNU Affero General Public License (AGPL), or the [Automa Commercial License](https://extension.automa.site/license/commercial/).
 
 See [LICENSE.txt](./LICENSE.txt) for details.
+

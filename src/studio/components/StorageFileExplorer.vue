@@ -8,7 +8,7 @@
     >
       <div class="relative flex-1">
         <v-remixicon
-          name="riSearchLine"
+          name="riSearch2Line"
           size="14"
           class="absolute left-2.5 top-2.5 text-gray-400"
         />
@@ -38,11 +38,11 @@
     <div class="flex-1 overflow-y-auto py-3 space-y-4">
       <div v-if="isLoading" class="py-12 text-center text-gray-400">
         <v-remixicon
-          name="riLoader4Line"
+          name="riLoader2Line"
           size="20"
           class="animate-spin inline-block mb-1"
         />
-        <p>Scanning Storage workspace...</p>
+        <p>Loading Storage workspace files...</p>
       </div>
 
       <div
@@ -113,11 +113,7 @@
           <div
             class="flex items-center space-x-1.5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 px-1 pt-2"
           >
-            <v-remixicon
-              name="riRocketLine"
-              size="13"
-              class="text-emerald-500"
-            />
+            <v-remixicon name="riTeamLine" size="13" class="text-emerald-500" />
             <span>Campaigns ({{ campaigns.length }})</span>
           </div>
           <div class="grid grid-cols-1 gap-1.5">
@@ -130,7 +126,7 @@
                 <div
                   class="w-7 h-7 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-500 flex items-center justify-center shrink-0"
                 >
-                  <v-remixicon name="riRocketLine" size="16" />
+                  <v-remixicon name="riTeamLine" size="16" />
                 </div>
                 <div class="flex flex-col min-w-0">
                   <span

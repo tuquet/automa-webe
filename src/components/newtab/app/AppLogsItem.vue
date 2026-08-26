@@ -116,6 +116,9 @@ const currentLog = shallowRef({
 });
 
 function deleteLog() {
+  fetch(`http://127.0.0.1:8765/api/v1/history/${props.logId}`, {
+    method: 'DELETE',
+  }).catch(() => {});
   dbLogs.items
     .where('id')
     .equals(props.logId)
@@ -153,8 +156,7 @@ function onTabChange(value) {
 async function fetchLog() {
   if (!props.logId) return;
 
-  const logDetail = await dbLogs.items.where('id').equals(props.logId).last();
-  if (!logDetail) return;
+  let logDetail = await dbLogs.items.where('id').equals(props.logId).last();
 
   tableData.body = [];
   tableData.header = [];
@@ -167,10 +169,42 @@ async function fetchLog() {
     )
   );
 
-  ctxData.value = logCtxData?.data || {};
+  let history = logHistory?.data || [];
+  let data = logsData?.data || {};
+
+  // If history is empty or not in Dexie, fallback to Daemon API
+  if (!logDetail || history.length === 0) {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8765/api/v1/history/${props.logId}/logs`
+      );
+      if (res.ok) {
+        const details = await res.json();
+        if (details.job) {
+          const j = details.job;
+          logDetail = {
+            id: j.id,
+            name: j.name || 'Workflow Run',
+            workflowId: j.workflowId || '',
+            status: j.status === 'completed' ? 'success' : j.status,
+            startedAt: new Date(j.createdAt).getTime(),
+            endedAt: j.endedAt ? new Date(j.endedAt).getTime() : Date.now(),
+          };
+          history = details.logs || [];
+          data = details.results || { table: [], variables: {} };
+        }
+      }
+    } catch (_) {
+      // Ignored
+    }
+  }
+
+  if (!logDetail) return;
+
+  ctxData.value = logCtxData?.data || data?.variables || {};
   currentLog.value = {
-    history: logHistory?.data || [],
-    data: logsData?.data || {},
+    history,
+    data,
     ...logDetail,
   };
 

@@ -255,7 +255,40 @@ const logs = computed(() =>
   )
 );
 
+async function syncDaemonHistory() {
+  try {
+    const res = await fetch('http://127.0.0.1:8765/api/v1/history');
+    if (res.ok) {
+      const historyList = await res.json();
+      if (Array.isArray(historyList)) {
+        for (const job of historyList) {
+          const exists = await dbLogs.items.get(job.id);
+          if (!exists) {
+            await dbLogs.items.put({
+              id: job.id,
+              name: job.name,
+              status: job.status === 'completed' ? 'success' : job.status,
+              startedAt: new Date(job.createdAt).getTime(),
+              endedAt: job.updatedAt
+                ? new Date(job.updatedAt).getTime()
+                : Date.now(),
+              workflowId: job.id,
+            });
+          }
+        }
+      }
+    }
+  } catch (_) {
+    // Ignored
+  }
+}
+
+syncDaemonHistory();
+
 function deleteLog(id) {
+  fetch(`http://127.0.0.1:8765/api/v1/history/${id}`, {
+    method: 'DELETE',
+  }).catch(() => {});
   dbLogs.items.delete(id).then(() => {
     dbLogs.ctxData.where('logId').equals(id).delete();
     dbLogs.histories.where('logId').equals(id).delete();
@@ -278,6 +311,11 @@ function deleteSelectedLogs() {
     okVariant: 'danger',
     body: t('log.delete.description'),
     onConfirm: () => {
+      for (const id of selectedLogs.value) {
+        fetch(`http://127.0.0.1:8765/api/v1/history/${id}`, {
+          method: 'DELETE',
+        }).catch(() => {});
+      }
       dbLogs.items.bulkDelete(selectedLogs.value).then(() => {
         selectedLogs.value = [];
       });
@@ -290,6 +328,9 @@ function clearLogs() {
     okVariant: 'danger',
     body: t('log.clearLogs.description'),
     onConfirm: () => {
+      fetch('http://127.0.0.1:8765/api/v1/history', { method: 'DELETE' }).catch(
+        () => {}
+      );
       dbLogs.items.clear();
       dbLogs.ctxData.clear();
       dbLogs.logsData.clear();

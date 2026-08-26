@@ -83,15 +83,15 @@ graph TD
 
 | SDK Method (`@automa/types/api`) | Tệp tiêu thụ trong Studio | Endpoint Daemon tương ứng | Mục đích sử dụng |
 | :--- | :--- | :--- | :--- |
-| `getWorkflow(options)` | [`StudioApp.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StudioApp.vue), [`StorageFileExplorer.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StorageFileExplorer.vue) | `GET /api/v1/storage/workflow` | Nạp nội dung kịch bản JSON từ thư mục `automa-vault` lên VueFlow canvas. |
-| `saveWorkflow(options)` | [`StudioApp.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StudioApp.vue) | `PUT /api/v1/storage/workflow` | Lưu kịch bản đã qua chuẩn hóa (`nanoid`, edge handles) vào file trên đĩa (`Ctrl+S`). |
-| `submitJob(options)` | [`StudioApp.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StudioApp.vue) | `POST /api/v1/jobs` | Gửi kịch bản đang mở tới Rust Daemon để khởi chạy tiến trình tự động hóa trên trình duyệt thực tế. |
-| `lintWorkflow(options)` | [`StudioApp.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StudioApp.vue) | `POST /api/v1/lint` | Thực hiện kiểm tra lỗi tĩnh (Static Analysis) thời gian thực trên đồ thị AST (Debounced 500ms). |
-| `listStorageFiles(options)` | [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | `GET /api/v1/storage/files` | Quét cây thư mục `.workflow.json` và `.campaigns.json` phục vụ cho modal Storage Explorer. |
-| `getStorageTables(options)` / `addStorageTable` / `deleteStorageTable` | [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | `/api/v1/storage/tables` | Quản lý bảng dữ liệu Global Storage, phân trang dữ liệu dòng (Rows). |
-| `getStorageVariables(options)` / `addStorageVariable` / `deleteStorageVariable` | [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | `/api/v1/storage/variables` | Quản lý danh sách biến toàn cục (Key-Value pairs). |
-| `getStorageCredentials(options)` | [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | `/api/v1/storage/credentials` | Lấy danh sách khóa bí mật mã hóa AES-256. |
-| `client` (`createClient` instance) | [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | Tùy biến endpoint qua `client.post/delete/patch` | Xử lý xả hàng đợi đồng bộ ngoại tuyến (`flushSyncQueue`) khi kết nối Daemon phục hồi. |
+| `getWorkflow(options)` | [`StudioApp.vue`](StudioApp.vue), [`StorageFileExplorer.vue`](StorageFileExplorer.vue) | `GET /api/v1/storage/workflow` | Nạp nội dung kịch bản JSON từ thư mục `automa-vault` lên VueFlow canvas. |
+| `saveWorkflow(options)` | [`StudioApp.vue`](StudioApp.vue) | `PUT /api/v1/storage/workflow` | Lưu kịch bản đã qua chuẩn hóa (`nanoid`, edge handles) vào file trên đĩa (`Ctrl+S`). |
+| `submitJob(options)` | [`StudioApp.vue`](StudioApp.vue) | `POST /api/v1/jobs` | Gửi kịch bản đang mở tới Rust Daemon để khởi chạy tiến trình tự động hóa trên trình duyệt thực tế. |
+| `lintWorkflow(options)` | [`StudioApp.vue`](StudioApp.vue) | `POST /api/v1/lint` | Thực hiện kiểm tra lỗi tĩnh (Static Analysis) thời gian thực trên đồ thị AST (Debounced 500ms). |
+| `listStorageFiles(options)` | [`storage-service.js`](storage-service.js) | `GET /api/v1/storage/files` | Truy xuất danh sách tệp kịch bản `.workflow.json` và `.campaigns.json` phục vụ cho modal Storage Explorer. |
+| `getStorageTables(options)` / `addStorageTable` / `deleteStorageTable` | [`storage-service.js`](storage-service.js) | `/api/v1/storage/tables` | Quản lý bảng dữ liệu Global Storage, phân trang dữ liệu dòng (Rows). |
+| `getStorageVariables(options)` / `addStorageVariable` / `deleteStorageVariable` | [`storage-service.js`](storage-service.js) | `/api/v1/storage/variables` | Quản lý danh sách biến toàn cục (Key-Value pairs). |
+| `getStorageCredentials(options)` | [`storage-service.js`](storage-service.js) | `/api/v1/storage/credentials` | Lấy danh sách khóa bí mật mã hóa AES-256. |
+| `client` (`createClient` instance) | [`storage-service.js`](storage-service.js) | Tùy biến endpoint qua `client.post/delete/patch` | Xử lý xả hàng đợi đồng bộ ngoại tuyến (`flushSyncQueue`) khi kết nối Daemon phục hồi. |
 
 ---
 
@@ -147,13 +147,13 @@ graph TB
 
 | Tệp nguồn | Trách nhiệm chính (Single Responsibility) | Ghi chú kỹ thuật |
 | :--- | :--- | :--- |
-| [`studio-entry.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/studio-entry.js) | Entry point chính của ứng dụng Vue 3 standalone. Khởi tạo Vue Router (Memory History), Pinia, VueUse Head, Toastification, RemixIcon, và nạp tĩnh bộ Locale tiếng Anh (0-network dependency). Tích hợp cơ chế tự động thăm dò Live-Reload (`HEAD studio.bundle.js`). | 96 dòng |
-| [`StudioApp.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StudioApp.vue) | Thành phần gốc (Root Component) chứa toàn bộ layout: Top Header Bar, Resizable Sidebar (Block Form Editor & Palette), VueFlow Canvas, Debugger Dock, Modals (Tables, Variables, Settings, Logs, Storage Explorer). Tích hợp `@automa/types/api` cho Workflow CRUD, Run Job và Live Linting. | 1793 dòng |
-| [`standalone-bridge.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/standalone-bridge.js) | Cầu nối đa môi trường (Universal Host Adapter) áp dụng *Registry Pattern*. Thay thế IndexedDB/chrome.storage gốc bằng bộ nhớ phản ứng (Reactive In-memory DB) và phát thông điệp đồng bộ 3 chiều (`VsCodeHostAdapter`, `IframeHostAdapter`, `StandaloneHostAdapter`). | 247 dòng |
-| [`standalone-browser-mock.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/standalone-browser-mock.js) | Bộ giả lập Chrome/Browser API toàn diện sử dụng **Recursive Proxy Pattern**. Ngăn chặn mọi lỗi crash (`undefined is not a function`) khi các block hoặc thư viện gọi các API tiện ích mở rộng như `chrome.tabs`, `chrome.storage.local`, `chrome.runtime`. | 155 dòng |
-| [`storage-service.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/storage-service.js) | Triển khai *Repository Pattern* kết hợp bộ nhớ đệm Offline (**Dexie IndexedDB**) và Hàng đợi tự động đồng bộ (**Auto-Sync Queue**) kết nối với REST API của `automa-core` thông qua `@automa/types/api`. | 330 dòng |
-| [`StorageFileExplorer.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StorageFileExplorer.vue) | Modal quản lý và duyệt cây thư mục kịch bản (`automa-vault`), cho phép lọc nhanh, tìm kiếm, xem trước siêu dữ liệu và nạp trực tiếp workflow lên Canvas qua SDK Client. | 225 dòng |
-| [`index.html`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/index.html) | Mẫu HTML độc lập nhúng font Inter và container `#app`. | 24 dòng |
+| [`studio-entry.js`](studio-entry.js) | Entry point chính của ứng dụng Vue 3 standalone. Khởi tạo Vue Router (Memory History), Pinia, VueUse Head, Toastification, RemixIcon, và nạp tĩnh bộ Locale tiếng Anh (0-network dependency). Tích hợp cơ chế tự động thăm dò Live-Reload (`HEAD studio.bundle.js`). | 96 dòng |
+| [`StudioApp.vue`](StudioApp.vue) | Thành phần gốc (Root Component) chứa toàn bộ layout: Top Header Bar, Resizable Sidebar (Block Form Editor & Palette), VueFlow Canvas, Debugger Dock, Modals (Tables, Variables, Settings, Logs, Storage Explorer). Tích hợp `@automa/types/api` cho Workflow CRUD, Run Job và Live Linting. | 1793 dòng |
+| [`standalone-bridge.js`](standalone-bridge.js) | Cầu nối đa môi trường (Universal Host Adapter) áp dụng *Registry Pattern*. Thay thế IndexedDB/chrome.storage gốc bằng bộ nhớ phản ứng (Reactive In-memory DB) và phát thông điệp đồng bộ 3 chiều (`VsCodeHostAdapter`, `IframeHostAdapter`, `StandaloneHostAdapter`). | 247 dòng |
+| [`standalone-browser-mock.js`](standalone-browser-mock.js) | Bộ giả lập Chrome/Browser API toàn diện sử dụng **Recursive Proxy Pattern**. Ngăn chặn mọi lỗi crash (`undefined is not a function`) khi các block hoặc thư viện gọi các API tiện ích mở rộng như `chrome.tabs`, `chrome.storage.local`, `chrome.runtime`. | 155 dòng |
+| [`storage-service.js`](storage-service.js) | Triển khai *Repository Pattern* kết hợp bộ nhớ đệm Offline (**Dexie IndexedDB**) và Hàng đợi tự động đồng bộ (**Auto-Sync Queue**) kết nối với REST API của `automa-core` thông qua `@automa/types/api`. | 330 dòng |
+| [`StorageFileExplorer.vue`](StorageFileExplorer.vue) | Modal quản lý và duyệt cây thư mục kịch bản (`automa-vault`), cho phép lọc nhanh, tìm kiếm, xem trước siêu dữ liệu và nạp trực tiếp workflow lên Canvas qua SDK Client. | 225 dòng |
+| [`index.html`](index.html) | Mẫu HTML độc lập nhúng font Inter và container `#app`. | 24 dòng |
 
 ---
 
@@ -168,7 +168,7 @@ graph TB
 - **FR-1.6 (Undo / Redo History)**: Quản lý lịch sử thay đổi đồ thị (Thêm/xóa node, đổi tham số, di chuyển vị trí, kết nối edge) với phím tắt chuẩn `Ctrl+Z` và `Ctrl+Y`.
 
 ### FR-2: File Management & Storage Workspace Sync (Quản lý tệp & Đồng bộ Workspace)
-- **FR-2.1 (Storage Explorer)**: Tích hợp modal duyệt tệp [`StorageFileExplorer.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/StorageFileExplorer.vue) kết nối với SDK `listStorageFiles` (`@automa/types/api`) để đọc danh sách workflow từ `automa-vault`.
+- **FR-2.1 (Storage Explorer)**: Tích hợp modal duyệt tệp [`StorageFileExplorer.vue`](StorageFileExplorer.vue) kết nối với SDK `listStorageFiles` (`@automa/types/api`) để đọc danh sách workflow từ `automa-vault`.
 - **FR-2.2 (Local File Open & Drag-and-Drop)**:
   - Cho phép người dùng mở tệp `.json` từ máy tính cá nhân thông qua hộp thoại chọn tệp hệ thống.
   - Hỗ trợ kéo thả trực tiếp tệp `.workflow.json` từ Desktop/File Explorer vào vùng Canvas để nạp dữ liệu tức thì.
@@ -187,7 +187,7 @@ graph TB
   - Cung cấp form nhập liệu trực tiếp trước khi khởi chạy với cơ chế kiểm tra tính hợp lệ (`isParamsValid`, kiểm tra các trường bắt buộc `required`).
   - Tự động tiêm các giá trị tham số người dùng nhập vào payload kịch bản gửi tới Daemon và thiết lập `options.checkParams = false` để đảm bảo thực thi trơn tru mà không cần mở popup trình duyệt extension cũ.
 - **FR-4.3 (Live In-Canvas Stepper Dock)**:
-  - Tích hợp dock điều khiển [`EditorDebugging.vue`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/components/newtab/workflow/editor/EditorDebugging.vue) nổi ngay trên Canvas khi quy trình đang chạy.
+  - Tích hợp dock điều khiển [`EditorDebugging.vue`](../components/newtab/workflow/editor/EditorDebugging.vue) nổi ngay trên Canvas khi quy trình đang chạy.
   - Hiệu ứng phát sáng (highlight) và viền trạng thái động (Pending, Running, Success, Error) trên từng Node đồ thị tương ứng theo dữ liệu Server-Sent Events (SSE).
 - **FR-4.4 (Execution Control)**: Hỗ trợ nút Pause (Tạm dừng), Resume (Tiếp tục), và Stop/Abort (Hủy khẩn cấp quy trình đang chạy) gửi tín hiệu `DELETE /api/v1/jobs/{id}`.
 - **FR-4.5 (Variables & Data Inspector)**: Cho phép soi xét (inspect) giá trị biến môi trường, biến runtime và bảng dữ liệu biến đổi theo từng bước thực thi.
@@ -219,7 +219,7 @@ graph TB
 
 ### NFR-1: Zero-Extension Runtime Dependency (Không phụ thuộc Extension)
 - Toàn bộ ứng dụng Studio Standalone **BẮT BUỘC** hoạt động trơn tru trong môi trường trình duyệt thông thường.
-- Mọi lời gọi tới các API `chrome.*` (như `chrome.tabs`, `chrome.windows`, `chrome.storage`) đều được chuyển hướng an toàn qua Proxy [`standalone-browser-mock.js`](file:///c:/Users/pn.tund2/Documents/Repository/automa-ecosystem/automa-ext/src/studio/standalone-browser-mock.js) để không bao giờ phát sinh lỗi ngoại lệ chưa xử lý.
+- Mọi lời gọi tới các API `chrome.*` (như `chrome.tabs`, `chrome.windows`, `chrome.storage`) đều được chuyển hướng an toàn qua Proxy [`standalone-browser-mock.js`](standalone-browser-mock.js) để không bao giờ phát sinh lỗi ngoại lệ chưa xử lý.
 
 ### NFR-2: Hiệu năng & Khả năng phản hồi (Performance & Latency)
 - **Khởi tạo Canvas**: Thời gian nạp và render ban đầu của Canvas đối với quy trình có 50+ khối phải đạt dưới **300ms**.

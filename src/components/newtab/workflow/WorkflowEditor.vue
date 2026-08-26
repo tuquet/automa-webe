@@ -3,6 +3,20 @@
     :id="props.id"
     data-testid="vue-flow-root"
     :class="{ disabled: isDisabled }"
+    :edge-updater-radius="20"
+    delete-key-code="Delete"
+    :elevate-edges-on-select="true"
+    :default-zoom="props.data?.zoom ?? 1"
+    :min-zoom="setMinValue(+store.settings.editor.minZoom || 0.5, 0.1)"
+    :max-zoom="
+      setMinValue(
+        +store.settings.editor.maxZoom || 1.2,
+        +store.settings.editor.minZoom + 0.1
+      )
+    "
+    :multi-selection-key-code="isMac ? 'Meta' : 'Control'"
+    :default-position="getPosition(props.data?.position)"
+    v-bind="props.options || {}"
     :default-edge-options="{
       type: 'custom',
       updatable: true,
@@ -167,21 +181,7 @@ const setMinValue = (num, min) => (num < min ? min : num);
 
 const { t } = useI18n();
 const store = useStore();
-const editor = useVueFlow({
-  id: props.id,
-  edgeUpdaterRadius: 20,
-  deleteKeyCode: 'Delete',
-  elevateEdgesOnSelect: true,
-  defaultZoom: props.data?.zoom ?? 1,
-  minZoom: setMinValue(+store.settings.editor.minZoom || 0.5, 0.1),
-  maxZoom: setMinValue(
-    +store.settings.editor.maxZoom || 1.2,
-    +store.settings.editor.minZoom + 0.1
-  ),
-  multiSelectionKeyCode: isMac ? 'Meta' : 'Control',
-  defaultPosition: getPosition(props.data?.position),
-  ...props.options,
-});
+const editor = useVueFlow(props.id);
 editor.onConnect((params) => {
   params.class = `source-${params.sourceHandle} target-${params.targetHandle}`;
   params.updatable = true;

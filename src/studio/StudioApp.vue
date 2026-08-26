@@ -6,18 +6,30 @@
     <studio-header
       :show-sidebar="state.showSidebar"
       :automa-core-status="automaCoreState.status"
+      :current-workflow-name="workflow?.name || 'Untitled Workflow'"
+      :current-workflow-blocks-count="(workflow?.drawflow?.nodes || []).length"
       :current-file-path="currentFilePath"
+      :available-workflows="availableWorkflows"
       :lint-issues-count="lintIssues.length"
       :logs-count="logsCount"
+      :is-dirty="isDirty"
+      :is-job-running="isJobRunning"
+      :is-job-paused="isJobPaused"
       @toggle-sidebar="state.showSidebar = !state.showSidebar"
       @open-storage-explorer="modals.storageFiles = true"
       @open-file-picker="openFilePicker"
+      @import-workflow="triggerImportWorkflow"
       @new-workflow="createNewWorkflow"
+      @select-workflow="loadWorkflowFromVault"
       @trigger-lint="triggerManualLint"
       @open-modal="openModal($event)"
       @save-workflow="saveWorkflowToStorage"
       @export-json="exportJson"
       @run-workflow="runWorkflow"
+      @kill-all-browsers="onKillAllBrowsers"
+      @pause-job="onPauseJob"
+      @resume-job="onResumeJob"
+      @stop-job="onStopJob"
     >
       <template #status>
         <studio-core-status />
@@ -31,6 +43,15 @@
       accept=".json,.automa.json"
       class="hidden"
       @change="onFileSelected"
+    />
+
+    <input
+      ref="importFileInputRef"
+      data-testid="file-import-input"
+      type="file"
+      accept=".json,.automa.json"
+      class="hidden"
+      @change="onImportFileSelected"
     />
 
     <!-- Main Studio Workspace -->
@@ -242,6 +263,15 @@
         @close="modals.storageFiles = false"
       />
     </ui-modal>
+
+    <!-- SQLite Storage Tables Modal -->
+    <storage-tables-modal v-model="modals.tables" />
+
+    <!-- Vault Secrets & Encryption Modal -->
+    <storage-secrets-modal v-model="modals.secrets" />
+
+    <!-- Browser Fleet Manager Modal -->
+    <browsers-quick-modal v-model="modals.browsers" />
   </div>
 </template>
 
@@ -291,6 +321,17 @@ import { parseJSON } from '@/utils/helper';
 import StorageFileExplorer from './components/StorageFileExplorer.vue';
 import StudioHeader from './components/StudioHeader.vue';
 import RunWorkflowModal from './components/RunWorkflowModal.vue';
+import BrowsersQuickModal from './components/BrowsersQuickModal.vue';
+import StorageTablesModal from './components/StorageTablesModal.vue';
+import StorageSecretsModal from './components/StorageSecretsModal.vue';
+import { wsService } from './services/ws.service';
+import {
+  killAllBrowserProcesses,
+  cancelJob,
+  fetchBrowsers,
+  fetchStorageFiles,
+  getDefaultBrowserProfile,
+} from './services/storage.service';
 import { sanitizeWorkflowAST } from './composables/useStudioWorkflow';
 import {
   defaultWorkflow,
@@ -305,6 +346,8 @@ const workflow = computed(() => studioState.currentWorkflow);
 const editorRef = ref(null);
 const editorInstance = ref(null);
 const fileInputRef = ref(null);
+const importFileInputRef = ref(null);
+const availableWorkflows = ref([]);
 let editorCommands = null;
 const commandManager = useCommandManager();
 let internalClipboard = null;
@@ -361,11 +404,59 @@ const state = reactive({
 
 const modals = reactive({
   table: false,
+  tables: false,
   globalData: false,
+  secrets: false,
+  browsers: false,
   settings: false,
   logs: false,
   storageFiles: false,
 });
+
+const activeJobId = ref(null);
+const isJobRunning = ref(false);
+const isJobPaused = ref(false);
+
+function onPauseJob() {
+  if (activeJobId.value) {
+    wsService.pauseJob(activeJobId.value);
+    isJobPaused.value = true;
+    toast.info('Job paused (WebSocket)');
+  }
+}
+
+function onResumeJob() {
+  if (activeJobId.value) {
+    wsService.resumeJob(activeJobId.value);
+    isJobPaused.value = false;
+    toast.info('Job resumed (WebSocket)');
+  }
+}
+
+async function onStopJob() {
+  if (activeJobId.value) {
+    wsService.killJob(activeJobId.value);
+    try {
+      await cancelJob(activeJobId.value);
+    } catch (_) {
+      // Ignored
+    }
+    isJobRunning.value = false;
+    isJobPaused.value = false;
+    activeJobId.value = null;
+    activeRunningBlockId.value = null;
+    toast.info('Job stopped');
+  }
+}
+
+async function onKillAllBrowsers() {
+  try {
+    await killAllBrowserProcesses();
+    toast.success('All browser processes terminated cleanly!');
+  } catch (err) {
+    toast.error(`Kill failed: ${err.message}`);
+  }
+}
 
 const editState = reactive({
   editing: false,
@@ -418,8 +509,10 @@ function goToBlock(blockId) {
 }
 
 function openModal(name) {
-  if (name === 'table') modals.table = true;
+  if (name === 'table' || name === 'tables') modals.tables = true;
   else if (name === 'global-data') modals.globalData = true;
+  else if (name === 'secrets') modals.secrets = true;
+  else if (name === 'browsers') modals.browsers = true;
   else if (name === 'settings') modals.settings = true;
   else if (name === 'logs') openLogsModal();
 }
@@ -696,6 +789,61 @@ function onFileSelected(event) {
       loadWorkflowData(parsed);
     } catch (err) {
       console.error('Failed to parse workflow file:', err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+async function loadAvailableWorkflows() {
+  try {
+    const files = await fetchStorageFiles();
+    if (Array.isArray(files)) {
+      availableWorkflows.value = files
+        .filter(
+          (f) =>
+            f.type === 'workflow' ||
+            f.name?.endsWith('.workflow.json') ||
+            f.path?.endsWith('.workflow.json')
+        )
+        .map((f) => ({
+          name:
+            f.name?.replace(/\.workflow\.json$/, '') ||
+            f.path
+              ?.split('/')
+              .pop()
+              ?.replace(/\.workflow\.json$/, '') ||
+            'Workflow',
+          path: f.path || f.name,
+        }));
+    }
+  } catch (_) {
+    // Ignored
+  }
+}
+
+function triggerImportWorkflow() {
+  if (importFileInputRef.value) {
+    importFileInputRef.value.click();
+  }
+}
+
+function onImportFileSelected(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      loadWorkflowData(parsed);
+      currentFilePath.value = '';
+      toast.success(
+        `Workflow "${parsed.name || file.name}" imported successfully!`
+      );
+      loadAvailableWorkflows();
+    } catch (err) {
+      toast.error(`Failed to parse workflow file: ${err.message}`);
     }
   };
   reader.readAsText(file);
@@ -1287,6 +1435,7 @@ async function saveWorkflowToStorage() {
       toast.success(
         `Saved to Storage: ${currentFilePath.value.split(/[\\/]/).pop()}`
       );
+      loadAvailableWorkflows();
     } else {
       toast.error(`Failed to save: ${res.error?.message || 'Unknown error'}`);
     }
@@ -1323,7 +1472,9 @@ const runLiveLint = debounce(async () => {
     const res = await lintWorkflow({
       baseUrl: automaCoreState.baseUrl,
       body: {
-        workflow: workflow.value,
+        nodes: workflow.value.drawflow.nodes || [],
+        edges: workflow.value.drawflow.edges || [],
+        drawflow: workflow.value.drawflow,
       },
     });
     if (res.data) {
@@ -1368,35 +1519,6 @@ function resolveParamDefault(p) {
   return '';
 }
 
-function runWorkflow() {
-  if (automaCoreState.status === 'online') {
-    // Extract parameters from Trigger block if defined
-    const triggerNode = workflow.value?.drawflow?.nodes?.find(
-      (n) => n.label === 'trigger' || n.type === 'trigger'
-    );
-    const params = triggerNode?.data?.parameters || [];
-    runModalState.parameters = JSON.parse(JSON.stringify(params)).map((p) => ({
-      ...p,
-      value: resolveParamDefault(p),
-    }));
-    runModalState.show = true;
-    return;
-  }
-
-  if (window.vscode) {
-    window.vscode.postMessage({
-      type: 'automa:run-workflow',
-      data: workflow.value,
-    });
-    toast.info('Run request sent to VS Code Extension');
-    return;
-  }
-
-  toast.error(
-    'Automa Core is offline. Please launch the backend server (task: "Serve: Live Studio" or pnpm run dev:all) to run workflows.'
-  );
-}
-
 async function submitWorkflowExecution() {
   runModalState.isSubmitting = true;
   try {
@@ -1432,6 +1554,9 @@ async function submitWorkflowExecution() {
 
     const { data } = res;
     if (data && data.jobId) {
+      activeJobId.value = data.jobId;
+      isJobRunning.value = true;
+      isJobPaused.value = false;
       toast.success(`Workflow job started! (ID: ${data.jobId.slice(0, 8)})`);
       runModalState.show = false;
 
@@ -1465,6 +1590,74 @@ async function submitWorkflowExecution() {
   } finally {
     runModalState.isSubmitting = false;
   }
+}
+
+async function runWorkflow() {
+  if (automaCoreState.status === 'online') {
+    // Extract parameters from Trigger block if defined
+    const triggerNode = workflow.value?.drawflow?.nodes?.find(
+      (n) => n.label === 'trigger' || n.type === 'trigger'
+    );
+    const params = triggerNode?.data?.parameters || [];
+    const hasRequiredParams = params.some(
+      (p) => p.data?.required && (p.value === undefined || p.value === '')
+    );
+
+    // Pre-flight Cascading & Browser Resolution Waterfall
+    let defaultProfileId = null;
+    let availableBrowsers = [];
+    try {
+      [defaultProfileId, availableBrowsers] = await Promise.all([
+        getDefaultBrowserProfile(),
+        fetchBrowsers(),
+      ]);
+    } catch (_) {
+      // Fallback
+    }
+
+    // Level 3: Zero browser profiles configured -> Open Master Resolver Sheet
+    if (!availableBrowsers || availableBrowsers.length === 0) {
+      toast.warning(
+        'No browser profiles found. Opening Master Browser Resolver...'
+      );
+      modals.browsers = true;
+      return;
+    }
+
+    // Level 1: Fast Path (Happy flow) - If default browser exists and no required input params
+    if (defaultProfileId && !hasRequiredParams && params.length === 0) {
+      runModalState.browserId = defaultProfileId;
+      runModalState.parameters = [];
+      await submitWorkflowExecution();
+      return;
+    }
+
+    // Level 2: Selection Prompt - Show Run Modal to pick browser / fill params
+    runModalState.parameters = JSON.parse(JSON.stringify(params)).map((p) => ({
+      ...p,
+      value: resolveParamDefault(p),
+    }));
+    if (defaultProfileId) {
+      runModalState.browserId = defaultProfileId;
+    } else if (availableBrowsers.length > 0) {
+      runModalState.browserId = availableBrowsers[0].id;
+    }
+    runModalState.show = true;
+    return;
+  }
+
+  if (window.vscode) {
+    window.vscode.postMessage({
+      type: 'automa:run-workflow',
+      data: workflow.value,
+    });
+    toast.info('Run request sent to VS Code Extension');
+    return;
+  }
+
+  toast.error(
+    'Automa Core is offline. Please launch the backend server (task: "Serve: Live Studio" or pnpm run dev:all) to run workflows.'
+  );
 }
 
 // Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+S)
@@ -1518,6 +1711,7 @@ function onWindowMessage(e) {
 }
 
 let cleanupEventListener = null;
+let unsubscribeWs = null;
 
 onMounted(() => {
   window.addEventListener('keydown', onKeydown);
@@ -1532,8 +1726,33 @@ onMounted(() => {
     }
   }
 
-  // Initial live lint check
+  // Initial live lint check & available workflows
   runLiveLint();
+  loadAvailableWorkflows();
+
+  // Connect WebSocket for live debugger
+  wsService.connect(automaCoreState.baseUrl);
+  unsubscribeWs = wsService.subscribe((msg) => {
+    if (!msg) return;
+    if (msg.type === 'JOB_STARTED') {
+      activeJobId.value = msg.jobId;
+      isJobRunning.value = true;
+      isJobPaused.value = false;
+    } else if (msg.type === 'JOB_PAUSED') {
+      isJobPaused.value = true;
+    } else if (msg.type === 'JOB_RESUMED') {
+      isJobPaused.value = false;
+    } else if (
+      msg.type === 'JOB_FINISHED' ||
+      msg.type === 'JOB_STOPPED' ||
+      msg.type === 'JOB_KILLED'
+    ) {
+      isJobRunning.value = false;
+      isJobPaused.value = false;
+      activeJobId.value = null;
+      activeRunningBlockId.value = null;
+    }
+  });
 
   const { addEventListener } = useAutomaCoreHealth();
   cleanupEventListener = addEventListener(async (data) => {
@@ -1577,6 +1796,9 @@ onMounted(() => {
         data.status === 'error'
       ) {
         activeRunningBlockId.value = null;
+        isJobRunning.value = false;
+        isJobPaused.value = false;
+        activeJobId.value = null;
         try {
           await dbLogs.items.update(jobId, {
             endedAt: Date.now(),
@@ -1597,6 +1819,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeydown);
   window.removeEventListener('message', onWindowMessage);
   if (cleanupEventListener) cleanupEventListener();
+  if (unsubscribeWs) unsubscribeWs();
+  wsService.disconnect();
   stopDrag();
 });
 </script>
