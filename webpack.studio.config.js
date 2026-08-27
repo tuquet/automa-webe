@@ -52,6 +52,9 @@ config.resolve.alias['@business$'] = path.resolve(
   'business/dev/index.js'
 );
 config.resolve.alias['@business'] = path.resolve(__dirname, 'business/dev');
+config.resolve.alias['vue$'] = require.resolve('vue/dist/vue.esm-bundler.js');
+config.resolve.alias['vue'] = require.resolve('vue/dist/vue.esm-bundler.js');
+config.resolve.alias['lucide-vue-next'] = require.resolve('lucide-vue-next');
 
 // 6. Disable fullySpecified for ESM modules resolution (e.g. @automa/types)
 config.module.rules.push({

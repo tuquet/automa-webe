@@ -5,228 +5,217 @@
     content-class="max-w-3xl"
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <div class="space-y-4 py-1 text-xs text-gray-800 dark:text-gray-200">
+    <div class="space-y-4 py-1 text-xs text-foreground">
       <!-- Tabs Navigation -->
-      <div
-        class="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2"
-      >
-        <button
-          class="px-3 py-1.5 rounded-lg font-medium transition"
-          :class="
-            activeTab === 'credentials'
-              ? 'bg-accent text-white shadow-xs'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-          "
+      <div class="flex items-center gap-1.5 border-b border-border pb-2">
+        <Button
+          :variant="activeTab === 'credentials' ? 'default' : 'ghost'"
+          size="sm"
           @click="activeTab = 'credentials'"
         >
           Encrypted Credentials
-        </button>
-        <button
-          class="px-3 py-1.5 rounded-lg font-medium transition"
-          :class="
-            activeTab === 'playground'
-              ? 'bg-accent text-white shadow-xs'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
-          "
+        </Button>
+        <Button
+          :variant="activeTab === 'playground' ? 'default' : 'ghost'"
+          size="sm"
           @click="activeTab = 'playground'"
         >
           AES Encryption Playground
-        </button>
+        </Button>
       </div>
 
       <!-- Tab 1: Encrypted Credentials -->
       <div v-if="activeTab === 'credentials'" class="space-y-3">
         <div class="flex items-center justify-between">
-          <button
+          <Button
+            variant="default"
+            size="sm"
             data-testid="btn-add-credential"
-            class="px-2.5 py-1.5 rounded-lg bg-accent text-white font-medium hover:bg-accent/90 flex items-center space-x-1 transition shadow-xs"
             @click="showAddForm = !showAddForm"
           >
-            <v-remixicon name="riAddLine" size="14" />
+            <Plus class="size-3.5 mr-1" />
             <span>New Secret</span>
-          </button>
+          </Button>
 
-          <button
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
-            @click="loadCredentials"
-          >
-            <v-remixicon
-              name="riRefreshLine"
-              size="14"
+          <Button variant="outline" size="sm" @click="loadCredentials">
+            <RefreshCw
+              class="size-3.5 mr-1"
               :class="{ 'animate-spin': isLoading }"
             />
             <span>Refresh</span>
-          </button>
+          </Button>
         </div>
 
         <!-- Add Credential Form (Collapsible) -->
         <div
           v-if="showAddForm"
-          class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 space-y-2.5"
+          class="p-3 rounded-lg bg-muted/40 border border-border space-y-2.5"
         >
           <h4
-            class="font-semibold text-xs text-gray-900 dark:text-gray-100 flex items-center"
+            class="font-semibold text-xs text-foreground flex items-center gap-1.5"
           >
-            <v-remixicon name="riKey2Line" size="14" class="mr-1 text-accent" />
-            Add Encrypted Secret (HMAC-SHA256 + AES-256-CBC)
+            <KeyRound class="size-3.5 text-primary" />
+            <span>Add Encrypted Secret (HMAC-SHA256 + AES-256-CBC)</span>
           </h4>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label
-                class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-                >Secret Key / Name *</label
+                class="block text-[11px] font-medium text-muted-foreground mb-1"
               >
-              <input
+                Secret Key / Name *
+              </label>
+              <Input
                 v-model="newCred.name"
                 type="text"
                 placeholder="e.g. TWITTER_AUTH_TOKEN, API_KEY"
-                class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent font-mono"
+                class="h-8 text-xs font-mono"
               />
             </div>
 
             <div>
               <label
-                class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-                >Plaintext Value *</label
+                class="block text-[11px] font-medium text-muted-foreground mb-1"
               >
-              <input
+                Plaintext Value *
+              </label>
+              <Input
                 v-model="newCred.value"
                 type="password"
                 placeholder="Secret raw value"
-                class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
+                class="h-8 text-xs"
               />
             </div>
           </div>
 
-          <div class="flex items-center justify-end space-x-2 pt-1">
-            <button
-              class="px-2.5 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-              @click="showAddForm = false"
-            >
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <Button variant="outline" size="xs" @click="showAddForm = false">
               Cancel
-            </button>
-            <button
-              class="px-3 py-1 text-xs rounded-md bg-accent text-white font-medium hover:bg-accent/90 disabled:opacity-50"
+            </Button>
+            <Button
+              variant="default"
+              size="xs"
               :disabled="!newCred.name || !newCred.value || isSubmitting"
               @click="onAddCredential"
             >
               Save Encrypted Secret
-            </button>
+            </Button>
           </div>
         </div>
 
         <!-- Credentials List -->
         <div class="max-h-64 overflow-y-auto space-y-2 pr-1">
-          <div v-if="isLoading" class="py-8 text-center text-gray-400">
-            <v-remixicon
-              name="riLoader2Line"
-              size="20"
-              class="animate-spin inline-block mb-1"
+          <div v-if="isLoading" class="py-8 text-center text-muted-foreground">
+            <Loader2
+              class="size-5 animate-spin inline-block mb-1 text-primary"
             />
             <p>Loading credentials from SQLite Vault...</p>
           </div>
 
           <div
             v-else-if="credentials.length === 0"
-            class="py-8 text-center text-gray-400"
+            class="py-8 text-center text-muted-foreground"
           >
-            <v-remixicon
-              name="riLock2Line"
-              size="24"
-              class="inline-block mb-1 text-gray-300 dark:text-gray-600"
-            />
+            <Lock class="size-7 inline-block mb-1 text-muted-foreground/50" />
             <p class="font-medium">No encrypted secrets found</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">
+            <p class="text-[11px] text-muted-foreground mt-0.5">
               Stored secrets can be referenced inside workflows via
-              <span class="font-mono text-accent">\{\{secrets.key\}\}</span>
+              <span class="font-mono text-primary">\{\{secrets.key\}\}</span>
             </p>
           </div>
 
           <div
             v-for="c in credentials"
             :key="c.name || c.id"
-            class="p-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/80 flex items-center justify-between"
+            class="p-2.5 rounded-lg border border-border bg-card flex items-center justify-between"
           >
-            <div class="flex items-center space-x-2.5 min-w-0 pr-2">
+            <div class="flex items-center gap-2.5 min-w-0 pr-2">
               <div
-                class="w-7 h-7 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center shrink-0"
+                class="size-7 rounded-md bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0"
               >
-                <v-remixicon name="riKey2Line" size="16" />
+                <KeyRound class="size-4" />
               </div>
               <div class="flex flex-col min-w-0">
                 <span
-                  class="font-mono font-medium text-xs text-gray-900 dark:text-gray-100 truncate"
-                  >\{\{secrets.{{ c.name || c.key }}\}\}</span
+                  class="font-mono font-medium text-xs text-foreground truncate"
                 >
-                <span class="text-[10px] text-gray-400 truncate"
-                  >Value: •••••••••••• (Encrypted AES-256)</span
-                >
+                  \{\{secrets.{{ c.name || c.key }}\}\}
+                </span>
+                <span class="text-[10px] text-muted-foreground truncate">
+                  Value: •••••••••••• (Encrypted AES-256)
+                </span>
               </div>
             </div>
 
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               data-testid="btn-delete-credential"
-              class="p-1 text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded transition"
+              class="text-muted-foreground hover:text-destructive"
               title="Delete credential"
               @click="onDeleteCredential(c.name || c.key)"
             >
-              <v-remixicon name="riDeleteBin7Line" size="14" />
-            </button>
+              <Trash2 class="size-3.5" />
+            </Button>
           </div>
         </div>
       </div>
 
       <!-- Tab 2: AES Playground -->
       <div v-else-if="activeTab === 'playground'" class="space-y-3">
-        <p class="text-gray-500 dark:text-gray-400">
+        <p class="text-muted-foreground">
           Test Automa Core AES-256-CBC encryption endpoint directly:
         </p>
 
         <div class="space-y-2">
           <div>
             <label
-              class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-              >Plaintext to Encrypt</label
+              class="block text-[11px] font-medium text-muted-foreground mb-1"
             >
-            <input
+              Plaintext to Encrypt
+            </label>
+            <Input
               v-model="playground.secret"
               type="text"
               placeholder="Enter sensitive text..."
-              class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent font-mono"
+              class="h-8 text-xs font-mono"
             />
           </div>
 
           <div>
             <label
-              class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-              >Master Passphrase (Optional)</label
+              class="block text-[11px] font-medium text-muted-foreground mb-1"
             >
-            <input
+              Master Passphrase (Optional)
+            </label>
+            <Input
               v-model="playground.passphrase"
               type="password"
               placeholder="Defaults to system master passphrase"
-              class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
+              class="h-8 text-xs"
             />
           </div>
 
-          <button
-            class="px-3 py-1.5 rounded-md bg-accent text-white font-medium hover:bg-accent/90 flex items-center space-x-1"
+          <Button
+            variant="default"
+            size="sm"
             :disabled="!playground.secret || playground.isLoading"
             @click="onEncryptPlayground"
           >
-            <v-remixicon name="riLock2Line" size="14" />
+            <Lock class="size-3.5 mr-1" />
             <span>Encrypt with Automa Core</span>
-          </button>
+          </Button>
 
           <div
             v-if="playground.encryptedResult"
-            class="p-2.5 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+            class="p-2.5 rounded-lg bg-muted/50 border border-border"
           >
-            <span class="block text-[11px] font-medium text-gray-500 mb-1"
-              >AES-256 Ciphertext:</span
+            <span
+              class="block text-[11px] font-medium text-muted-foreground mb-1"
             >
-            <p class="font-mono text-[11px] break-all text-accent select-all">
+              AES-256 Ciphertext:
+            </span>
+            <p class="font-mono text-[11px] break-all text-primary select-all">
               {{ playground.encryptedResult }}
             </p>
           </div>
@@ -238,6 +227,15 @@
 
 <script setup>
 import { ref, reactive, onMounted, watch } from 'vue';
+import { Button, Input } from '@automa/ui';
+import {
+  KeyRound,
+  Loader2,
+  Lock,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import {
   fetchStorageCredentials,

@@ -111,46 +111,47 @@
         >
           <template #controls-prepend>
             <div
-              class="inline-flex items-center rounded-lg bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 mr-2"
+              class="inline-flex items-center rounded-lg bg-card shadow-2xs border border-border mr-2 p-0.5 gap-0.5"
             >
-              <button
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 data-testid="btn-canvas-undo"
-                class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
                 :disabled="!commandManager.state.value.canUndo"
                 title="Undo (Ctrl+Z)"
                 @click="commandManager.undo"
               >
-                <v-remixicon name="riArrowGoBackLine" />
-              </button>
-              <hr
-                class="inline-block h-6 border-r border-gray-200 dark:border-gray-700"
-              />
-              <button
+                <Undo2 class="size-3.5" />
+              </Button>
+              <div class="inline-block h-4 w-px bg-border my-auto" />
+              <Button
+                variant="ghost"
+                size="icon-sm"
                 data-testid="btn-canvas-redo"
-                class="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
                 :disabled="!commandManager.state.value.canRedo"
                 title="Redo (Ctrl+Y)"
                 @click="commandManager.redo"
               >
-                <v-remixicon name="riArrowGoForwardLine" />
-              </button>
+                <Redo2 class="size-3.5" />
+              </Button>
             </div>
 
-            <button
+            <Button
+              variant="outline"
+              size="icon-sm"
               data-testid="btn-canvas-auto-align"
-              class="control-button mr-2"
+              class="mr-2"
               title="Auto Align Graph Layout"
               @click="autoAlign"
             >
-              <v-remixicon name="riMagicLine" />
-            </button>
+              <Wand2 class="size-3.5" />
+            </Button>
 
-            <button
+            <Button
+              :variant="autoFocusEnabled ? 'secondary' : 'ghost'"
+              size="icon-sm"
               data-testid="btn-canvas-auto-focus"
-              class="control-button mr-2 transition"
-              :class="
-                autoFocusEnabled ? 'text-accent font-semibold' : 'text-gray-400'
-              "
+              class="mr-2"
               :title="
                 autoFocusEnabled
                   ? 'Auto-focus Active Node (Enabled)'
@@ -158,8 +159,13 @@
               "
               @click="autoFocusEnabled = !autoFocusEnabled"
             >
-              <v-remixicon name="riFocus3Line" />
-            </button>
+              <Crosshair
+                class="size-3.5"
+                :class="
+                  autoFocusEnabled ? 'text-primary' : 'text-muted-foreground'
+                "
+              />
+            </Button>
           </template>
         </workflow-editor>
 
@@ -294,6 +300,8 @@ import {
   lintWorkflow,
   submitJob,
 } from '@automa/types/api';
+import { Button } from '@automa/ui';
+import { Crosshair, Redo2, Undo2, Wand2 } from 'lucide-vue-next';
 import WorkflowEditor from '@/components/newtab/workflow/WorkflowEditor.vue';
 import WorkflowEditBlock from '@/components/newtab/workflow/WorkflowEditBlock.vue';
 import WorkflowDetailsCard from '@/components/newtab/workflow/WorkflowDetailsCard.vue';
@@ -380,6 +388,7 @@ const isParamsValid = computed(() => {
 
 const currentFilePath = ref('');
 const isSaving = ref(false);
+const isDirty = ref(false);
 const activeRunningBlockId = ref(null);
 const autoFocusEnabled = ref(true);
 const lintIssues = ref([]);
@@ -1432,6 +1441,7 @@ async function saveWorkflowToStorage() {
       },
     });
     if (res.data !== undefined && !res.error) {
+      isDirty.value = false;
       toast.success(
         `Saved to Storage: ${currentFilePath.value.split(/[\\/]/).pop()}`
       );

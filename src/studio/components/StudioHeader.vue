@@ -1,102 +1,90 @@
 <template>
   <header
     data-testid="studio-header"
-    class="h-12 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none relative"
+    class="h-11 border-b border-border bg-card px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none relative text-foreground"
   >
     <!-- Left Section: Sidebar Toggle, New/Import/Open File, Storage Explorer & Browsers -->
-    <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
-      <button
-        id="btn.canvas.toggle_sidebar"
+    <div class="flex items-center gap-1.5 shrink-0">
+      <Button
+        variant="ghost"
+        size="icon-sm"
         data-testid="btn-toggle-sidebar"
-        class="p-1.5 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
         :title="showSidebar ? 'Hide Sidebar' : 'Show Sidebar'"
         @click="$emit('toggleSidebar')"
       >
-        <v-remixicon
-          :name="showSidebar ? 'riSideBarFill' : 'riSideBarLine'"
-          size="18"
-        />
-      </button>
+        <PanelLeft v-if="!showSidebar" class="size-3.5" />
+        <PanelLeftClose v-else class="size-3.5" />
+      </Button>
 
       <!-- Storage Explorer & Workspace Actions -->
-      <button
+      <Button
         v-if="automaCoreStatus === 'online'"
-        id="btn.storage.explorer"
+        variant="outline"
+        size="sm"
         data-testid="btn-storage-explorer"
-        class="px-2 py-1 text-xs font-medium rounded-md border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent flex items-center space-x-1 transition"
         title="Browse and Open Workflows from Storage workspace"
         @click="$emit('openStorageExplorer')"
       >
-        <v-remixicon name="riFolderZipLine" size="14" />
+        <FolderTree class="size-3.5 mr-1 text-primary" />
         <span class="hidden lg:inline">Storage</span>
-      </button>
+      </Button>
 
       <!-- New, Import & Open Workflow Group -->
-      <div class="flex items-center space-x-0.5 sm:space-x-1">
-        <button
+      <div class="flex items-center gap-1">
+        <AutomaButton
           id="btn.workflow.create"
-          data-testid="btn-create-workflow"
-          class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
+          size="sm"
+          variant="outline"
           title="Create New Blank Workflow"
           @click="$emit('newWorkflow')"
-        >
-          <v-remixicon name="riAddLine" size="14" />
-          <span class="hidden md:inline">New</span>
-        </button>
+        />
 
-        <button
+        <AutomaButton
           id="btn.workflow.import"
-          data-testid="btn-import-workflow"
-          class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
+          size="sm"
+          variant="outline"
           title="Import Workflow JSON file from computer"
           @click="$emit('importWorkflow')"
-        >
-          <v-remixicon name="riUploadLine" size="14" />
-          <span class="hidden md:inline">Import</span>
-        </button>
+        />
 
-        <button
-          id="btn.workflow.open"
+        <Button
+          variant="outline"
+          size="sm"
           data-testid="btn-open-file"
-          class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
           title="Open Workflow JSON File from Computer"
           @click="$emit('openFilePicker')"
         >
-          <v-remixicon name="riFolderOpenLine" size="14" />
+          <FolderOpen class="size-3.5 mr-1" />
           <span class="hidden md:inline">Open</span>
-        </button>
+        </Button>
       </div>
 
       <div
         v-if="automaCoreStatus === 'online'"
-        class="h-4 w-px bg-gray-300 dark:bg-gray-700 mx-0.5 hidden sm:block"
+        class="h-3.5 w-px bg-border mx-0.5 hidden sm:block"
       ></div>
 
       <!-- Browsers Fleet & Kill All Quick Actions -->
-      <div
-        v-if="automaCoreStatus === 'online'"
-        class="flex items-center space-x-0.5"
-      >
-        <button
-          id="btn.browser.menu"
+      <div v-if="automaCoreStatus === 'online'" class="flex items-center gap-1">
+        <Button
+          variant="outline"
+          size="sm"
           data-testid="btn-browsers-menu"
-          class="px-2 py-1 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition text-gray-700 dark:text-gray-300"
           title="Browser Fleet Manager"
           @click="$emit('openModal', 'browsers')"
         >
-          <v-remixicon name="riGlobalLine" size="14" />
+          <Globe class="size-3.5 mr-1" />
           <span class="hidden xl:inline">Browsers</span>
-        </button>
+        </Button>
 
-        <button
+        <AutomaButton
           id="btn.browser.kill_all"
-          data-testid="btn-kill-all-browsers"
-          class="p-1 rounded-md text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 transition"
-          title="Kill All Chrome / Worker Processes (DELETE /api/v1/browsers/sessions)"
+          size="sm"
+          variant="destructive"
+          icon-only
+          title="Kill All Chrome / Worker Processes"
           @click="$emit('killAllBrowsers')"
-        >
-          <v-remixicon name="riStopCircleLine" size="14" />
-        </button>
+        />
       </div>
     </div>
 
@@ -108,38 +96,38 @@
     >
       <button
         id="btn.workflow.select_dropdown"
+        type="button"
         data-testid="btn-selected-workflow"
-        class="px-2.5 py-1 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-800 transition flex items-center space-x-1.5 truncate max-w-full text-gray-800 dark:text-gray-200 shadow-2xs"
+        class="px-2.5 py-1 text-xs font-medium rounded-lg border border-border bg-muted/50 hover:bg-muted transition flex items-center gap-1.5 truncate max-w-full text-foreground shadow-2xs cursor-pointer"
         :title="`Current Workflow: ${currentWorkflowName} ${
           currentFilePath ? `(${currentFilePath})` : ''
         } - Click to switch`"
         @click="toggleWorkflowDropdown"
       >
-        <v-remixicon
-          name="riFlowChartLine"
-          size="14"
-          class="text-accent shrink-0"
-        />
-        <span class="truncate font-semibold">{{ currentWorkflowName }}</span>
+        <GitBranch class="size-3.5 text-primary shrink-0" />
+        <span class="truncate font-semibold text-xs">{{
+          currentWorkflowName
+        }}</span>
 
-        <!-- Unsaved changes dirty dot -->
-        <span
+        <!-- Unsaved changes dirty badge -->
+        <Badge
           v-if="isDirty"
-          class="w-2 h-2 rounded-full bg-amber-500 shrink-0"
-          title="Unsaved changes"
-        ></span>
+          variant="warning"
+          class="shrink-0 px-1 py-0 text-[10px]"
+        >
+          Unsaved
+        </Badge>
 
-        <span
+        <Badge
           v-if="currentWorkflowBlocksCount !== undefined"
-          class="hidden md:inline px-1 py-0.2 rounded text-[10px] bg-gray-200/80 dark:bg-gray-700/80 text-gray-500 dark:text-gray-400 shrink-0 font-mono"
+          variant="outline"
+          class="hidden md:inline-flex shrink-0 px-1 py-0 text-[10px] font-mono"
         >
           {{ currentWorkflowBlocksCount }} blocks
-        </span>
+        </Badge>
 
-        <v-remixicon
-          name="riArrowDownSLine"
-          size="14"
-          class="text-gray-400 shrink-0 transition-transform duration-150"
+        <ChevronDown
+          class="size-3.5 text-muted-foreground shrink-0 transition-transform duration-150"
           :class="{ 'rotate-180': isDropdownOpen }"
         />
       </button>
@@ -148,23 +136,19 @@
       <div
         v-if="isDropdownOpen"
         data-testid="dropdown-workflows-menu"
-        class="absolute top-full mt-1.5 w-72 sm:w-80 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-xl py-2 z-50 text-xs text-gray-800 dark:text-gray-200 animate-in fade-in slide-in-from-top-2 duration-150"
+        class="absolute top-full mt-1.5 w-72 sm:w-80 rounded-xl border border-border bg-card shadow-xl py-2 z-50 text-xs text-foreground animate-in fade-in slide-in-from-top-2 duration-150"
       >
         <!-- Search Filter -->
-        <div class="px-2.5 pb-2 border-b border-gray-100 dark:border-gray-700">
-          <div class="relative">
-            <v-remixicon
-              name="riSearch2Line"
-              size="13"
-              class="absolute left-2.5 top-2 text-gray-400"
-            />
+        <div class="px-2.5 pb-2 border-b border-border">
+          <div class="relative flex items-center">
+            <Search class="size-3.5 absolute left-2.5 text-muted-foreground" />
             <input
               ref="searchInputRef"
               v-model="searchQuery"
               data-testid="input-workflow-search"
               type="text"
               placeholder="Filter workflows..."
-              class="w-full pl-7 pr-2.5 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
+              class="w-full pl-7 pr-2.5 py-1 text-xs rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-ring text-foreground"
               @click.stop
             />
           </div>
@@ -174,7 +158,7 @@
         <div class="max-h-60 overflow-y-auto py-1 px-1 space-y-0.5">
           <div
             v-if="filteredWorkflows.length === 0"
-            class="py-6 text-center text-gray-400 text-[11px]"
+            class="py-6 text-center text-muted-foreground text-[11px]"
           >
             No matching workflows found
           </div>
@@ -182,68 +166,68 @@
           <button
             v-for="wf in filteredWorkflows"
             :key="wf.path || wf.id || wf.name"
-            class="w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between transition hover:bg-gray-100 dark:hover:bg-gray-700/70"
+            type="button"
+            class="w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between transition hover:bg-muted cursor-pointer"
             :class="{
-              'bg-accent/10 text-accent font-semibold':
+              'bg-primary/10 text-primary font-semibold':
                 wf.name === currentWorkflowName || wf.path === currentFilePath,
             }"
             @click="onSelectWorkflow(wf)"
           >
-            <div class="flex items-center space-x-2 min-w-0 pr-2">
-              <v-remixicon
-                name="riFlowChartLine"
-                size="14"
+            <div class="flex items-center gap-2 min-w-0 pr-2">
+              <GitBranch
+                class="size-3.5 shrink-0"
                 :class="
                   wf.name === currentWorkflowName || wf.path === currentFilePath
-                    ? 'text-accent'
-                    : 'text-gray-400'
+                    ? 'text-primary'
+                    : 'text-muted-foreground'
                 "
               />
               <div class="flex flex-col min-w-0">
                 <span class="truncate font-medium text-xs">{{ wf.name }}</span>
                 <span
                   v-if="wf.path"
-                  class="text-[10px] text-gray-400 font-mono truncate"
+                  class="text-[10px] text-muted-foreground font-mono truncate"
                 >
                   {{ wf.path }}
                 </span>
               </div>
             </div>
 
-            <v-remixicon
+            <Check
               v-if="
                 wf.name === currentWorkflowName || wf.path === currentFilePath
               "
-              name="riCheckLine"
-              size="14"
-              class="text-accent shrink-0"
+              class="size-3.5 text-primary shrink-0"
             />
           </button>
         </div>
 
         <!-- Bottom Actions -->
         <div
-          class="pt-1.5 border-t border-gray-100 dark:border-gray-700 px-2 flex items-center justify-between text-[11px]"
+          class="pt-1.5 border-t border-border px-2 flex items-center justify-between text-[11px]"
         >
           <button
-            class="text-accent hover:underline flex items-center space-x-1 py-1 px-1.5 rounded hover:bg-accent/10"
+            type="button"
+            class="text-primary hover:underline flex items-center gap-1 py-1 px-1.5 rounded hover:bg-primary/10 cursor-pointer"
             @click="
               $emit('newWorkflow');
               isDropdownOpen = false;
             "
           >
-            <v-remixicon name="riAddLine" size="13" />
+            <Plus class="size-3" />
             <span>New Blank</span>
           </button>
 
           <button
-            class="text-gray-600 dark:text-gray-400 hover:underline flex items-center space-x-1 py-1 px-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+            type="button"
+            class="text-muted-foreground hover:underline flex items-center gap-1 py-1 px-1.5 rounded hover:bg-muted cursor-pointer"
             @click="
               $emit('importWorkflow');
               isDropdownOpen = false;
             "
           >
-            <v-remixicon name="riUploadLine" size="13" />
+            <Upload class="size-3" />
             <span>Import File</span>
           </button>
         </div>
@@ -251,17 +235,17 @@
     </div>
 
     <!-- Right Section: Data, Secrets, Linter, Status & Live Debug Controls -->
-    <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+    <div class="flex items-center gap-1 shrink-0">
       <!-- Live Lint Button -->
-      <button
+      <Button
         v-if="automaCoreStatus === 'online'"
-        id="btn.workflow.lint"
+        variant="ghost"
+        size="sm"
         data-testid="btn-lint-workflow"
-        class="px-2 py-1 text-xs font-medium rounded-md border flex items-center space-x-1 transition"
         :class="
           lintIssuesCount > 0
-            ? 'border-amber-500/50 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400'
-            : 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400'
+            ? 'text-amber-500 hover:bg-amber-500/10'
+            : 'text-emerald-500 hover:bg-emerald-500/10'
         "
         :title="
           lintIssuesCount > 0
@@ -270,166 +254,151 @@
         "
         @click="$emit('triggerLint')"
       >
-        <v-remixicon
-          :name="lintIssuesCount > 0 ? 'riAlertLine' : 'riCheckLine'"
-          size="13"
-        />
+        <AlertCircle v-if="lintIssuesCount > 0" class="size-3.5 mr-1" />
+        <Check v-else class="size-3.5 mr-1" />
         <span class="hidden 2xl:inline">{{
           lintIssuesCount > 0 ? `${lintIssuesCount} Issues` : 'Valid'
         }}</span>
-      </button>
+      </Button>
 
       <!-- Tables Modal -->
-      <button
-        id="btn.storage.table"
+      <Button
+        variant="outline"
+        size="sm"
         data-testid="btn-table-data"
-        class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="SQLite Storage Tables"
         @click="$emit('openModal', 'tables')"
       >
-        <v-remixicon name="riTable2" size="14" />
+        <Table class="size-3.5 mr-1" />
         <span class="hidden xl:inline">Tables</span>
-      </button>
+      </Button>
 
       <!-- Variables Modal -->
-      <button
-        id="btn.storage.var"
+      <Button
+        variant="outline"
+        size="sm"
         data-testid="btn-global-data"
-        class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="Global Variables"
         @click="$emit('openModal', 'global-data')"
       >
-        <v-remixicon name="riDatabase2Line" size="14" />
+        <Database class="size-3.5 mr-1" />
         <span class="hidden xl:inline">Variables</span>
-      </button>
+      </Button>
 
       <!-- Secrets Modal -->
-      <button
+      <Button
         v-if="automaCoreStatus === 'online'"
-        id="btn.storage.cred"
+        variant="outline"
+        size="sm"
         data-testid="btn-secrets"
-        class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="Vault Secrets & AES Encryption"
         @click="$emit('openModal', 'secrets')"
       >
-        <v-remixicon name="riKey2Line" size="14" />
+        <KeyRound class="size-3.5 mr-1" />
         <span class="hidden xl:inline">Secrets</span>
-      </button>
+      </Button>
 
       <!-- Settings Modal -->
-      <button
-        id="btn.workflow.settings"
+      <Button
+        variant="outline"
+        size="sm"
         data-testid="btn-settings"
-        class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="Workflow Settings"
         @click="$emit('openModal', 'settings')"
       >
-        <v-remixicon name="riSettings3Line" size="14" />
+        <Settings class="size-3.5 mr-1" />
         <span class="hidden xl:inline">Settings</span>
-      </button>
+      </Button>
 
       <!-- Logs Modal -->
-      <button
+      <Button
         v-if="automaCoreStatus === 'online'"
-        id="btn.history.view_logs"
+        variant="outline"
+        size="sm"
         data-testid="btn-view-job-logs"
-        class="p-1.5 lg:px-2 lg:py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1"
         title="Execution Logs & History"
         @click="$emit('openModal', 'logs')"
       >
-        <v-remixicon name="riHistoryLine" size="14" />
+        <History class="size-3.5 mr-1" />
         <span class="hidden xl:inline">Logs</span>
-        <span
+        <Badge
           v-if="logsCount > 0"
+          variant="secondary"
           data-testid="logs-count-badge"
-          class="px-1.5 py-0.2 rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-semibold"
+          class="ml-1 px-1 py-0 text-[10px]"
         >
           {{ logsCount }}
-        </span>
-      </button>
+        </Badge>
+      </Button>
 
       <!-- Slot for Studio Core Status Indicator -->
       <slot name="status" />
 
       <!-- Save Button -->
-      <button
+      <AutomaButton
         v-if="automaCoreStatus === 'online'"
         id="btn.workflow.save"
-        data-testid="btn-save-workflow"
-        class="px-2.5 py-1.5 text-xs font-medium rounded-lg border flex items-center space-x-1.5 transition border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
+        size="sm"
+        variant="outline"
         :title="
           currentFilePath
             ? `Save to Storage (${currentFilePath}) [Ctrl+S]`
             : 'Save to Storage / Export [Ctrl+S]'
         "
         @click="$emit('saveWorkflow')"
-      >
-        <v-remixicon name="riSaveLine" size="14" />
-        <span class="hidden sm:inline">Save</span>
-      </button>
+      />
 
       <!-- Export Button -->
-      <button
+      <Button
         v-if="automaCoreStatus === 'online'"
-        id="btn.workflow.export"
+        variant="outline"
+        size="sm"
         data-testid="btn-export-json"
-        class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1.5"
         title="Export Workflow JSON"
         @click="$emit('exportJson')"
       >
-        <v-remixicon name="riDownloadLine" size="14" />
+        <Download class="size-3.5 mr-1" />
         <span class="hidden sm:inline">Export</span>
-      </button>
+      </Button>
 
       <!-- Live Execution Controls / Run Button -->
-      <div
-        v-if="automaCoreStatus === 'online'"
-        class="flex items-center space-x-1"
-      >
+      <div v-if="automaCoreStatus === 'online'" class="flex items-center gap-1">
         <!-- If Job is currently running, show Pause/Resume and Stop buttons -->
         <template v-if="isJobRunning">
-          <button
-            :id="isJobPaused ? 'btn.workflow.resume' : 'btn.workflow.pause'"
-            :data-testid="
-              isJobPaused ? 'btn-resume-workflow' : 'btn-pause-workflow'
-            "
-            class="px-2.5 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1 transition border border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 hover:bg-amber-100"
+          <Button
+            variant="outline"
+            size="sm"
+            class="border-amber-500/40 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
             :title="
               isJobPaused ? 'Resume Job (WebSocket)' : 'Pause Job (WebSocket)'
             "
             @click="isJobPaused ? $emit('resumeJob') : $emit('pauseJob')"
           >
-            <v-remixicon
-              :name="isJobPaused ? 'riPlayLine' : 'riPauseLine'"
-              size="14"
-            />
+            <Play v-if="isJobPaused" class="size-3.5 mr-1" />
+            <Pause v-else class="size-3.5 mr-1" />
             <span>{{ isJobPaused ? 'Resume' : 'Pause' }}</span>
-          </button>
+          </Button>
 
-          <button
-            id="btn.workflow.stop"
-            data-testid="btn-stop-workflow"
-            class="px-2.5 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1 transition border border-rose-500/40 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100"
+          <Button
+            variant="destructive"
+            size="sm"
             title="Stop Job Immediately (WebSocket /api/v1/ws)"
             @click="$emit('stopJob')"
           >
-            <v-remixicon name="riStopLine" size="14" />
+            <Square class="size-3.5 mr-1" />
             <span>Stop</span>
-          </button>
+          </Button>
         </template>
 
         <!-- Standard Run Button -->
-        <button
+        <AutomaButton
           v-else
           id="btn.workflow.run"
-          data-testid="btn-run-workflow"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg flex items-center space-x-1.5 shadow-sm transition bg-accent hover:bg-accent/90 text-white"
+          size="sm"
+          variant="primary"
           title="Execute Workflow via automa-core"
           @click="$emit('runWorkflow')"
-        >
-          <v-remixicon name="riPlayLine" size="14" />
-          <span>Run</span>
-        </button>
+        />
       </div>
     </div>
   </header>
@@ -437,6 +406,30 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { AutomaButton, Button, Badge } from '@automa/ui';
+import {
+  AlertCircle,
+  Check,
+  ChevronDown,
+  Database,
+  Download,
+  FolderOpen,
+  FolderTree,
+  GitBranch,
+  Globe,
+  History,
+  KeyRound,
+  PanelLeft,
+  PanelLeftClose,
+  Pause,
+  Play,
+  Plus,
+  Search,
+  Settings,
+  Square,
+  Table,
+  Upload,
+} from 'lucide-vue-next';
 
 const props = defineProps({
   showSidebar: {

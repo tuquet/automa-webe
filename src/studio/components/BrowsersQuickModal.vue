@@ -5,115 +5,115 @@
     content-class="max-w-2xl"
     @update:model-value="$emit('update:modelValue', $event)"
   >
-    <div class="space-y-4 py-1 text-xs text-gray-800 dark:text-gray-200">
+    <div class="space-y-4 py-1 text-xs text-foreground">
       <!-- Top Action Bar -->
       <div
-        class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 dark:border-gray-700 pb-3"
+        class="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3"
       >
         <div class="flex flex-wrap items-center gap-1.5">
-          <button
+          <Button
+            variant="default"
+            size="sm"
             data-testid="btn-create-browser"
-            class="px-2.5 py-1.5 rounded-lg bg-accent text-white font-medium hover:bg-accent/90 flex items-center space-x-1 transition shadow-xs"
             @click="showCreateForm = !showCreateForm"
           >
-            <v-remixicon name="riAddLine" size="14" />
+            <Plus class="size-3.5 mr-1" />
             <span>New Browser</span>
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             data-testid="btn-autodetect-browsers"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
             title="Auto-detect host Chrome, Edge, Brave, Chromium instances"
             :disabled="isDetecting"
             @click="onAutoDetect"
           >
-            <v-remixicon
-              name="riSearch2Line"
-              size="14"
+            <Search
+              class="size-3.5 mr-1"
               :class="{ 'animate-spin': isDetecting }"
             />
             <span>Auto-Detect</span>
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             data-testid="btn-download-chromium"
-            class="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition"
             title="Download portable managed Chromium binary"
             :disabled="isDownloading"
             @click="onDownloadChromium"
           >
-            <v-remixicon
-              name="riDownloadLine"
-              size="14"
+            <Download
+              class="size-3.5 mr-1"
               :class="{ 'animate-spin': isDownloading }"
             />
             <span>Download Chromium</span>
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             data-testid="btn-refresh-browsers"
-            class="px-2 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-1 transition text-gray-500"
             @click="loadBrowsers"
           >
-            <v-remixicon
-              name="riRefreshLine"
-              size="14"
+            <RefreshCw
+              class="size-3.5"
               :class="{ 'animate-spin': isLoading }"
             />
-          </button>
+          </Button>
         </div>
 
-        <button
+        <Button
+          variant="destructive"
+          size="sm"
           data-testid="btn-kill-all-browsers"
-          class="px-2.5 py-1.5 rounded-lg border border-rose-500/40 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 font-medium flex items-center space-x-1 transition"
           title="Force terminate all Chrome instances and child workers"
           @click="onKillAllBrowsers"
         >
-          <v-remixicon name="riStopCircleLine" size="14" />
+          <Square class="size-3.5 mr-1" />
           <span>Kill All</span>
-        </button>
+        </Button>
       </div>
 
       <!-- Create New Browser Form (Collapsible) -->
       <div
         v-if="showCreateForm"
-        class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 space-y-3"
+        class="p-3 rounded-lg bg-muted/40 border border-border space-y-3"
       >
         <h4
-          class="font-semibold text-xs text-gray-900 dark:text-gray-100 flex items-center"
+          class="font-semibold text-xs text-foreground flex items-center gap-1.5"
         >
-          <v-remixicon
-            name="riAddCircleLine"
-            size="14"
-            class="mr-1 text-accent"
-          />
-          Create Anti-Detect Browser Profile
+          <Plus class="size-3.5 text-primary" />
+          <span>Create Anti-Detect Browser Profile</span>
         </h4>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label
-              class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-              >Browser Name *</label
+              class="block text-[11px] font-medium text-muted-foreground mb-1"
             >
-            <input
+              Browser Name *
+            </label>
+            <Input
               v-model="newBrowser.name"
               data-testid="input-browser-name"
               type="text"
               placeholder="e.g. Chrome Profile 1"
-              class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
+              class="h-8 text-xs"
             />
           </div>
 
           <div>
             <label
-              class="block text-[11px] font-medium text-gray-600 dark:text-gray-400 mb-1"
-              >Browser Type</label
+              class="block text-[11px] font-medium text-muted-foreground mb-1"
             >
+              Browser Type
+            </label>
             <select
               v-model="newBrowser.browser_type"
               data-testid="select-browser-type"
-              class="w-full px-2.5 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-accent"
+              class="w-full h-8 px-2.5 py-1 rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-ring text-foreground text-xs"
             >
               <option value="chromium">Chromium</option>
               <option value="chrome">Google Chrome</option>
@@ -122,73 +122,65 @@
           </div>
         </div>
 
-        <div class="flex items-center justify-end space-x-2 pt-1">
-          <button
-            class="px-2.5 py-1 text-xs rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700"
-            @click="showCreateForm = false"
-          >
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <Button variant="outline" size="xs" @click="showCreateForm = false">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="default"
+            size="xs"
             data-testid="btn-submit-create-browser"
-            class="px-3 py-1 text-xs rounded-md bg-accent text-white font-medium hover:bg-accent/90 disabled:opacity-50"
             :disabled="!newBrowser.name || isSubmitting"
             @click="onCreateBrowser"
           >
             Create Profile
-          </button>
+          </Button>
         </div>
       </div>
 
       <!-- Browsers List -->
       <div class="max-h-72 overflow-y-auto space-y-2 pr-1">
-        <div v-if="isLoading" class="py-8 text-center text-gray-400">
-          <v-remixicon
-            name="riLoader2Line"
-            size="20"
-            class="animate-spin inline-block mb-1"
-          />
+        <div v-if="isLoading" class="py-8 text-center text-muted-foreground">
+          <Loader2 class="size-5 animate-spin inline-block mb-1 text-primary" />
           <p>Loading browser profiles from SQLite...</p>
         </div>
 
         <!-- Level 3 Master Resolver / Self-Healing Empty State -->
         <div
           v-else-if="browsers.length === 0"
-          class="p-5 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 text-center bg-gray-50/50 dark:bg-gray-850/40 space-y-3"
+          class="p-5 rounded-xl border border-dashed border-border text-center bg-muted/20 space-y-3"
         >
-          <v-remixicon
-            name="riGlobalLine"
-            size="28"
-            class="inline-block text-accent"
-          />
+          <Globe class="size-7 inline-block text-primary" />
           <div>
-            <p class="font-semibold text-gray-800 dark:text-gray-200">
+            <p class="font-semibold text-foreground">
               No Browser Profiles Configured
             </p>
-            <p class="text-[11px] text-gray-400 max-w-sm mx-auto mt-1">
+            <p class="text-[11px] text-muted-foreground max-w-sm mx-auto mt-1">
               Choose an action below to self-heal and configure runtime browsers
               for workflow executions:
             </p>
           </div>
 
           <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
-            <button
+            <Button
+              variant="default"
+              size="sm"
               data-testid="btn-autodetect-browsers-empty"
-              class="px-3 py-1.5 rounded-lg bg-accent text-white font-medium hover:bg-accent/90 flex items-center space-x-1.5 shadow-xs transition"
               @click="onAutoDetect"
             >
-              <v-remixicon name="riSearch2Line" size="14" />
+              <Search class="size-3.5 mr-1" />
               <span>Auto-Detect Host Browsers</span>
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               data-testid="btn-download-chromium-empty"
-              class="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium flex items-center space-x-1.5 transition"
               @click="onDownloadChromium"
             >
-              <v-remixicon name="riDownloadLine" size="14" />
+              <Download class="size-3.5 mr-1" />
               <span>Download Managed Chromium</span>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -196,101 +188,104 @@
         <div
           v-for="b in browsers"
           :key="b.id"
-          class="p-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/80 hover:border-gray-300 dark:hover:border-gray-600 transition flex items-center justify-between"
+          class="p-2.5 rounded-lg border border-border bg-card hover:border-border/80 transition flex items-center justify-between"
         >
-          <div class="flex items-center space-x-2.5 min-w-0 pr-2">
+          <div class="flex items-center gap-2.5 min-w-0 pr-2">
             <div
-              class="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+              class="size-7 rounded-md flex items-center justify-center shrink-0"
               :class="
                 b.isOnline
-                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-400'
+                  ? 'bg-emerald-500/10 text-emerald-500'
+                  : 'bg-muted text-muted-foreground'
               "
             >
-              <v-remixicon name="riGlobalLine" size="16" />
+              <Globe class="size-4" />
             </div>
 
             <div class="flex flex-col min-w-0">
-              <div class="flex items-center space-x-1.5">
-                <span
-                  class="font-medium text-xs text-gray-900 dark:text-gray-100 truncate"
-                  >{{ b.name || b.id }}</span
-                >
-                <span
+              <div class="flex items-center gap-1.5">
+                <span class="font-medium text-xs text-foreground truncate">
+                  {{ b.name || b.id }}
+                </span>
+                <Badge
                   v-if="b.id === defaultBrowserId"
-                  class="px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700"
+                  variant="warning"
+                  class="text-[9px] px-1 py-0"
                 >
                   ⭐ Default
-                </span>
-                <span
-                  class="px-1.5 py-0.2 rounded-full text-[10px] font-semibold"
-                  :class="
-                    b.isOnline
-                      ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
-                  "
+                </Badge>
+                <Badge
+                  :variant="b.isOnline ? 'success' : 'outline'"
+                  class="text-[9px] px-1 py-0"
                 >
                   {{ b.isOnline ? 'Online' : 'Offline' }}
-                </span>
+                </Badge>
               </div>
-              <span class="text-[10px] text-gray-400 font-mono truncate"
-                >ID: {{ b.id }}</span
+              <span
+                class="text-[10px] text-muted-foreground font-mono truncate"
               >
+                ID: {{ b.id }}
+              </span>
             </div>
           </div>
 
-          <div class="flex items-center space-x-1.5 shrink-0">
+          <div class="flex items-center gap-1.5 shrink-0">
             <!-- Set as Default Button -->
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               data-testid="btn-set-default-browser"
-              class="p-1 rounded-md transition"
               :class="
                 b.id === defaultBrowserId
-                  ? 'text-amber-500 hover:text-amber-600 bg-amber-50 dark:bg-amber-950/40'
-                  : 'text-gray-400 hover:text-amber-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'text-amber-500 hover:text-amber-600'
+                  : 'text-muted-foreground'
               "
               :title="
-                b.id === defaultBrowserId
-                  ? 'Default Browser (Auto-selected for runs)'
-                  : 'Set as Default Browser'
+                b.id === defaultBrowserId ? 'Default Browser' : 'Set as Default'
               "
               @click="onSetDefault(b.id)"
             >
-              <v-remixicon
-                :name="b.id === defaultBrowserId ? 'riStarFill' : 'riStarLine'"
-                size="15"
+              <Star
+                class="size-3.5"
+                :class="{ 'fill-amber-500': b.id === defaultBrowserId }"
               />
-            </button>
+            </Button>
 
             <!-- Launch / Stop Session -->
-            <button
+            <Button
               v-if="!b.isOnline"
+              variant="outline"
+              size="xs"
               data-testid="btn-launch-browser"
-              class="px-2 py-1 text-xs rounded-md border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition"
+              class="text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/10"
               title="Launch browser session"
               @click="onLaunchBrowser(b.id)"
             >
               Launch
-            </button>
-            <button
+            </Button>
+            <Button
               v-else
+              variant="outline"
+              size="xs"
               data-testid="btn-stop-browser"
-              class="px-2 py-1 text-xs rounded-md border border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 hover:bg-amber-100 transition"
+              class="text-amber-500 border-amber-500/30 hover:bg-amber-500/10"
               title="Close browser session"
               @click="onCloseBrowser(b.id)"
             >
               Close
-            </button>
+            </Button>
 
             <!-- Delete Profile -->
-            <button
+            <Button
+              variant="ghost"
+              size="icon-sm"
               data-testid="btn-delete-browser"
-              class="p-1 text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded transition"
+              class="text-muted-foreground hover:text-destructive"
               title="Delete browser profile"
               @click="onDeleteBrowser(b.id)"
             >
-              <v-remixicon name="riDeleteBin7Line" size="14" />
-            </button>
+              <Trash2 class="size-3.5" />
+            </Button>
           </div>
         </div>
       </div>
@@ -300,6 +295,18 @@
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted, watch } from 'vue';
+import { Badge, Button, Input } from '@automa/ui';
+import {
+  Download,
+  Globe,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Search,
+  Square,
+  Star,
+  Trash2,
+} from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import { useDaemonHealth } from '../../composable/useDaemonHealth';
 import {
@@ -384,9 +391,8 @@ async function onAutoDetect() {
 async function onDownloadChromium() {
   isDownloading.value = true;
   try {
-    toast.info('Starting managed Chromium download...');
     await downloadChromiumBinary();
-    toast.success('Managed Chromium installed successfully!');
+    toast.success('Managed Chromium downloaded successfully!');
     await loadBrowsers();
   } catch (err) {
     toast.error(`Download failed: ${err.message}`);
@@ -403,7 +409,7 @@ async function onCreateBrowser() {
       name: newBrowser.name,
       browser_type: newBrowser.browser_type,
     });
-    toast.success('Browser profile created successfully!');
+    toast.success('Browser profile created!');
     newBrowser.name = '';
     showCreateForm.value = false;
     await loadBrowsers();
