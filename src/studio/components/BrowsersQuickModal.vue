@@ -299,8 +299,9 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, watch } from 'vue';
 import { useToast } from 'vue-toastification';
+import { useDaemonHealth } from '../../composable/useDaemonHealth';
 import {
   fetchBrowsers,
   createBrowserProfile,
@@ -323,6 +324,7 @@ const props = defineProps({
 
 defineEmits(['update:modelValue']);
 const toast = useToast();
+const daemonHealth = useDaemonHealth();
 
 const browsers = ref([]);
 const defaultBrowserId = ref(null);
@@ -331,6 +333,7 @@ const isSubmitting = ref(false);
 const isDetecting = ref(false);
 const isDownloading = ref(false);
 const showCreateForm = ref(false);
+let unsubSse = null;
 
 const newBrowser = reactive({
   name: '',
@@ -460,5 +463,33 @@ watch(
 
 onMounted(() => {
   if (props.modelValue) loadBrowsers();
+
+  // SSE Real-time Reactive Invalidation for Browser Fleet & Sessions
+  if (daemonHealth?.addEventListener) {
+    unsubSse = daemonHealth.addEventListener((payload) => {
+      if (
+        !payload ||
+        payload.type === 'browser_created' ||
+        payload.type === 'browser_deleted' ||
+        payload.type === 'browser_online' ||
+        payload.type === 'browser_offline' ||
+        payload.type === 'browser_session_started' ||
+        payload.type === 'browser_session_stopped' ||
+        payload.type === 'settings_updated' ||
+        (payload.message && payload.message.toLowerCase().includes('browser'))
+      ) {
+        if (props.modelValue) {
+          loadBrowsers();
+        }
+      }
+    });
+  }
+});
+
+onUnmounted(() => {
+  if (unsubSse) {
+    unsubSse();
+    unsubSse = null;
+  }
 });
 </script>

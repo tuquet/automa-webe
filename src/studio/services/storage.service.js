@@ -22,7 +22,7 @@ import {
   createBrowser as apiCreateBrowser,
   deleteBrowser as apiDeleteBrowser,
   killAllBrowsers as apiKillAllBrowsers,
-  startBrowserSession as apiStartBrowserSession,
+  startBrowser as apiStartBrowserSession,
   stopBrowserSession as apiStopBrowserSession,
   getSystemMetrics as apiGetSystemMetrics,
   getAppSettings as apiGetAppSettings,
