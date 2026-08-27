@@ -40,6 +40,23 @@ import {
 
 export const DAEMON_BASE_URL = 'http://127.0.0.1:8765';
 
+export function formatApiError(err) {
+  if (!err) return 'Unknown error';
+  if (typeof err === 'string') return err.trim() || 'Unknown error';
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object') {
+    if (err.message) return err.message;
+    if (err.error) return err.error;
+    if (err.detail) return err.detail;
+    try {
+      return JSON.stringify(err);
+    } catch (_) {
+      return String(err);
+    }
+  }
+  return String(err);
+}
+
 const SYNC_QUEUE_KEY = '__automa_storage_sync_queue';
 
 function getSyncQueue() {
@@ -209,7 +226,7 @@ export async function addStorageTableRow(tableId, rowData) {
     path: { id: tableId },
     body: rowData,
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -309,7 +326,7 @@ export async function createStorageCredential(credData) {
       description: credData.description || '',
     },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -318,7 +335,7 @@ export async function deleteStorageCredential(name) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: name },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -330,7 +347,7 @@ export async function encryptSecretText(secret, passphrase) {
       passphrase,
     },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -355,7 +372,7 @@ export async function createBrowserProfile(profileData) {
     baseUrl: DAEMON_BASE_URL,
     body: profileData,
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -364,7 +381,7 @@ export async function deleteBrowserProfile(browserId) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: browserId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -373,7 +390,7 @@ export async function launchBrowserSession(browserId) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: browserId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -382,19 +399,19 @@ export async function closeBrowserSession(browserId) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: browserId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
 export async function killAllBrowserProcesses() {
   const res = await apiKillAllBrowsers({ baseUrl: DAEMON_BASE_URL });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
 export async function autoDetectHostBrowsers() {
   const res = await apiAutoDetectBrowsers({ baseUrl: DAEMON_BASE_URL });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data || [];
 }
 
@@ -403,7 +420,7 @@ export async function downloadChromiumBinary() {
     baseUrl: DAEMON_BASE_URL,
     body: { browser: 'chromium' },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -416,7 +433,7 @@ export async function setDefaultBrowserProfile(profileId) {
       },
     },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -454,7 +471,7 @@ export async function saveAppSettings(settings) {
     baseUrl: DAEMON_BASE_URL,
     body: settings,
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -463,7 +480,7 @@ export async function patchGridMatrixSettings(gridConfig) {
     baseUrl: DAEMON_BASE_URL,
     body: { grid: gridConfig },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -486,7 +503,7 @@ export async function cancelJob(jobId) {
     baseUrl: DAEMON_BASE_URL,
     path: { job_id: jobId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -505,7 +522,7 @@ export async function runCampaign(campaignId) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: campaignId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
@@ -514,7 +531,7 @@ export async function stopCampaign(campaignId) {
     baseUrl: DAEMON_BASE_URL,
     path: { id: campaignId },
   });
-  if (res.error) throw new Error(String(res.error));
+  if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
 }
 
