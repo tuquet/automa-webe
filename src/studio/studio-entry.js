@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import { createHead } from '@vueuse/head';
 import { createRouter, createMemoryHistory } from 'vue-router';
+import { createAutomaUiPlugin } from '@automa/ui';
+import '@automa/ui/dist/ui.css';
 import StudioApp from './StudioApp.vue';
 import pinia from '../lib/pinia';
 import compsUi from '../lib/compsUi';
@@ -61,6 +63,7 @@ app.use(router);
 app.use(head);
 app.use(compsUi);
 app.use(pinia);
+app.use(createAutomaUiPlugin({ baseUrl: 'http://127.0.0.1:8765' }));
 app.use(vueI18n);
 app.use(vueToastification);
 app.use(vRemixicon, icons);

@@ -33,23 +33,12 @@
         >
           Target Browser Profile
         </label>
-        <select
-          :value="runModalState.browserId"
-          data-testid="select-browser-profile"
-          class="w-full px-3 py-2 text-xs rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-accent text-gray-800 dark:text-gray-100"
-          @change="$emit('update:browserId', $event.target.value)"
-        >
-          <option value="daemon_worker">
-            ⚡ Default Chromium (Core Worker)
-          </option>
-          <option
-            v-for="b in automaCoreState?.browsers || []"
-            :key="b.id"
-            :value="b.id"
-          >
-            🌐 {{ b.name || b.id }} {{ b.isOnline ? '(Online)' : '' }}
-          </option>
-        </select>
+        <RemoteVirtualSelect
+          id="select.browser.profile"
+          :model-value="runModalState.browserId"
+          placeholder="Select browser profile..."
+          @update:model-value="$emit('update:browserId', $event)"
+        />
       </div>
 
       <!-- Workflow Parameters Section -->
@@ -185,6 +174,8 @@
 </template>
 
 <script setup>
+import { RemoteVirtualSelect } from '@automa/ui';
+
 defineProps({
   modelValue: {
     type: Boolean,

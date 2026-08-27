@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@automa/types": "workspace:*",
+    "@automa/ui": "workspace:*",
     "@codemirror/autocomplete": "^6.9.0",
     "@codemirror/commands": "^6.6.1",
     "@codemirror/lang-css": "^6.2.1",
