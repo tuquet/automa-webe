@@ -1672,6 +1672,22 @@ async function runWorkflow() {
   );
 }
 
+function notifySidebarChanged() {
+  if (
+    typeof window !== 'undefined' &&
+    window.parent &&
+    window.parent !== window
+  ) {
+    window.parent.postMessage(
+      {
+        type: 'automa:sidebar-changed',
+        showSidebar: Boolean(state.showSidebar),
+      },
+      '*'
+    );
+  }
+}
+
 // Global Keyboard Shortcuts (Ctrl+C, Ctrl+V, Ctrl+D, Ctrl+A, Ctrl+Z, Ctrl+Y, Ctrl+S)
 function onKeydown(e) {
   if (
@@ -1708,6 +1724,10 @@ function onKeydown(e) {
   } else if (isMod && key === 'y') {
     commandManager.redo();
     e.preventDefault();
+  } else if (isMod && key === 'b') {
+    state.showSidebar = !state.showSidebar;
+    notifySidebarChanged();
+    e.preventDefault();
   }
 }
 
@@ -1721,6 +1741,12 @@ function onWindowMessage(e) {
     loadWorkflowData(e.data.data);
   } else if (e.data.type === 'automa:set-headless') {
     isHeadless.value = Boolean(e.data.headless);
+  } else if (e.data.type === 'automa:set-sidebar') {
+    state.showSidebar = Boolean(e.data.show);
+    notifySidebarChanged();
+  } else if (e.data.type === 'automa:toggle-sidebar') {
+    state.showSidebar = !state.showSidebar;
+    notifySidebarChanged();
   } else if (
     e.data.type === 'automa:set-theme' ||
     e.data.type === 'automa:theme-changed'
