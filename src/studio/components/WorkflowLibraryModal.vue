@@ -1,145 +1,125 @@
 <template>
   <div
-    class="storage-file-explorer flex flex-col h-[520px] text-xs text-foreground"
+    class="workflow-library-modal flex flex-col h-[520px] text-xs text-foreground"
   >
-    <!-- Search and Action Bar -->
-    <div class="flex items-center gap-2 pb-3 border-b border-border">
-      <div class="relative flex-1 flex items-center">
-        <Search class="size-3.5 absolute left-2.5 text-muted-foreground" />
-        <Input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search workflows & campaigns in Storage..."
-          class="w-full pl-8 pr-3 h-8 text-xs"
-        />
-      </div>
+    <!-- Top Action & Nav Bar -->
+    <div
+      class="flex items-center justify-between gap-2 pb-2.5 border-b border-border"
+    >
+      <!-- Single Tier Tabs: Workflows, Packages, Campaigns -->
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer"
+          :class="
+            activeTab === 'workflows'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:bg-muted'
+          "
+          data-testid="tab-explorer-workflows"
+          @click="activeTab = 'workflows'"
+        >
+          <FileCode class="size-3.5" />
+          <span>Workflows</span>
+          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
+            workflowsCount
+          }}</span>
+        </button>
 
-      <Button
-        variant="outline"
-        size="sm"
-        title="Refresh Storage Files List"
-        @click="loadFiles"
-      >
-        <RefreshCw
-          class="size-3.5 mr-1"
-          :class="{ 'animate-spin': isLoading }"
-        />
-        <span class="hidden sm:inline">Refresh</span>
-      </Button>
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer"
+          :class="
+            activeTab === 'packages'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:bg-muted'
+          "
+          data-testid="tab-explorer-packages"
+          @click="activeTab = 'packages'"
+        >
+          <Package class="size-3.5" />
+          <span>Packages</span>
+          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
+            packagesCount
+          }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer"
+          :class="
+            activeTab === 'campaigns'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:bg-muted'
+          "
+          data-testid="tab-explorer-campaigns"
+          @click="activeTab = 'campaigns'"
+        >
+          <Users class="size-3.5" />
+          <span>Campaigns</span>
+          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
+            campaigns.length
+          }}</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Files List Area -->
-    <div class="flex-1 overflow-y-auto py-3 space-y-4">
-      <div v-if="isLoading" class="py-12 text-center text-muted-foreground">
-        <Loader2 class="size-5 animate-spin inline-block mb-1 text-primary" />
-        <p>Loading Storage workspace files...</p>
+    <!-- Main Content Area -->
+    <div class="flex-1 overflow-hidden py-2">
+      <!-- Workflows / Packages Tab (Virtualized Table with single-tier tabs disabled) -->
+      <div v-if="activeTab !== 'campaigns'" class="h-full w-full">
+        <WorkflowDataTable
+          :items="workflowItems"
+          :filter-mode="activeTab"
+          :show-type-tabs="false"
+          :enable-virtualization="true"
+          :page-size="15"
+          @open-workflow="onSelectWorkflow"
+          @select-workflow="onSelectWorkflow"
+        />
       </div>
 
-      <div
-        v-else-if="filteredFiles.length === 0"
-        class="py-12 text-center text-muted-foreground"
-      >
-        <FolderOpen class="size-6 inline-block mb-2 text-muted-foreground/60" />
-        <p class="font-medium">No matching files found in Storage</p>
-        <p class="text-[11px] text-muted-foreground mt-1">
-          Make sure automa-core is running and files exist in workspace
-        </p>
-      </div>
-
-      <div v-else class="space-y-3">
-        <!-- Workflows Section -->
-        <div v-if="workflows.length > 0">
-          <div
-            class="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1"
-          >
-            <GitBranch class="size-3.5 text-primary" />
-            <span>Workflows ({{ workflows.length }})</span>
-          </div>
-          <div class="grid grid-cols-1 gap-1.5">
-            <div
-              v-for="file in workflows"
-              :key="file.path"
-              class="p-2.5 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-2xs transition flex items-center justify-between group cursor-pointer"
-              @click="$emit('select', file)"
-            >
-              <div class="flex items-center gap-2.5 min-w-0 pr-2">
-                <div
-                  class="size-7 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0"
-                >
-                  <GitBranch class="size-4" />
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span
-                    class="font-medium text-xs text-foreground truncate group-hover:text-primary transition"
-                  >
-                    {{ file.name }}
-                  </span>
-                  <span
-                    class="text-[11px] text-muted-foreground font-mono truncate"
-                  >
-                    {{ file.relative_path }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-1 shrink-0">
-                <Button
-                  variant="default"
-                  size="xs"
-                  @click.stop="$emit('select', file)"
-                >
-                  Open
-                </Button>
-              </div>
-            </div>
-          </div>
+      <!-- Campaigns Tab -->
+      <div v-else class="h-full overflow-y-auto space-y-2">
+        <div
+          v-if="campaigns.length === 0"
+          class="py-12 text-center text-muted-foreground"
+        >
+          <Users class="size-6 inline-block mb-2 text-muted-foreground/60" />
+          <p class="font-medium">No campaigns found</p>
         </div>
-
-        <!-- Campaigns Section -->
-        <div v-if="campaigns.length > 0">
-          <div
-            class="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1 pt-2"
-          >
-            <Users class="size-3.5 text-emerald-500" />
-            <span>Campaigns ({{ campaigns.length }})</span>
-          </div>
-          <div class="grid grid-cols-1 gap-1.5">
+        <div
+          v-for="c in campaigns"
+          :key="c.id || c.path"
+          class="p-2.5 rounded-lg border border-border bg-card hover:border-emerald-500/50 hover:shadow-2xs transition flex items-center justify-between group"
+        >
+          <div class="flex items-center gap-2.5 min-w-0 pr-2">
             <div
-              v-for="file in campaigns"
-              :key="file.path"
-              class="p-2.5 rounded-lg border border-border bg-card hover:border-emerald-500/50 hover:shadow-2xs transition flex items-center justify-between group"
+              class="size-7 rounded-md bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0"
             >
-              <div class="flex items-center gap-2.5 min-w-0 pr-2">
-                <div
-                  class="size-7 rounded-md bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0"
-                >
-                  <Users class="size-4" />
-                </div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-medium text-xs text-foreground truncate">
-                    {{ file.name }}
-                  </span>
-                  <span
-                    class="text-[11px] text-muted-foreground font-mono truncate"
-                  >
-                    {{ file.relative_path }}
-                  </span>
-                </div>
-              </div>
-
-              <Badge variant="success" class="text-[10px]"> Campaign </Badge>
+              <Users class="size-4" />
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="font-medium text-xs text-foreground truncate">{{
+                c.name || c.id
+              }}</span>
+              <span
+                class="text-[11px] text-muted-foreground font-mono truncate"
+                >{{ c.id || c.relative_path }}</span
+              >
             </div>
           </div>
+          <Badge variant="success" class="text-[10px]">Campaign</Badge>
         </div>
       </div>
     </div>
 
     <!-- Footer Bar -->
     <div
-      class="pt-3 border-t border-border flex items-center justify-between text-muted-foreground"
+      class="pt-2.5 border-t border-border flex items-center justify-between text-muted-foreground"
     >
       <span class="text-[11px]">
-        Total: {{ filteredFiles.length }} file(s) in Storage
+        {{ workflows.length }} workflows, {{ campaigns.length }} campaigns
       </span>
       <Button variant="outline" size="sm" @click="$emit('close')">
         Close
@@ -150,54 +130,70 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { Badge, Button, Input } from '@automa/ui';
+import { Badge, Button, WorkflowDataTable } from '@automa/ui';
+import { FileCode, Package, Users } from 'lucide-vue-next';
 import {
-  FolderOpen,
-  GitBranch,
-  Loader2,
-  RefreshCw,
-  Search,
-  Users,
-} from 'lucide-vue-next';
-import { fetchStorageFiles } from '../services/storage.service';
+  fetchStorageWorkflows,
+  fetchStorageCampaigns,
+} from '../services/storage.service';
 
-defineEmits(['select', 'close']);
+const emit = defineEmits(['select', 'close']);
 
-const files = ref([]);
-const searchQuery = ref('');
+const workflows = ref([]);
+const campaigns = ref([]);
 const isLoading = ref(false);
+const activeTab = ref('workflows');
 
-async function loadFiles() {
+async function loadLibrary() {
   isLoading.value = true;
   try {
-    const list = await fetchStorageFiles();
-    files.value = Array.isArray(list) ? list : [];
+    const [wfList, campList] = await Promise.all([
+      fetchStorageWorkflows(),
+      fetchStorageCampaigns(),
+    ]);
+    workflows.value = Array.isArray(wfList) ? wfList : [];
+    campaigns.value = Array.isArray(campList) ? campList : [];
   } catch (_) {
-    files.value = [];
+    workflows.value = [];
+    campaigns.value = [];
   } finally {
     isLoading.value = false;
   }
 }
 
-const filteredFiles = computed(() => {
-  if (!searchQuery.value.trim()) return files.value;
-  const q = searchQuery.value.toLowerCase().trim();
-  return files.value.filter(
-    (f) =>
-      f.name.toLowerCase().includes(q) ||
-      f.relative_path.toLowerCase().includes(q)
-  );
+const workflowItems = computed(() => {
+  return workflows.value.map((w) => ({
+    id: w.id || w.path || w.name,
+    name: w.name,
+    path: w.path || w.id,
+    relative_path: w.relative_path || w.name,
+    data: w.data || w.content || {},
+  }));
 });
 
-const workflows = computed(() =>
-  filteredFiles.value.filter((f) => f.file_type === 'workflow')
+function isPackageItem(item) {
+  const data = item.data || {};
+  const settings = data.settings || {};
+  return Boolean(
+    settings.asBlock === true ||
+      item.name?.toLowerCase().includes('.package') ||
+      Array.isArray(data.inputs) ||
+      Array.isArray(data.outputs)
+  );
+}
+
+const workflowsCount = computed(
+  () => workflowItems.value.filter((w) => !isPackageItem(w)).length
+);
+const packagesCount = computed(
+  () => workflowItems.value.filter((w) => isPackageItem(w)).length
 );
 
-const campaigns = computed(() =>
-  filteredFiles.value.filter((f) => f.file_type === 'campaign')
-);
+function onSelectWorkflow(item) {
+  emit('select', item);
+}
 
 onMounted(() => {
-  loadFiles();
+  loadLibrary();
 });
 </script>
