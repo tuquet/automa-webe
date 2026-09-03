@@ -32,7 +32,6 @@ import {
   getStorageCampaigns as apiGetStorageCampaigns,
   executeCampaign as apiExecuteCampaign,
   abortCampaign as apiAbortCampaign,
-  autoDetectBrowsers as apiAutoDetectBrowsers,
   installBrowserBinary as apiInstallBrowserBinary,
   getActiveJobs as apiGetActiveJobs,
   killJob as apiKillJob,
@@ -339,12 +338,6 @@ export async function killAllBrowserProcesses() {
   const res = await apiKillAllBrowsers({ baseUrl: DAEMON_BASE_URL });
   if (res.error) throw new Error(formatApiError(res.error));
   return res.data;
-}
-
-export async function autoDetectHostBrowsers() {
-  const res = await apiAutoDetectBrowsers({ baseUrl: DAEMON_BASE_URL });
-  if (res.error) throw new Error(formatApiError(res.error));
-  return res.data || [];
 }
 
 export async function downloadChromiumBinary() {

@@ -231,10 +231,9 @@
     <!-- Browsers Quick Management Modal -->
     <browsers-quick-modal v-model="modals.browsers" />
 
-    <!-- Workflows Vault Library Modal -->
+    <!-- Workflows Storage Library Modal -->
     <workflow-library-modal
       v-model="modals.library"
-      :workflows="availableWorkflows"
       @select="loadWorkflowFromVault"
     />
   </div>
@@ -476,58 +475,43 @@ function triggerImportWorkflow() {
   importFileInputRef.value?.click();
 }
 
-function onFileSelected(e) {
+function handleWorkflowFile(e, isImport = false) {
   const file = e.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (event) => {
     try {
       const parsed = JSON.parse(event.target.result);
-      loadWorkflowData(parsed, file.name);
-      toast.success(`Opened workflow file: ${file.name}`);
+      loadWorkflowData(parsed, isImport ? undefined : file.name);
+      toast.success(`${isImport ? 'Imported' : 'Opened'} workflow: ${file.name}`);
     } catch (err) {
       toast.error(`Invalid workflow JSON: ${err.message}`);
     }
   };
   reader.readAsText(file);
   e.target.value = '';
+}
+
+function onFileSelected(e) {
+  handleWorkflowFile(e, false);
 }
 
 function onImportFileSelected(e) {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (event) => {
-    try {
-      const parsed = JSON.parse(event.target.result);
-      loadWorkflowData(parsed);
-      toast.success(`Imported workflow: ${file.name}`);
-    } catch (err) {
-      toast.error(`Invalid workflow JSON: ${err.message}`);
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = '';
+  handleWorkflowFile(e, true);
 }
 
 function openModal(modalName) {
-  if (modalName === 'storage') {
-    modals.storage = true;
-  } else if (
-    modalName === 'tables' ||
-    modalName === 'variables' ||
-    modalName === 'secrets'
-  ) {
+  if (['tables', 'variables', 'secrets'].includes(modalName)) {
     storageInitialTab.value = modalName;
     modals.storage = true;
-  } else if (modalName === 'settings') {
-    modals.settings = true;
-  } else if (modalName === 'logs') {
+    return;
+  }
+  if (modalName === 'logs') {
     emitter.emit('open:logs-modal');
-  } else if (modalName === 'browsers') {
-    modals.browsers = true;
-  } else if (modalName === 'library') {
-    modals.library = true;
+    return;
+  }
+  if (modalName in modals) {
+    modals[modalName] = true;
   }
 }
 
