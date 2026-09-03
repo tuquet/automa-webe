@@ -29,18 +29,18 @@
 }
 
 * {
-  @apply dark:border-gray-700;
+  @apply dark:border-gray-800;
 }
 
 html.dark {
-  @apply bg-gray-900;
+  background-color: #09090b;
 }
 
 body, :host {
   font-family: 'Inter var', sans-serif !important;
   font-size: 16px !important;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  @apply bg-gray-50 dark:bg-gray-900 leading-normal;
+  @apply bg-gray-50 dark:bg-gray-950 leading-normal;
 }
 table th,
 table td {

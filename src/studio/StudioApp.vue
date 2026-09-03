@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none"
+    class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans select-none"
   >
     <!-- Top Header Bar Component (Hidden in Headless Mode) -->
     <studio-header
@@ -62,7 +62,7 @@
         v-if="state.showSidebar"
         data-testid="studio-sidebar"
         :style="{ width: `${sidebarCss.width}px` }"
-        class="h-full border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 z-20 flex flex-col shrink-0 overflow-hidden shadow-sm relative text-xs"
+        class="h-full border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-20 flex flex-col shrink-0 overflow-hidden shadow-sm relative text-xs"
       >
         <!-- Block Form Editor -->
         <workflow-edit-block
@@ -95,7 +95,7 @@
       <!-- VueFlow Canvas Area -->
       <main
         data-testid="studio-canvas-main"
-        class="flex-1 h-full relative overflow-hidden bg-gray-100 dark:bg-gray-900"
+        class="flex-1 h-full relative overflow-hidden bg-gray-100 dark:bg-gray-950"
         @dragover.prevent="onDragoverEditor"
         @drop="onDropInEditor"
       >

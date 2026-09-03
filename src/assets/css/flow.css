@@ -38,6 +38,7 @@
 }
 
 .vue-flow {
+	background-color: transparent;
 	&.disabled {
 		.vue-flow__handle {
 			pointer-events: none;
@@ -46,6 +47,18 @@
 	svg g.connected-edges path {
 		stroke:  theme('colors.primary');
 	}
+}
+
+.vue-flow__background {
+	background-color: transparent;
+}
+
+.vue-flow__background pattern circle {
+	fill: #cbd5e1;
+}
+
+.dark .vue-flow__background pattern circle {
+	fill: #27272a;
 }
 
 .vue-flow__edge {
