@@ -86,7 +86,7 @@
           class="py-12 text-center text-muted-foreground"
         >
           <Users class="size-6 inline-block mb-2 text-muted-foreground/60" />
-          <p class="font-medium">No campaigns found</p>
+          <p class="font-medium">No campaigns</p>
         </div>
         <div
           v-for="c in campaigns"

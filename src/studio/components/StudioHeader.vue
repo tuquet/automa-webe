@@ -16,19 +16,6 @@
         <PanelLeftClose v-else class="size-3.5" />
       </Button>
 
-      <!-- Library Explorer -->
-      <Button
-        v-if="automaCoreStatus === 'online'"
-        variant="outline"
-        size="sm"
-        data-testid="btn-storage-explorer"
-        title="Browse Library"
-        @click="$emit('openStorageExplorer')"
-      >
-        <FolderTree class="size-3.5 mr-1 text-primary" />
-        <span class="hidden lg:inline">Library</span>
-      </Button>
-
       <!-- Workflow Actions -->
       <div class="flex items-center gap-1">
         <AutomaButton
@@ -98,7 +85,7 @@
               v-model="searchQuery"
               data-testid="input-workflow-search"
               type="text"
-              placeholder="Filter workflows..."
+              placeholder="Search..."
               class="w-full pl-7 pr-2.5 py-1 text-xs rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-ring text-foreground"
               @click.stop
             />
@@ -178,9 +165,9 @@
       >
         <AlertCircle v-if="lintIssuesCount > 0" class="size-3.5 mr-1" />
         <Check v-else class="size-3.5 mr-1" />
-        <span class="hidden 2xl:inline">{{
-          lintIssuesCount > 0 ? `${lintIssuesCount} Issues` : 'Valid'
-        }}</span>
+        <span v-if="lintIssuesCount > 0" class="hidden 2xl:inline">
+          {{ lintIssuesCount }}
+        </span>
       </Button>
 
       <!-- Unified Storage Hub (Tables / Variables / Secrets) -->
@@ -189,7 +176,7 @@
         variant="outline"
         size="sm"
         data-testid="btn-storage-data"
-        title="Storage Hub (Tables, Variables, Secrets)"
+        title="Storage"
         @click="$emit('openModal', 'storage')"
       >
         <Database class="size-3.5 mr-1 text-primary" />
@@ -201,7 +188,7 @@
         variant="outline"
         size="sm"
         data-testid="btn-settings"
-        title="Workflow Settings"
+        title="Settings"
         @click="$emit('openModal', 'settings')"
       >
         <Settings class="size-3.5 mr-1" />
@@ -214,7 +201,7 @@
         variant="outline"
         size="sm"
         data-testid="btn-view-job-logs"
-        title="Execution Logs & History"
+        title="Logs"
         @click="$emit('openModal', 'logs')"
       >
         <History class="size-3.5 mr-1" />
@@ -238,11 +225,7 @@
         id="btn.workflow.save"
         size="sm"
         variant="outline"
-        :title="
-          currentFilePath
-            ? `Save to Storage (${currentFilePath}) [Ctrl+S]`
-            : 'Save to Storage / Export [Ctrl+S]'
-        "
+        title="Save (Ctrl+S)"
         @click="$emit('saveWorkflow')"
       />
 
@@ -280,7 +263,7 @@
           <Button
             variant="destructive"
             size="sm"
-            title="Stop Job Immediately (WebSocket /api/v1/ws)"
+            title="Stop Job"
             @click="$emit('stopJob')"
           >
             <Square class="size-3.5 mr-1" />
@@ -294,7 +277,7 @@
           id="btn.workflow.run"
           size="sm"
           variant="primary"
-          title="Execute Workflow via automa-core"
+          title="Run (Ctrl+Enter)"
           @click="$emit('runWorkflow')"
         />
       </div>
@@ -311,7 +294,6 @@ import {
   ChevronDown,
   Database,
   Download,
-  FolderTree,
   GitBranch,
   History,
   PanelLeft,

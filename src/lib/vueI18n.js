@@ -25,9 +25,8 @@ export async function loadLocaleMessages(locale, location) {
 
   const importLocale = async (path, merge = false) => {
     try {
-      const messages = await import(
-        /* webpackChunkName: "locales/locale-[request]" */ `../locales/${locale}/${path}`
-      );
+      const cleanPath = path.endsWith('.json') ? path.slice(0, -5) : path;
+      const messages = await import(`../locales/${locale}/${cleanPath}.json`);
       const content = messages.default || messages;
 
       if (merge) {
@@ -46,10 +45,10 @@ export async function loadLocaleMessages(locale, location) {
 
   dayjs.locale(locale);
 
-  await importLocale('common.json');
-  await importLocale('popup.json', true);
-  await importLocale(`${location}.json`, true);
-  await importLocale('blocks.json', true);
+  await importLocale('common');
+  await importLocale('popup', true);
+  await importLocale(location, true);
+  await importLocale('blocks', true);
 
   return nextTick();
 }

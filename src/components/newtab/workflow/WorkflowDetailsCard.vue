@@ -50,12 +50,13 @@
           {{ workflow.name }}
         </p>
         <p
+          v-if="workflow.description"
           data-testid="workflow-description-display"
           class="cursor-pointer text-[11px] text-gray-500 dark:text-gray-400 leading-tight mt-0.5"
           :class="descriptionCollapsed ? 'line-clamp' : 'whitespace-pre-wrap'"
           @click="descriptionCollapsed = !descriptionCollapsed"
         >
-          {{ workflow.description || 'No description provided' }}
+          {{ workflow.description }}
         </p>
       </div>
     </div>
@@ -63,9 +64,7 @@
       id="search-input"
       v-model="query"
       data-testid="workflow-search-input"
-      :placeholder="`${t('common.search')}... (${
-        shortcut['action:search'].readable
-      })`"
+      :placeholder="`${t('common.search')}...`"
       prepend-icon="riSearch2Line"
       class="mt-1 mb-2 w-full px-3 text-xs"
     />

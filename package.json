@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run build:runner && npm run build:studio",
     "build:runner": "cross-env NODE_ENV=production TARGET_ENV=runner webpack --config webpack.runner.config.js",
-    "build:studio": "cross-env NODE_ENV=production TARGET_ENV=studio webpack --config webpack.studio.config.js",
+    "build:studio": "vite build --config vite.studio.config.mjs",
     "build:ext": "node utils/build.js",
     "build:firefox": "cross-env BROWSER=firefox npm run build:ext",
     "build:zip": "node utils/build-zip.js",
@@ -19,7 +19,7 @@
     "build:prod-firefox": "npm run build:firefox && cross-env BROWSER=firefox npm run build:zip",
     "dev": "npm run dev:studio",
     "dev:runner": "cross-env NODE_ENV=development TARGET_ENV=runner webpack --watch --config webpack.runner.config.js",
-    "dev:studio": "cross-env NODE_ENV=development TARGET_ENV=studio webpack --watch --config webpack.studio.config.js",
+    "dev:studio": "vite --config vite.studio.config.mjs",
     "dev:ext": "node utils/webserver.js",
     "dev:firefox": "cross-env BROWSER=firefox npm run dev:ext",
     "lint": "eslint --cache --ext .js,.vue src/",
