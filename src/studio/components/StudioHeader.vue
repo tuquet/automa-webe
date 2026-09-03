@@ -199,19 +199,20 @@
       <!-- Logs Modal -->
       <Button
         v-if="automaCoreStatus === 'online'"
-        variant="outline"
+        variant="ghost"
         size="sm"
         data-testid="btn-view-job-logs"
         title="Logs"
+        class="gap-1.5 px-2 text-muted-foreground hover:text-foreground"
         @click="$emit('openModal', 'logs')"
       >
-        <History class="size-3.5 mr-1" />
-        <span class="hidden xl:inline">Logs</span>
+        <FileText class="size-3.5 shrink-0" />
+        <span class="hidden xl:inline text-xs">Logs</span>
         <Badge
           v-if="logsCount > 0"
           variant="secondary"
           data-testid="logs-count-badge"
-          class="ml-1 px-1 py-0 text-[10px]"
+          class="px-1 py-0 text-[10px] h-4 min-w-4 flex items-center justify-center font-mono"
         >
           {{ logsCount }}
         </Badge>
@@ -251,7 +252,9 @@
             variant="outline"
             size="sm"
             class="border-amber-500/40 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
-            :data-testid="isJobPaused ? 'btn-resume-workflow' : 'btn-pause-workflow'"
+            :data-testid="
+              isJobPaused ? 'btn-resume-workflow' : 'btn-pause-workflow'
+            "
             :title="
               isJobPaused ? 'Resume Job (WebSocket)' : 'Pause Job (WebSocket)'
             "
@@ -291,19 +294,14 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { AutomaButton, Button, Badge } from '@automa/ui';
-
-defineOptions({
-  name: 'StudioHeader',
-});
-
 import {
   AlertCircle,
   Check,
   ChevronDown,
   Database,
   Download,
+  FileText,
   GitBranch,
-  History,
   PanelLeft,
   PanelLeftClose,
   Pause,
@@ -312,6 +310,10 @@ import {
   Settings,
   Square,
 } from 'lucide-vue-next';
+
+defineOptions({
+  name: 'StudioHeader',
+});
 
 const props = defineProps({
   showSidebar: {

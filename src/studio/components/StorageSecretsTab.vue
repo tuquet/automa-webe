@@ -153,11 +153,6 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { Button, Input } from '@automa/ui';
-
-defineOptions({
-  name: 'StorageSecretsTab',
-});
-
 import {
   KeyRound,
   Loader2,
@@ -172,6 +167,10 @@ import {
   createStorageCredential,
   deleteStorageCredential,
 } from '../services/storage.service';
+
+defineOptions({
+  name: 'StorageSecretsTab',
+});
 
 const toast = useToast();
 

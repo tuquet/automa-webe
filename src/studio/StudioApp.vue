@@ -112,42 +112,42 @@
         >
           <template #controls-prepend>
             <div
-              class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border mr-2 p-0.5 gap-0.5"
+              class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border mr-2 p-1 gap-1"
             >
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 data-testid="btn-canvas-undo"
                 :disabled="!commandManager.state.value.canUndo"
                 title="Undo (Ctrl+Z)"
                 @click="commandManager.undo"
               >
-                <Undo2 class="size-3.5" />
+                <Undo2 class="size-4" />
               </Button>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 data-testid="btn-canvas-redo"
                 :disabled="!commandManager.state.value.canRedo"
                 title="Redo (Ctrl+Y)"
                 @click="commandManager.redo"
               >
-                <Redo2 class="size-3.5" />
+                <Redo2 class="size-4" />
               </Button>
-              <div class="inline-block h-3.5 w-px bg-border my-auto mx-0.5" />
+              <div class="inline-block h-4 w-px bg-border my-auto mx-1" />
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 data-testid="btn-canvas-auto-align"
                 class="hover:bg-accent text-foreground"
                 title="Auto Align Layout"
                 @click="autoAlign"
               >
-                <Wand2 class="size-3.5" />
+                <Wand2 class="size-4" />
               </Button>
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 data-testid="btn-canvas-auto-focus"
                 class="hover:bg-accent"
                 :title="
@@ -158,7 +158,7 @@
                 @click="autoFocusEnabled = !autoFocusEnabled"
               >
                 <Crosshair
-                  class="size-3.5"
+                  class="size-4"
                   :class="
                     autoFocusEnabled ? 'text-primary' : 'text-muted-foreground'
                   "

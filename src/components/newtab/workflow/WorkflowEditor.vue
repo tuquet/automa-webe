@@ -43,38 +43,38 @@
       <div class="pointer-events-none grow" />
       <slot name="controls-append" />
       <div
-        class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border p-0.5 gap-0.5"
+        class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border p-1 gap-1"
       >
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
           data-testid="btn-canvas-fit-view"
           :title="t('workflow.editor.resetZoom')"
           class="hover:bg-accent text-foreground"
           @click="editor.fitView()"
         >
-          <Maximize2 class="size-3.5" />
+          <Maximize2 class="size-4" />
         </Button>
-        <div class="inline-block h-3.5 w-px bg-border my-auto mx-0.5" />
+        <div class="inline-block h-4 w-px bg-border my-auto mx-1" />
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
           data-testid="btn-canvas-zoom-out"
           :title="t('workflow.editor.zoomOut')"
           class="hover:bg-accent text-foreground"
           @click="editor.zoomOut()"
         >
-          <Minus class="size-3.5" />
+          <Minus class="size-4" />
         </Button>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
           data-testid="btn-canvas-zoom-in"
           :title="t('workflow.editor.zoomIn')"
           class="hover:bg-accent text-foreground"
           @click="editor.zoomIn()"
         >
-          <Plus class="size-3.5" />
+          <Plus class="size-4" />
         </Button>
       </div>
     </div>
@@ -109,11 +109,6 @@
 </template>
 <script setup>
 import { onMounted, onBeforeUnmount, watch, computed, reactive } from 'vue';
-
-defineOptions({
-  name: 'WorkflowEditor',
-});
-
 import { useI18n } from 'vue-i18n';
 import {
   VueFlow,
@@ -132,6 +127,10 @@ import { categories } from '@/utils/shared';
 import EditBlockSettings from './edit/EditBlockSettings.vue';
 import EditorCustomEdge from './editor/EditorCustomEdge.vue';
 import '@vue-flow/minimap/dist/style.css';
+
+defineOptions({
+  name: 'WorkflowEditor',
+});
 
 const props = defineProps({
   id: {

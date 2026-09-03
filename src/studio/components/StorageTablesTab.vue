@@ -159,11 +159,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import { Button, Input, VirtualDataTable } from '@automa/ui';
-
-defineOptions({
-  name: 'StorageTablesTab',
-});
-
 import { Loader2, Plus, RefreshCw, Table, Trash2 } from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import {
@@ -172,6 +167,10 @@ import {
   deleteStorageTable,
   fetchStorageTableRows,
 } from '../services/storage.service';
+
+defineOptions({
+  name: 'StorageTablesTab',
+});
 
 const toast = useToast();
 
