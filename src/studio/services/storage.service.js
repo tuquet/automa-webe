@@ -17,7 +17,7 @@ import {
   getStorageCredentials as apiGetStorageCredentials,
   addStorageCredential as apiAddStorageCredential,
   deleteStorageCredential as apiDeleteStorageCredential,
-  listStorageFiles as apiListStorageFiles,
+  getStorageWorkflows as apiGetStorageWorkflows,
   getBrowsers as apiGetBrowsers,
   createBrowser as apiCreateBrowser,
   deleteBrowser as apiDeleteBrowser,
@@ -55,74 +55,6 @@ export function formatApiError(err) {
     }
   }
   return String(err);
-}
-
-const SYNC_QUEUE_KEY = '__automa_storage_sync_queue';
-
-function getSyncQueue() {
-  try {
-    const raw = localStorage.getItem(SYNC_QUEUE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (_) {
-    return [];
-  }
-}
-
-function saveSyncQueue(queue) {
-  try {
-    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
-  } catch (_) {
-    // Ignored
-  }
-}
-
-export function enqueueSyncAction(action) {
-  const queue = getSyncQueue();
-  queue.push({
-    id: Date.now() + Math.random().toString(36).slice(2, 7),
-    timestamp: Date.now(),
-    ...action,
-  });
-  saveSyncQueue(queue);
-}
-
-export async function flushSyncQueue() {
-  const queue = getSyncQueue();
-  if (!queue.length) return;
-
-  const remaining = [];
-  for (const item of queue) {
-    try {
-      if (item.type === 'table:add') {
-        const res = await apiAddStorageTable({
-          baseUrl: DAEMON_BASE_URL,
-          body: item.payload,
-        });
-        if (res.error) remaining.push(item);
-      } else if (item.type === 'table:delete') {
-        const res = await apiDeleteStorageTable({
-          baseUrl: DAEMON_BASE_URL,
-          path: { id: item.id },
-        });
-        if (res.error) remaining.push(item);
-      } else if (item.type === 'variable:add') {
-        const res = await apiAddStorageVariable({
-          baseUrl: DAEMON_BASE_URL,
-          body: item.payload,
-        });
-        if (res.error) remaining.push(item);
-      } else if (item.type === 'variable:delete') {
-        const res = await apiDeleteStorageVariable({
-          baseUrl: DAEMON_BASE_URL,
-          path: { id: item.id },
-        });
-        if (res.error) remaining.push(item);
-      }
-    } catch (_) {
-      remaining.push(item);
-    }
-  }
-  saveSyncQueue(remaining);
 }
 
 // --------------------------------------------------------------------------
@@ -174,7 +106,7 @@ export async function createStorageTable(tableData) {
       return item;
     }
   } catch (_) {
-    enqueueSyncAction({ type: 'table:add', payload });
+    // Core offline fallback
   }
 
   const localItem = {
@@ -195,7 +127,7 @@ export async function deleteStorageTable(tableId) {
       path: { id: tableId },
     });
   } catch (_) {
-    enqueueSyncAction({ type: 'table:delete', id: tableId });
+    // Core offline fallback
   }
   await dbStorage.tablesItems.where('id').equals(tableId).delete();
   await dbStorage.tablesData.where('tableId').equals(tableId).delete();
@@ -276,7 +208,7 @@ export async function createStorageVariable(varData) {
       return item;
     }
   } catch (_) {
-    enqueueSyncAction({ type: 'variable:add', payload });
+    // Core offline fallback
   }
 
   const localItem = {
@@ -295,7 +227,7 @@ export async function deleteStorageVariable(varId) {
       path: { id: varId },
     });
   } catch (_) {
-    enqueueSyncAction({ type: 'variable:delete', id: varId });
+    // Core offline fallback
   }
   await dbStorage.variables.where('id').equals(varId).delete();
   await dbStorage.variables.where('name').equals(varId).delete();
@@ -535,9 +467,9 @@ export async function stopCampaign(campaignId) {
   return res.data;
 }
 
-export async function fetchStorageFiles() {
+export async function fetchStorageWorkflows() {
   try {
-    const res = await apiListStorageFiles({ baseUrl: DAEMON_BASE_URL });
+    const res = await apiGetStorageWorkflows({ baseUrl: DAEMON_BASE_URL });
     if (res.data && Array.isArray(res.data)) {
       return res.data;
     }
@@ -545,4 +477,8 @@ export async function fetchStorageFiles() {
     // Fallback
   }
   return [];
+}
+
+export async function fetchStorageFiles() {
+  return fetchStorageWorkflows();
 }

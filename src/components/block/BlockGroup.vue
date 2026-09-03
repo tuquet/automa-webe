@@ -205,7 +205,7 @@ function editBlock(payload) {
 function deleteItem(index, itemId) {
   const copyBlocks = [...props.data.blocks];
 
-  if (workflow.editState.blockData.itemId === itemId) {
+  if (workflow?.editState?.blockData?.itemId === itemId) {
     workflow.editState.editing = false;
     workflow.editState.blockData = false;
   }

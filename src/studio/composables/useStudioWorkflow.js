@@ -64,6 +64,12 @@ export function sanitizeWorkflowAST(raw) {
     });
   }
 
+  // Filter out dangling edges whose source or target nodes do not exist
+  const validNodeIds = new Set(clone.drawflow.nodes.map((n) => n.id));
+  clone.drawflow.edges = clone.drawflow.edges.filter(
+    (edge) => validNodeIds.has(edge.source) && validNodeIds.has(edge.target)
+  );
+
   return clone;
 }
 

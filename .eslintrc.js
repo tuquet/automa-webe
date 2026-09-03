@@ -17,7 +17,6 @@ module.exports = {
     'business/**',
     'webpack.*.js',
     'dist/**',
-    'src/studio/standalone-bridge.js',
     'src/studio/standalone-browser-mock.js',
   ],
   // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention

@@ -117,7 +117,7 @@
 <script setup>
 import { ref, watch, defineAsyncComponent, onMounted } from 'vue';
 import { debounce } from '@/utils/helper';
-import { fetchStorageVariables } from '@/studio/storage-service';
+import { fetchStorageVariables } from '@/studio/services/storage.service';
 import { useToast } from 'vue-toastification';
 
 const SharedCodemirror = defineAsyncComponent(() =>

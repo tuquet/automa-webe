@@ -70,25 +70,15 @@
           currentWorkflowName
         }}</span>
 
-        <!-- Unsaved changes dirty badge -->
-        <Badge
+        <!-- Unsaved changes minimal dot indicator -->
+        <span
           v-if="isDirty"
-          variant="warning"
-          class="shrink-0 px-1 py-0 text-[10px]"
-        >
-          Unsaved
-        </Badge>
-
-        <Badge
-          v-if="currentWorkflowBlocksCount !== undefined"
-          variant="outline"
-          class="hidden md:inline-flex shrink-0 px-1 py-0 text-[10px] font-mono"
-        >
-          {{ currentWorkflowBlocksCount }} blocks
-        </Badge>
+          class="size-1.5 rounded-full bg-amber-500 shrink-0"
+          title="Unsaved changes"
+        />
 
         <ChevronDown
-          class="size-3.5 text-muted-foreground shrink-0 transition-transform duration-150"
+          class="size-3.5 text-muted-foreground shrink-0 transition-transform duration-150 ml-0.5"
           :class="{ 'rotate-180': isDropdownOpen }"
         />
       </button>
@@ -121,7 +111,7 @@
             v-if="filteredWorkflows.length === 0"
             class="py-6 text-center text-muted-foreground text-[11px]"
           >
-            No matching workflows found
+            No workflows
           </div>
 
           <button
@@ -199,11 +189,11 @@
         variant="outline"
         size="sm"
         data-testid="btn-storage-data"
-        title="Storage & Vault Hub (Tables, Variables, Secrets)"
+        title="Storage Hub (Tables, Variables, Secrets)"
         @click="$emit('openModal', 'storage')"
       >
         <Database class="size-3.5 mr-1 text-primary" />
-        <span class="hidden xl:inline">Storage Data</span>
+        <span class="hidden xl:inline">Storage</span>
       </Button>
 
       <!-- Settings Modal -->
@@ -328,7 +318,6 @@ import {
   PanelLeftClose,
   Pause,
   Play,
-  Plus,
   Search,
   Settings,
   Square,

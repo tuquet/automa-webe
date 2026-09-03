@@ -70,29 +70,4 @@ app.use(vRemixicon, icons);
 
 app.mount('#app');
 
-// Live-Reload watcher for Standalone Studio dev server
-if (typeof window !== 'undefined') {
-  let lastModified = null;
-  const pollBundleUpdate = async () => {
-    try {
-      const bundleUrl = new URL('studio.bundle.js', window.location.href).href;
-      const res = await fetch(`${bundleUrl}?_t=${Date.now()}`, {
-        method: 'HEAD',
-        cache: 'no-store',
-      });
-      const current =
-        res.headers.get('last-modified') || res.headers.get('etag');
-      if (lastModified && current && current !== lastModified) {
-        window.location.reload();
-      }
-      if (current) {
-        lastModified = current;
-      }
-    } catch (_) {
-      // Ignored
-    }
-  };
-  setInterval(pollBundleUpdate, 1500);
-}
-
 if (module.hot) module.hot.accept();

@@ -3,7 +3,7 @@
  * Uses a Recursive Proxy to safely handle any Chrome/Browser API path without crashing.
  */
 
-import { studioState, notifyWorkflowChange } from './standalone-bridge';
+import { studioState, notifyWorkflowChange } from './adapters/host-bridge';
 
 const storageArea = {
   get: (keys, cb) => {
