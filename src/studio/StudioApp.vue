@@ -1721,6 +1721,16 @@ function onWindowMessage(e) {
     loadWorkflowData(e.data.data);
   } else if (e.data.type === 'automa:set-headless') {
     isHeadless.value = Boolean(e.data.headless);
+  } else if (
+    e.data.type === 'automa:set-theme' ||
+    e.data.type === 'automa:theme-changed'
+  ) {
+    const isDark = e.data.theme === 'dark' || Boolean(e.data.isDark);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }
 }
 
@@ -1735,6 +1745,17 @@ onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('headless') === 'true') {
       isHeadless.value = true;
+    }
+    const themeParam = urlParams.get('theme');
+    if (
+      themeParam === 'dark' ||
+      (!themeParam &&
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.documentElement.classList.add('dark');
+    } else if (themeParam === 'light') {
+      document.documentElement.classList.remove('dark');
     }
     const fileParam = urlParams.get('file') || urlParams.get('path');
     if (fileParam) {
