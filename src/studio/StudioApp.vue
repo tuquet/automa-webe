@@ -141,7 +141,7 @@
               variant="outline"
               size="icon-sm"
               data-testid="btn-canvas-auto-align"
-              class="mr-2"
+              class="mr-2 bg-card border-border hover:bg-accent text-foreground hover:text-foreground shadow-2xs"
               title="Auto Align Graph Layout"
               @click="autoAlign"
             >
@@ -149,10 +149,10 @@
             </Button>
 
             <Button
-              :variant="autoFocusEnabled ? 'secondary' : 'ghost'"
+              :variant="autoFocusEnabled ? 'secondary' : 'outline'"
               size="icon-sm"
               data-testid="btn-canvas-auto-focus"
-              class="mr-2"
+              class="mr-2 bg-card border-border hover:bg-accent shadow-2xs"
               :title="
                 autoFocusEnabled
                   ? 'Auto-focus Active Node (Enabled)'

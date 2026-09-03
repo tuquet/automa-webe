@@ -47,12 +47,10 @@ table td {
   @apply py-2 px-4;
 }
 input:focus,
-button:focus,
 textarea:focus,
-select:focus,
-[role='button']:focus {
+select:focus {
   outline: none;
-  @apply ring-2 ring-accent dark:ring-gray-200;
+  @apply ring-1 ring-primary/40 dark:ring-primary/40;
 }
 
 .text-overflow {
