@@ -30,7 +30,7 @@
         class="font-semibold text-xs text-foreground flex items-center gap-1.5"
       >
         <KeyRound class="size-3.5 text-primary" />
-        <span>Add Encrypted Secret (HMAC-SHA256 + AES-256-CBC)</span>
+        <span>New Secret</span>
       </h4>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -38,12 +38,12 @@
           <label
             class="block text-[11px] font-medium text-muted-foreground mb-1"
           >
-            Secret Key / Name *
+            Key *
           </label>
           <Input
             v-model="newCred.name"
             type="text"
-            placeholder="e.g. TWITTER_AUTH_TOKEN, API_KEY"
+            placeholder="API_KEY..."
             class="h-8 text-xs font-mono"
           />
         </div>
@@ -52,12 +52,12 @@
           <label
             class="block text-[11px] font-medium text-muted-foreground mb-1"
           >
-            Plaintext Value *
+            Value *
           </label>
           <Input
             v-model="newCred.value"
             type="password"
-            placeholder="Secret raw value"
+            placeholder="Value..."
             class="h-8 text-xs"
           />
         </div>
@@ -73,7 +73,7 @@
           :disabled="!newCred.name || !newCred.value || isSubmitting"
           @click="onAddCredential"
         >
-          Save Encrypted Secret
+          Save
         </Button>
       </div>
     </div>
@@ -82,7 +82,7 @@
     <div class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
       <div v-if="isLoading" class="py-8 text-center text-muted-foreground">
         <Loader2 class="size-5 animate-spin inline-block mb-1 text-primary" />
-        <p>Loading credentials from SQLite Vault...</p>
+        <p>Loading secrets...</p>
       </div>
 
       <div
@@ -90,9 +90,9 @@
         class="py-8 text-center text-muted-foreground"
       >
         <Lock class="size-7 inline-block mb-1 text-muted-foreground/50" />
-        <p class="font-medium">No encrypted secrets found</p>
+        <p class="font-medium">No secrets</p>
         <p class="text-[11px] text-muted-foreground mt-0.5">
-          Stored secrets can be referenced inside workflows via
+          Reference via
           <span class="font-mono text-primary"
             >&#123;&#123;secrets.key&#125;&#125;</span
           >

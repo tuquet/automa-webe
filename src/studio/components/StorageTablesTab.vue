@@ -45,11 +45,11 @@
           size="sm"
           data-testid="btn-delete-table"
           class="text-destructive hover:bg-destructive/10"
-          title="Delete this table permanently"
+          title="Delete Table"
           @click="onDeleteTable(activeTable.id)"
         >
           <Trash2 class="size-3.5 mr-1" />
-          <span class="hidden sm:inline">Delete Table</span>
+          <span class="hidden sm:inline">Delete</span>
         </Button>
       </div>
     </div>
@@ -110,7 +110,7 @@
           :disabled="!newTable.name || isSubmitting"
           @click="onCreateTable"
         >
-          Create Table
+          Create
         </Button>
       </div>
     </div>
@@ -121,7 +121,7 @@
     >
       <div v-if="isLoading" class="py-16 text-center text-muted-foreground">
         <Loader2 class="size-5 animate-spin inline-block mb-1 text-primary" />
-        <p>Loading SQLite tables...</p>
+        <p>Loading tables...</p>
       </div>
 
       <div
@@ -130,10 +130,7 @@
       >
         <Table class="size-8 inline-block mb-1 text-muted-foreground/50" />
         <p class="font-medium text-sm text-foreground">
-          No SQLite Tables Found
-        </p>
-        <p class="text-xs text-muted-foreground mt-1">
-          Click "New Table" above to create your first storage table.
+          No tables
         </p>
       </div>
 
@@ -144,9 +141,9 @@
           :enable-virtualization="true"
           :enable-search="true"
           :page-size="20"
-          search-placeholder="Search rows in table..."
-          empty-text="Table is empty"
-          empty-description="No rows recorded in this table."
+          search-placeholder="Search..."
+          empty-text="No rows"
+          empty-description=""
         />
       </div>
     </div>
