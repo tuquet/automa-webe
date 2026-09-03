@@ -18,8 +18,10 @@ function runnerAssetsPlugin() {
         delete manifest.action;
         delete manifest.options_ui;
         delete manifest.chrome_url_overrides;
-        delete manifest.sandbox;
         manifest.name = `${manifest.name} (Runner)`;
+        if (!manifest.version) {
+          manifest.version = '1.28.27';
+        }
 
         this.emitFile({
           type: 'asset',

@@ -43,38 +43,38 @@
       <div class="pointer-events-none grow" />
       <slot name="controls-append" />
       <div
-        class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border p-1 gap-1"
+        class="inline-flex items-center rounded-xl bg-card shadow-md border border-border p-1.5 gap-1.5"
       >
         <Button
           variant="ghost"
-          size="icon"
+          size="icon-lg"
           data-testid="btn-canvas-fit-view"
           :title="t('workflow.editor.resetZoom')"
-          class="hover:bg-accent text-foreground"
+          class="size-10 hover:bg-accent text-foreground"
           @click="editor.fitView()"
         >
-          <Maximize2 class="size-4" />
+          <Maximize2 class="size-5" />
         </Button>
-        <div class="inline-block h-4 w-px bg-border my-auto mx-1" />
+        <div class="inline-block h-5 w-px bg-border my-auto mx-1" />
         <Button
           variant="ghost"
-          size="icon"
+          size="icon-lg"
           data-testid="btn-canvas-zoom-out"
           :title="t('workflow.editor.zoomOut')"
-          class="hover:bg-accent text-foreground"
+          class="size-10 hover:bg-accent text-foreground"
           @click="editor.zoomOut()"
         >
-          <Minus class="size-4" />
+          <Minus class="size-5" />
         </Button>
         <Button
           variant="ghost"
-          size="icon"
+          size="icon-lg"
           data-testid="btn-canvas-zoom-in"
           :title="t('workflow.editor.zoomIn')"
-          class="hover:bg-accent text-foreground"
+          class="size-10 hover:bg-accent text-foreground"
           @click="editor.zoomIn()"
         >
-          <Plus class="size-4" />
+          <Plus class="size-5" />
         </Button>
       </div>
     </div>

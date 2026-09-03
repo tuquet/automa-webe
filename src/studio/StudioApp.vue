@@ -112,44 +112,46 @@
         >
           <template #controls-prepend>
             <div
-              class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border mr-2 p-1 gap-1"
+              class="inline-flex items-center rounded-xl bg-card shadow-md border border-border mr-2 p-1.5 gap-1.5"
             >
               <Button
                 variant="ghost"
-                size="icon"
+                size="icon-lg"
                 data-testid="btn-canvas-undo"
                 :disabled="!commandManager.state.value.canUndo"
                 title="Undo (Ctrl+Z)"
+                class="size-10"
                 @click="commandManager.undo"
               >
-                <Undo2 class="size-4" />
+                <Undo2 class="size-5" />
               </Button>
               <Button
                 variant="ghost"
-                size="icon"
+                size="icon-lg"
                 data-testid="btn-canvas-redo"
                 :disabled="!commandManager.state.value.canRedo"
                 title="Redo (Ctrl+Y)"
+                class="size-10"
                 @click="commandManager.redo"
               >
-                <Redo2 class="size-4" />
+                <Redo2 class="size-5" />
               </Button>
-              <div class="inline-block h-4 w-px bg-border my-auto mx-1" />
+              <div class="inline-block h-5 w-px bg-border my-auto mx-1" />
               <Button
                 variant="ghost"
-                size="icon"
+                size="icon-lg"
                 data-testid="btn-canvas-auto-align"
-                class="hover:bg-accent text-foreground"
+                class="size-10 hover:bg-accent text-foreground"
                 title="Auto Align Layout"
                 @click="autoAlign"
               >
-                <Wand2 class="size-4" />
+                <Wand2 class="size-5" />
               </Button>
               <Button
                 variant="ghost"
-                size="icon"
+                size="icon-lg"
                 data-testid="btn-canvas-auto-focus"
-                class="hover:bg-accent"
+                class="size-10 hover:bg-accent"
                 :title="
                   autoFocusEnabled
                     ? 'Auto-focus Node (On)'
@@ -158,7 +160,7 @@
                 @click="autoFocusEnabled = !autoFocusEnabled"
               >
                 <Crosshair
-                  class="size-4"
+                  class="size-5"
                   :class="
                     autoFocusEnabled ? 'text-primary' : 'text-muted-foreground'
                   "

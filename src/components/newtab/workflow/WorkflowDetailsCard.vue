@@ -2,9 +2,9 @@
   <div class="flex flex-col h-full overflow-hidden">
     <div
       data-testid="workflow-details-card"
-      class="mb-2 mt-2 flex items-start px-3 text-xs"
+      class="mb-2 mt-2 flex items-center px-3 text-xs"
     >
-      <ui-popover class="mr-2 h-7">
+      <ui-popover class="mr-2 h-7 shrink-0">
         <template #trigger>
           <span
             data-testid="workflow-icon-btn"
@@ -12,29 +12,37 @@
             class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-gray-100 dark:bg-gray-700/60 cursor-pointer hover:opacity-80 transition"
           >
             <ui-img
-              v-if="workflow.icon.startsWith('http')"
+              v-if="workflow.icon && workflow.icon.startsWith('http')"
               :src="workflow.icon"
-              class="h-5 w-5"
+              class="h-5 w-5 rounded object-cover"
             />
-            <v-remixicon v-else :name="workflow.icon" size="18" />
+            <v-remixicon v-else :name="workflow.icon || 'riGlobalLine'" size="18" />
           </span>
         </template>
-        <div class="w-56 text-xs">
+        <div class="w-64 text-xs">
           <p class="mb-2 font-medium">
             {{ t('workflow.sidebar.workflowIcon') }}
           </p>
-          <div class="mb-2 grid grid-cols-5 gap-1">
+          <div class="mb-3 grid grid-cols-5 gap-1.5">
             <span
               v-for="icon in icons"
               :key="icon"
-              class="hoverable inline-block cursor-pointer rounded-lg p-2 text-center"
+              v-close-popover
+              :title="icon"
+              :class="{
+                'ring-2 ring-primary bg-primary/10 text-primary font-semibold':
+                  (workflow.icon || 'riGlobalLine') === icon,
+                'hover:bg-gray-100 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200':
+                  (workflow.icon || 'riGlobalLine') !== icon,
+              }"
+              class="inline-flex items-center justify-center h-8 w-8 cursor-pointer rounded-lg text-center transition"
               @click="$emit('update', { icon })"
             >
               <v-remixicon :name="icon" size="18" />
             </span>
           </div>
           <ui-input
-            :model-value="workflow.icon.startsWith('http') ? workflow.icon : ''"
+            :model-value="workflow.icon && workflow.icon.startsWith('http') ? workflow.icon : ''"
             type="url"
             placeholder="http://example.com/img.png"
             label="Icon URL"
@@ -101,6 +109,8 @@ import { categories } from '@/utils/shared';
 import { getBlocks } from '@/utils/getSharedData';
 import WorkflowBlockList from './WorkflowBlockList.vue';
 
+defineOptions({ name: 'WorkflowDetailsCard' });
+
 defineProps({
   workflow: {
     type: Object,
@@ -125,8 +135,8 @@ const pinnedCategory = {
   color: 'bg-accent',
 };
 const icons = [
-  'mdiPackageVariantClosed',
   'riGlobalLine',
+  'mdiPackageVariantClosed',
   'riFileTextLine',
   'riEqualizerLine',
   'riTimerLine',
@@ -138,6 +148,8 @@ const icons = [
   'riCursorLine',
   'riDownloadLine',
   'riCommandLine',
+  'riCodeSSlashLine',
+  'riShieldKeyholeLine',
 ];
 
 const copyBlocks = getBlocks();
