@@ -161,45 +161,23 @@ const fallbackBlocks = {
 };
 
 const isMac = navigator.appVersion.indexOf('Mac') !== -1;
-function loadBlockComponents() {
-  if (typeof import.meta !== 'undefined' && import.meta.glob) {
-    const modules = import.meta.glob('@/components/block/*.vue', {
-      eager: true,
+const blockModules = import.meta.glob('../../block/*.vue', {
+  eager: true,
+});
+const nodeTypes = Object.entries(blockModules).reduce((acc, [path, module]) => {
+  const name = path
+    .split('/')
+    .pop()
+    .replace(/\.vue$/, '');
+  const component = module?.default ?? module;
+  if (fallbackBlocks[name]) {
+    fallbackBlocks[name].forEach((fallbackBlock) => {
+      acc[`node-${fallbackBlock}`] = component;
     });
-    return Object.entries(modules).reduce((acc, [path, module]) => {
-      const name = path
-        .split('/')
-        .pop()
-        .replace(/\.vue$/, '');
-      const component = module?.default ?? module;
-      if (fallbackBlocks[name]) {
-        fallbackBlocks[name].forEach((fallbackBlock) => {
-          acc[`node-${fallbackBlock}`] = component;
-        });
-      }
-      acc[`node-${name}`] = component;
-      return acc;
-    }, {});
   }
-  const blockComponents = require.context(
-    '@/components/block',
-    false,
-    /\.vue$/
-  );
-  return blockComponents.keys().reduce((acc, key) => {
-    const name = key.replace(/(.\/)|\.vue$/g, '');
-    const component = blockComponents(key).default;
-    if (fallbackBlocks[name]) {
-      fallbackBlocks[name].forEach((fallbackBlock) => {
-        acc[`node-${fallbackBlock}`] = component;
-      });
-    }
-    acc[`node-${name}`] = component;
-    return acc;
-  }, {});
-}
-
-const nodeTypes = loadBlockComponents();
+  acc[`node-${name}`] = component;
+  return acc;
+}, {});
 const getPosition = (position) => (Array.isArray(position) ? position : [0, 0]);
 const setMinValue = (num, min) => (num < min ? min : num);
 

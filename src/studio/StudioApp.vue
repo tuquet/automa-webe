@@ -232,10 +232,12 @@
     <browsers-quick-modal v-model="modals.browsers" />
 
     <!-- Workflows Storage Library Modal -->
-    <workflow-library-modal
-      v-model="modals.library"
-      @select="loadWorkflowFromVault"
-    />
+    <ui-modal v-model="modals.library" custom-content content-class="max-w-4xl">
+      <workflow-library-modal
+        @select="loadWorkflowFromVault"
+        @close="modals.library = false"
+      />
+    </ui-modal>
   </div>
 </template>
 
@@ -288,7 +290,7 @@ import { useStudioHostIpc } from './composables/useStudioHostIpc';
 const toast = useToast();
 const { state: automaCoreState } = useAutomaCoreHealth();
 const commandManager = useCommandManager();
-const { sidebar: sidebarCss, startDrag } = useSidebarResize();
+const { sidebarCss, startDrag } = useSidebarResize();
 
 // Core Workflow State
 const workflow = computed(() => studioState.currentWorkflow);
@@ -309,7 +311,7 @@ const storageInitialTab = ref('tables');
 // UI State
 const state = reactive({
   showSidebar: true,
-  animateBlocks: true,
+  animateBlocks: false,
 });
 
 const editState = reactive({
@@ -318,7 +320,7 @@ const editState = reactive({
 });
 
 // Logs Count Query via Dexie
-const logsList = useLiveQuery(() => dbLogs.logs.toArray(), []);
+const logsList = useLiveQuery(() => dbLogs.items.toArray(), []);
 const logsCount = computed(() => logsList.value?.length || 0);
 
 // Job Status States
@@ -373,7 +375,13 @@ const {
   onDragoverEditor,
   onDropInEditor,
   goToBlock,
-} = useStudioCanvas({ commandManager, isDirty });
+} = useStudioCanvas({
+  commandManager,
+  isDirty,
+  setAnimateBlocks: (val) => {
+    state.animateBlocks = val;
+  },
+});
 
 // 4. Clipboard Composable
 const {

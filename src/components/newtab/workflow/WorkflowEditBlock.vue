@@ -53,32 +53,15 @@ import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
 
-function loadEditComponents() {
-  if (typeof import.meta !== 'undefined' && import.meta.glob) {
-    const modules = import.meta.glob('./edit/Edit*.vue', { eager: true });
-    return Object.entries(modules).reduce((acc, [path, module]) => {
-      const name = path
-        .split('/')
-        .pop()
-        .replace(/\.vue$/, '');
-      acc[name] = module?.default ?? module ?? {};
-      return acc;
-    }, {});
-  }
-  const editComponents = require.context(
-    './edit',
-    false,
-    /^(?:.*\/)?Edit[^/]*\.vue$/
-  );
-  return editComponents.keys().reduce((acc, key) => {
-    const name = key.replace(/(.\/)|\.vue$/g, '');
-    const componentObj = editComponents(key)?.default ?? {};
-    acc[name] = componentObj;
-    return acc;
-  }, {});
-}
-
-const components = loadEditComponents();
+const editModules = import.meta.glob('./edit/Edit*.vue', { eager: true });
+const components = Object.entries(editModules).reduce((acc, [path, module]) => {
+  const name = path
+    .split('/')
+    .pop()
+    .replace(/\.vue$/, '');
+  acc[name] = module?.default ?? module ?? {};
+  return acc;
+}, {});
 
 Object.assign(components, customEditComponents());
 

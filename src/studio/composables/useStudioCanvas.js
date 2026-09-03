@@ -1,11 +1,15 @@
 import { ref, nextTick } from 'vue';
 import { useToast } from 'vue-toastification';
+import { customAlphabet } from 'nanoid';
+import cloneDeep from 'lodash.clonedeep';
 import DroppedNode from '@/utils/editor/DroppedNode';
 import EditorCommands from '@/utils/editor/EditorCommands';
 import { GraphLayoutService } from '@/services/graphLayout.service';
 import { studioState, notifyWorkflowChange } from '../adapters/host-bridge';
 
-export function useStudioCanvas({ commandManager, isDirty }) {
+const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 7);
+
+export function useStudioCanvas({ commandManager, isDirty, setAnimateBlocks }) {
   const toast = useToast();
   const editorRef = ref(null);
   const editorInstance = ref(null);
@@ -20,6 +24,7 @@ export function useStudioCanvas({ commandManager, isDirty }) {
   async function autoAlign() {
     if (!editorInstance.value) return;
     try {
+      setAnimateBlocks?.(true);
       const nodes = studioState.currentWorkflow?.drawflow?.nodes || [];
       const edges = studioState.currentWorkflow?.drawflow?.edges || [];
       if (!nodes.length) return;
@@ -45,8 +50,12 @@ export function useStudioCanvas({ commandManager, isDirty }) {
       if (editorInstance.value?.fitView) {
         editorInstance.value.fitView({ padding: 0.2, duration: 400 });
       }
+      setTimeout(() => {
+        setAnimateBlocks?.(false);
+      }, 500);
       toast.success('Auto-aligned workflow graph layout');
     } catch (err) {
+      setAnimateBlocks?.(false);
       console.error('[StudioCanvas] Auto-align error:', err);
     }
   }
@@ -90,21 +99,76 @@ export function useStudioCanvas({ commandManager, isDirty }) {
     if (!editorInstance.value || !event.dataTransfer) return;
 
     try {
-      const blockType = event.dataTransfer.getData('block-type');
-      if (!blockType) return;
+      const rawBlock =
+        event.dataTransfer.getData('block') ||
+        event.dataTransfer.getData('block-type');
+      if (!rawBlock) return;
+
+      let block;
+      try {
+        block = JSON.parse(rawBlock);
+      } catch (_) {
+        block = { id: rawBlock, component: 'BlockBasic', data: {} };
+      }
+
+      if (!block || block.fromBlockBasic) return;
+
+      const { target } = event;
+      const nodeEl = DroppedNode.isNode(target);
+      if (nodeEl) {
+        DroppedNode.replaceNode(editorInstance.value, {
+          block,
+          target: nodeEl,
+        });
+        if (isDirty) isDirty.value = true;
+        notifyWorkflowChange(studioState.currentWorkflow);
+        return;
+      }
 
       const position = editorInstance.value.screenToFlowCoordinate({
         x: event.clientX,
         y: event.clientY,
       });
 
-      const newNode = new DroppedNode(blockType, position).getNode();
-      if (!newNode) return;
+      const nodeId = nanoid();
+      const newNode = {
+        position,
+        label: block.id,
+        data: cloneDeep(block.data || {}),
+        type: block.component || 'BlockBasic',
+        id: block.id === 'blocks-group-2' ? `group-${nodeId}` : nodeId,
+      };
 
-      if (editorCommands) {
-        editorCommands.addNode(newNode);
-      } else if (studioState.currentWorkflow?.drawflow?.nodes) {
-        studioState.currentWorkflow.drawflow.nodes.push(newNode);
+      if (editorInstance.value.addNodes) {
+        editorInstance.value.addNodes([newNode]);
+      }
+      if (editorCommands && commandManager) {
+        commandManager.add(editorCommands.nodeAdded([newNode]));
+      }
+
+      if (studioState.currentWorkflow?.drawflow?.nodes) {
+        const existing = studioState.currentWorkflow.drawflow.nodes.find(
+          (n) => n.id === newNode.id
+        );
+        if (!existing) {
+          studioState.currentWorkflow.drawflow.nodes.push(newNode);
+        }
+      }
+
+      const edgeEl = DroppedNode.isEdge(target);
+      const handleEl = DroppedNode.isHandle(target);
+
+      if (handleEl) {
+        DroppedNode.appendNode(editorInstance.value, {
+          target: handleEl,
+          nodeId: newNode.id,
+        });
+      } else if (edgeEl) {
+        DroppedNode.insertBetweenNode(editorInstance.value, {
+          target: edgeEl,
+          nodeId: newNode.id,
+          outputs: block.outputs,
+        });
       }
 
       if (isDirty) isDirty.value = true;

@@ -35,6 +35,10 @@ export default defineConfig({
     chunkSizeWarningLimit: 3000,
     rollupOptions: {
       input: path.resolve(__dirname, 'src/studio/index.html'),
+      onwarn(warning, warn) {
+        if (warning.code === 'INEFFECTIVE_DYNAMIC_IMPORT') return;
+        warn(warning);
+      },
       output: {
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name]-[hash].js',

@@ -97,6 +97,10 @@ export default defineConfig({
     target: 'esnext',
     chunkSizeWarningLimit: 3000,
     rollupOptions: {
+      onwarn(warning, warn) {
+        if (warning.code === 'INEFFECTIVE_DYNAMIC_IMPORT') return;
+        warn(warning);
+      },
       input: {
         background: path.resolve(__dirname, 'src/background/index.js'),
         offscreen: path.resolve(__dirname, 'src/offscreen/runner-entry.js'),
