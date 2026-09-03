@@ -25,6 +25,7 @@ export default defineConfig({
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+    BROWSER_TYPE: JSON.stringify(process.env.BROWSER || 'chrome'),
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
   },
   build: {

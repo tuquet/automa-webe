@@ -181,7 +181,7 @@ const getShadowRoot = (element) => {
   return BROWSER_TYPE === 'firefox'
     ? element.openOrClosedShadowRoot
     : chrome.dom.openOrClosedShadowRoot(element);
-}
+};
 
 /**
  * Finds all elements on the page, inclusive of those within shadow roots.

@@ -1,82 +1,82 @@
 .vue-flow__minimap {
-	@apply rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden;
+  @apply rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden;
 }
 
 .vue-flow__minimap-mask {
-	fill: rgba(234, 88, 12, 0.15);
-	stroke: rgba(234, 88, 12, 0.6);
-	stroke-width: 1.5;
+  fill: rgba(234, 88, 12, 0.15);
+  stroke: rgba(234, 88, 12, 0.6);
+  stroke-width: 1.5;
 }
 
 .vue-flow__node {
-	& > div {
-		@apply rounded-lg transition;
-	}
-	&.selected .block-base__content {
-		@apply ring-2 ring-accent;
-	}
-	&:hover {
-		.block-menu-container {
-			display: block;
-		}
-	}
+  & > div {
+    @apply rounded-lg transition;
+  }
+  &.selected .block-base__content {
+    @apply ring-2 ring-accent;
+  }
+  &:hover {
+    .block-menu-container {
+      display: block;
+    }
+  }
 
-	&.vue-flow__node-BlockGroup2 {
-		z-index: 0 !important;
-	}
+  &.vue-flow__node-BlockGroup2 {
+    z-index: 0 !important;
+  }
 
-	.vue-flow__handle {
-		@apply h-4 w-4 rounded-full border-0;
-		&.target {
-			@apply bg-accent -ml-4;
-		}
-		&.source {
-			border-width: 3px;
-			@apply border-accent -mr-4 bg-white dark:bg-black;
-		}
-	}
+  .vue-flow__handle {
+    @apply h-4 w-4 rounded-full border-0;
+    &.target {
+      @apply bg-accent -ml-4;
+    }
+    &.source {
+      border-width: 3px;
+      @apply border-accent -mr-4 bg-white dark:bg-black;
+    }
+  }
 }
 
 .vue-flow {
-	background-color: transparent;
-	&.disabled {
-		.vue-flow__handle {
-			pointer-events: none;
-		}
-	}
-	svg g.connected-edges path {
-		stroke:  theme('colors.primary');
-	}
+  background-color: transparent;
+  &.disabled {
+    .vue-flow__handle {
+      pointer-events: none;
+    }
+  }
+  svg g.connected-edges path {
+    stroke: theme('colors.primary');
+  }
 }
 
 .vue-flow__background {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .vue-flow__background pattern circle {
-	fill: #cbd5e1;
+  fill: #cbd5e1;
 }
 
 .dark .vue-flow__background pattern circle {
-	fill: #27272a;
+  fill: #27272a;
 }
 
 .vue-flow__edge {
-	cursor: pointer;
-	&.selected .vue-flow__edge-path {
-		stroke: theme('colors.green.300');
-	}
+  cursor: pointer;
+  &.selected .vue-flow__edge-path {
+    stroke: theme('colors.green.300');
+  }
 }
 
 .dark .vue-flow__edge-path:hover {
-	stroke: theme('colors.yellow.400');
+  stroke: theme('colors.yellow.400');
 }
 .vue-flow__edge-path {
   stroke: theme('colors.accent');
   stroke-width: 4;
   transition: stroke 100ms ease;
   &:hover {
-		stroke: theme('colors.yellow.500');
+    stroke: theme('colors.yellow.500');
   }
 }
 

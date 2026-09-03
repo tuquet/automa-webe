@@ -483,7 +483,9 @@ function handleWorkflowFile(e, isImport = false) {
     try {
       const parsed = JSON.parse(event.target.result);
       loadWorkflowData(parsed, isImport ? undefined : file.name);
-      toast.success(`${isImport ? 'Imported' : 'Opened'} workflow: ${file.name}`);
+      toast.success(
+        `${isImport ? 'Imported' : 'Opened'} workflow: ${file.name}`
+      );
     } catch (err) {
       toast.error(`Invalid workflow JSON: ${err.message}`);
     }

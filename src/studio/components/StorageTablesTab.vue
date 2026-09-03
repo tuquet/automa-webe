@@ -7,7 +7,6 @@
       <div class="flex items-center gap-2">
         <!-- Select Active Table Dropdown -->
         <div v-if="tables.length > 0" class="flex items-center gap-1.5">
-          <span class="font-medium text-muted-foreground text-xs">Table:</span>
           <select
             v-model="activeTableId"
             data-testid="select-storage-table"
@@ -27,7 +26,7 @@
           @click="showCreateTableForm = !showCreateTableForm"
         >
           <Plus class="size-3.5 mr-1" />
-          <span>New Table</span>
+          <span>New</span>
         </Button>
 
         <Button variant="outline" size="sm" @click="loadTables">
@@ -129,9 +128,7 @@
         class="py-16 text-center text-muted-foreground"
       >
         <Table class="size-8 inline-block mb-1 text-muted-foreground/50" />
-        <p class="font-medium text-sm text-foreground">
-          No tables
-        </p>
+        <p class="font-medium text-sm text-foreground">No tables</p>
       </div>
 
       <div v-else-if="activeTable" class="h-full w-full">

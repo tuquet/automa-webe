@@ -114,7 +114,7 @@ defineProps({
 const emit = defineEmits(['update']);
 
 const { t, te } = useI18n();
-const shortcut = useShortcut('action:search', () => {
+useShortcut('action:search', () => {
   const searchInput = document.querySelector('#search-input input');
 
   searchInput?.focus();

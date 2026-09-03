@@ -11,7 +11,7 @@
       <div class="space-y-3 py-1 text-xs">
         <div class="space-y-1.5">
           <label class="block font-medium text-xs text-foreground">
-            Browser Profile
+            Browser
           </label>
           <RemoteVirtualSelect
             id="select.browser.profile"

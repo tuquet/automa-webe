@@ -109,28 +109,15 @@
               >
             </div>
           </div>
-          <Badge variant="success" class="text-[10px]">Campaign</Badge>
         </div>
       </div>
-    </div>
-
-    <!-- Footer Bar -->
-    <div
-      class="pt-2.5 border-t border-border flex items-center justify-between text-muted-foreground"
-    >
-      <span class="text-[11px]">
-        {{ workflows.length }} workflows, {{ campaigns.length }} campaigns
-      </span>
-      <Button variant="outline" size="sm" @click="$emit('close')">
-        Close
-      </Button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { Badge, Button, WorkflowDataTable } from '@automa/ui';
+import { WorkflowDataTable } from '@automa/ui';
 import { FileCode, Package, Users } from 'lucide-vue-next';
 import {
   fetchStorageWorkflows,

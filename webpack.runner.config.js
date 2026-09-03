@@ -86,6 +86,12 @@ config.entry.offscreen = [
 // 5. In-memory cache for fast dev watch and stable compilation
 config.cache = true;
 
+// 6. Disable heavy terser minimization for ultra fast runner builds
+config.optimization = {
+  ...config.optimization,
+  minimize: false,
+};
+
 // 7. Generate an empty dummy.html for CLI background execution without triggering listeners
 config.plugins.push(
   new HtmlWebpackPlugin({

@@ -9,7 +9,7 @@
         @click="showAddForm = !showAddForm"
       >
         <Plus class="size-3.5 mr-1" />
-        <span>New Secret</span>
+        <span>New</span>
       </Button>
 
       <Button variant="outline" size="sm" @click="loadCredentials">
@@ -117,7 +117,7 @@
               &#123;&#123;secrets.{{ c.name || c.key }}&#125;&#125;
             </span>
             <span class="text-[10px] text-muted-foreground truncate">
-              Value: •••••••••••• (Encrypted AES-256)
+              ••••••••••••
             </span>
           </div>
         </div>
