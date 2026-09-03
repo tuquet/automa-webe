@@ -3,7 +3,7 @@
     data-testid="studio-header"
     class="h-11 border-b border-border bg-card px-3 sm:px-4 flex items-center justify-between z-30 shrink-0 select-none relative text-foreground"
   >
-    <!-- Left Section: Sidebar Toggle, New/Import/Open File, Storage Explorer & Browsers -->
+    <!-- Left Section: Sidebar Toggle, Library, New & Open -->
     <div class="flex items-center gap-1.5 shrink-0">
       <Button
         variant="ghost"
@@ -16,26 +16,26 @@
         <PanelLeftClose v-else class="size-3.5" />
       </Button>
 
-      <!-- Storage Explorer & Workspace Actions -->
+      <!-- Library Explorer -->
       <Button
         v-if="automaCoreStatus === 'online'"
         variant="outline"
         size="sm"
         data-testid="btn-storage-explorer"
-        title="Browse and Open Workflows from Storage workspace"
+        title="Browse Library"
         @click="$emit('openStorageExplorer')"
       >
         <FolderTree class="size-3.5 mr-1 text-primary" />
-        <span class="hidden lg:inline">Storage</span>
+        <span class="hidden lg:inline">Library</span>
       </Button>
 
-      <!-- New, Import & Open Workflow Group -->
+      <!-- Workflow Actions -->
       <div class="flex items-center gap-1">
         <AutomaButton
           id="btn.workflow.create"
           size="sm"
           variant="outline"
-          title="Create New Blank Workflow"
+          title="New Workflow"
           @click="$emit('newWorkflow')"
         />
 
@@ -43,47 +43,8 @@
           id="btn.workflow.import"
           size="sm"
           variant="outline"
-          title="Import Workflow JSON file from computer"
+          title="Open Workflow (Ctrl+O)"
           @click="$emit('importWorkflow')"
-        />
-
-        <Button
-          variant="outline"
-          size="sm"
-          data-testid="btn-open-file"
-          title="Open Workflow JSON File from Computer"
-          @click="$emit('openFilePicker')"
-        >
-          <FolderOpen class="size-3.5 mr-1" />
-          <span class="hidden md:inline">Open</span>
-        </Button>
-      </div>
-
-      <div
-        v-if="automaCoreStatus === 'online'"
-        class="h-3.5 w-px bg-border mx-0.5 hidden sm:block"
-      ></div>
-
-      <!-- Browsers Fleet & Kill All Quick Actions -->
-      <div v-if="automaCoreStatus === 'online'" class="flex items-center gap-1">
-        <Button
-          variant="outline"
-          size="sm"
-          data-testid="btn-browsers-menu"
-          title="Browser Fleet Manager"
-          @click="$emit('openModal', 'browsers')"
-        >
-          <Globe class="size-3.5 mr-1" />
-          <span class="hidden xl:inline">Browsers</span>
-        </Button>
-
-        <AutomaButton
-          id="btn.browser.kill_all"
-          size="sm"
-          variant="destructive"
-          icon-only
-          title="Kill All Chrome / Worker Processes"
-          @click="$emit('killAllBrowsers')"
         />
       </div>
     </div>
@@ -202,35 +163,6 @@
             />
           </button>
         </div>
-
-        <!-- Bottom Actions -->
-        <div
-          class="pt-1.5 border-t border-border px-2 flex items-center justify-between text-[11px]"
-        >
-          <button
-            type="button"
-            class="text-primary hover:underline flex items-center gap-1 py-1 px-1.5 rounded hover:bg-primary/10 cursor-pointer"
-            @click="
-              $emit('newWorkflow');
-              isDropdownOpen = false;
-            "
-          >
-            <Plus class="size-3" />
-            <span>New Blank</span>
-          </button>
-
-          <button
-            type="button"
-            class="text-muted-foreground hover:underline flex items-center gap-1 py-1 px-1.5 rounded hover:bg-muted cursor-pointer"
-            @click="
-              $emit('importWorkflow');
-              isDropdownOpen = false;
-            "
-          >
-            <Upload class="size-3" />
-            <span>Import File</span>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -261,41 +193,17 @@
         }}</span>
       </Button>
 
-      <!-- Tables Modal -->
-      <Button
-        variant="outline"
-        size="sm"
-        data-testid="btn-table-data"
-        title="SQLite Storage Tables"
-        @click="$emit('openModal', 'tables')"
-      >
-        <Table class="size-3.5 mr-1" />
-        <span class="hidden xl:inline">Tables</span>
-      </Button>
-
-      <!-- Variables Modal -->
-      <Button
-        variant="outline"
-        size="sm"
-        data-testid="btn-global-data"
-        title="Global Variables"
-        @click="$emit('openModal', 'global-data')"
-      >
-        <Database class="size-3.5 mr-1" />
-        <span class="hidden xl:inline">Variables</span>
-      </Button>
-
-      <!-- Secrets Modal -->
+      <!-- Unified Storage Hub (Tables / Variables / Secrets) -->
       <Button
         v-if="automaCoreStatus === 'online'"
         variant="outline"
         size="sm"
-        data-testid="btn-secrets"
-        title="Vault Secrets & AES Encryption"
-        @click="$emit('openModal', 'secrets')"
+        data-testid="btn-storage-data"
+        title="Storage & Vault Hub (Tables, Variables, Secrets)"
+        @click="$emit('openModal', 'storage')"
       >
-        <KeyRound class="size-3.5 mr-1" />
-        <span class="hidden xl:inline">Secrets</span>
+        <Database class="size-3.5 mr-1 text-primary" />
+        <span class="hidden xl:inline">Storage Data</span>
       </Button>
 
       <!-- Settings Modal -->
@@ -413,12 +321,9 @@ import {
   ChevronDown,
   Database,
   Download,
-  FolderOpen,
   FolderTree,
   GitBranch,
-  Globe,
   History,
-  KeyRound,
   PanelLeft,
   PanelLeftClose,
   Pause,
@@ -427,8 +332,6 @@ import {
   Search,
   Settings,
   Square,
-  Table,
-  Upload,
 } from 'lucide-vue-next';
 
 const props = defineProps({
