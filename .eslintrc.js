@@ -77,5 +77,23 @@ module.exports = {
     'import/prefer-default-export': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: 'vue',
+            importNames: [
+              'defineProps',
+              'defineEmits',
+              'defineExpose',
+              'withDefaults',
+            ],
+            message:
+              'Compiler macros (defineProps, defineEmits, defineExpose, withDefaults) are compiler macros in <script setup> and do not need to be imported.',
+          },
+        ],
+      },
+    ],
   },
 };

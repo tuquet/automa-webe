@@ -2,8 +2,9 @@
   <div
     class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans select-none"
   >
-    <!-- Top Header Bar Component -->
+    <!-- Top Header Bar Component (Hidden in Headless Mode) -->
     <studio-header
+      v-if="!isHeadless"
       :show-sidebar="state.showSidebar"
       :automa-core-status="automaCoreState.status"
       :current-workflow-name="workflow?.name || 'Untitled Workflow'"
@@ -388,6 +389,7 @@ const isParamsValid = computed(() => {
 
 const currentFilePath = ref('');
 const isSaving = ref(false);
+const isHeadless = ref(false);
 const isDirty = ref(false);
 const activeRunningBlockId = ref(null);
 const autoFocusEnabled = ref(true);
@@ -1717,6 +1719,8 @@ function onWindowMessage(e) {
     typeof e.data.data === 'object'
   ) {
     loadWorkflowData(e.data.data);
+  } else if (e.data.type === 'automa:set-headless') {
+    isHeadless.value = Boolean(e.data.headless);
   }
 }
 
@@ -1729,6 +1733,9 @@ onMounted(() => {
 
   if (typeof window !== 'undefined') {
     const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('headless') === 'true') {
+      isHeadless.value = true;
+    }
     const fileParam = urlParams.get('file') || urlParams.get('path');
     if (fileParam) {
       currentFilePath.value = fileParam;

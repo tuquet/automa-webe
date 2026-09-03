@@ -41,11 +41,8 @@
         </template>
       </ui-input>
     </edit-autocomplete>
-    <a
+    <div
       v-if="!state.havePermission"
-      href="https://docs.extension.automa.site/blocks/google-sheets.html#access-to-spreadsheet"
-      target="_blank"
-      rel="noopener"
       class="ml-1 inline-block text-sm leading-tight"
     >
       Automa doesn't have access to the spreadsheet.
@@ -53,11 +50,12 @@
         href="https://docs.extension.automa.site/blocks/google-sheets.html#access-to-spreadsheet"
         target="_blank"
         rel="noopener"
+        class="text-primary hover:underline"
       >
         Click here to read more.
         <v-remixicon name="riInformationLine" size="18" class="inline" />
       </a>
-    </a>
+    </div>
     <edit-autocomplete v-if="!['create', 'add-sheet'].includes(data.type)">
       <ui-input
         :model-value="data.range"
