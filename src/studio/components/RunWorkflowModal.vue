@@ -89,6 +89,7 @@
                 <Input
                   :model-value="param.value"
                   type="number"
+                  :data-testid="`input-param-${param.name || idx}`"
                   :placeholder="param.placeholder || 'Enter number...'"
                   class="h-7 text-xs"
                   @update:model-value="
@@ -105,6 +106,7 @@
                 <Input
                   :model-value="param.value"
                   type="text"
+                  :data-testid="`input-param-${param.name || idx}`"
                   :placeholder="param.placeholder || 'Enter value...'"
                   class="h-7 text-xs"
                   @update:model-value="
@@ -138,6 +140,7 @@
         <Button
           variant="outline"
           size="sm"
+          data-testid="btn-cancel-run-workflow"
           @click="$emit('update:modelValue', false)"
         >
           Cancel
@@ -145,6 +148,7 @@
         <Button
           variant="default"
           size="sm"
+          data-testid="btn-confirm-run-workflow"
           :disabled="!isParamsValid || runModalState.isSubmitting"
           @click="$emit('execute')"
         >
@@ -170,6 +174,10 @@ import {
   Switch,
 } from '@automa/ui';
 import { Play, SlidersHorizontal } from 'lucide-vue-next';
+
+defineOptions({
+  name: 'RunWorkflowModal',
+});
 
 defineProps({
   modelValue: {

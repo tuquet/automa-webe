@@ -124,6 +124,10 @@ import {
   fetchStorageCampaigns,
 } from '../services/storage.service';
 
+defineOptions({
+  name: 'WorkflowLibraryModal',
+});
+
 const emit = defineEmits(['select', 'close']);
 
 const workflows = ref([]);

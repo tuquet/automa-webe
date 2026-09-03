@@ -97,6 +97,10 @@ import WorkflowGlobalData from '@/components/newtab/workflow/WorkflowGlobalData.
 import StorageTablesTab from './StorageTablesTab.vue';
 import StorageSecretsTab from './StorageSecretsTab.vue';
 
+defineOptions({
+  name: 'UnifiedStorageModal',
+});
+
 const props = defineProps({
   modelValue: {
     type: Boolean,

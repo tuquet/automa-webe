@@ -29,7 +29,12 @@
           <span>New</span>
         </Button>
 
-        <Button variant="outline" size="sm" @click="loadTables">
+        <Button
+          variant="outline"
+          size="sm"
+          data-testid="btn-refresh-tables"
+          @click="loadTables"
+        >
           <RefreshCw
             class="size-3.5 mr-1"
             :class="{ 'animate-spin': isLoading }"
@@ -75,6 +80,7 @@
           <Input
             v-model="newTable.name"
             type="text"
+            data-testid="input-table-name"
             placeholder="Table name..."
             class="h-8 text-xs"
           />
@@ -89,6 +95,7 @@
           <Input
             v-model="newTable.columnsStr"
             type="text"
+            data-testid="input-table-columns"
             placeholder="col1, col2, col3..."
             class="h-8 text-xs"
           />
@@ -99,6 +106,7 @@
         <Button
           variant="outline"
           size="xs"
+          data-testid="btn-cancel-create-table"
           @click="showCreateTableForm = false"
         >
           Cancel
@@ -106,6 +114,7 @@
         <Button
           variant="default"
           size="xs"
+          data-testid="btn-submit-create-table"
           :disabled="!newTable.name || isSubmitting"
           @click="onCreateTable"
         >
@@ -150,6 +159,11 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import { Button, Input, VirtualDataTable } from '@automa/ui';
+
+defineOptions({
+  name: 'StorageTablesTab',
+});
+
 import { Loader2, Plus, RefreshCw, Table, Trash2 } from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import {

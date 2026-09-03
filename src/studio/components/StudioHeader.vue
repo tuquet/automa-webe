@@ -105,6 +105,7 @@
             v-for="wf in filteredWorkflows"
             :key="wf.path || wf.id || wf.name"
             type="button"
+            :data-testid="`btn-select-workflow-${wf.id || wf.name}`"
             class="w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between transition hover:bg-muted cursor-pointer"
             :class="{
               'bg-primary/10 text-primary font-semibold':
@@ -250,6 +251,7 @@
             variant="outline"
             size="sm"
             class="border-amber-500/40 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+            :data-testid="isJobPaused ? 'btn-resume-workflow' : 'btn-pause-workflow'"
             :title="
               isJobPaused ? 'Resume Job (WebSocket)' : 'Pause Job (WebSocket)'
             "
@@ -263,6 +265,7 @@
           <Button
             variant="destructive"
             size="sm"
+            data-testid="btn-stop-workflow"
             title="Stop Job"
             @click="$emit('stopJob')"
           >
@@ -288,6 +291,11 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { AutomaButton, Button, Badge } from '@automa/ui';
+
+defineOptions({
+  name: 'StudioHeader',
+});
+
 import {
   AlertCircle,
   Check,

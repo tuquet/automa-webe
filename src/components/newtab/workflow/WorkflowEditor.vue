@@ -42,32 +42,40 @@
       <slot name="controls-prepend" />
       <div class="pointer-events-none grow" />
       <slot name="controls-append" />
-      <button
-        v-tooltip.group="t('workflow.editor.resetZoom')"
-        data-testid="btn-canvas-fit-view"
-        class="control-button mr-2"
-        @click="editor.fitView()"
+      <div
+        class="inline-flex items-center rounded-lg bg-card shadow-xs border border-border p-0.5 gap-0.5"
       >
-        <v-remixicon name="riFullscreenLine" />
-      </button>
-      <div class="inline-block rounded-lg bg-white dark:bg-gray-800">
-        <button
-          v-tooltip.group="t('workflow.editor.zoomOut')"
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          data-testid="btn-canvas-fit-view"
+          :title="t('workflow.editor.resetZoom')"
+          class="hover:bg-accent text-foreground"
+          @click="editor.fitView()"
+        >
+          <Maximize2 class="size-3.5" />
+        </Button>
+        <div class="inline-block h-3.5 w-px bg-border my-auto mx-0.5" />
+        <Button
+          variant="ghost"
+          size="icon-sm"
           data-testid="btn-canvas-zoom-out"
-          class="relative z-10 rounded-lg p-2"
+          :title="t('workflow.editor.zoomOut')"
+          class="hover:bg-accent text-foreground"
           @click="editor.zoomOut()"
         >
-          <v-remixicon name="riSubtractLine" />
-        </button>
-        <hr class="inline-block h-6 border-r" />
-        <button
-          v-tooltip.group="t('workflow.editor.zoomIn')"
+          <Minus class="size-3.5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           data-testid="btn-canvas-zoom-in"
-          class="rounded-lg p-2"
+          :title="t('workflow.editor.zoomIn')"
+          class="hover:bg-accent text-foreground"
           @click="editor.zoomIn()"
         >
-          <v-remixicon name="riAddLine" />
-        </button>
+          <Plus class="size-3.5" />
+        </Button>
       </div>
     </div>
     <template v-for="(node, name) in nodeTypes" :key="name" #[name]="nodeProps">
@@ -101,6 +109,11 @@
 </template>
 <script setup>
 import { onMounted, onBeforeUnmount, watch, computed, reactive } from 'vue';
+
+defineOptions({
+  name: 'WorkflowEditor',
+});
+
 import { useI18n } from 'vue-i18n';
 import {
   VueFlow,
@@ -111,6 +124,8 @@ import {
 import { Background } from '@vue-flow/background';
 import { MiniMap } from '@vue-flow/minimap';
 import cloneDeep from 'lodash.clonedeep';
+import { Button } from '@automa/ui';
+import { Maximize2, Minus, Plus } from 'lucide-vue-next';
 import { useStore } from '@/stores/main';
 import { getBlocks } from '@/utils/getSharedData';
 import { categories } from '@/utils/shared';
@@ -376,8 +391,4 @@ defineExpose({
 <style>
 @import '@vue-flow/core/dist/style.css';
 @import '@vue-flow/core/dist/theme-default.css';
-
-.control-button {
-  @apply p-2 rounded-lg bg-white dark:bg-gray-800 transition-colors;
-}
 </style>

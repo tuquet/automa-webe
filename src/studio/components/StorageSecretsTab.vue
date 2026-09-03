@@ -12,7 +12,12 @@
         <span>New</span>
       </Button>
 
-      <Button variant="outline" size="sm" @click="loadCredentials">
+      <Button
+        variant="outline"
+        size="sm"
+        data-testid="btn-refresh-credentials"
+        @click="loadCredentials"
+      >
         <RefreshCw
           class="size-3.5 mr-1"
           :class="{ 'animate-spin': isLoading }"
@@ -43,6 +48,7 @@
           <Input
             v-model="newCred.name"
             type="text"
+            data-testid="input-secret-key"
             placeholder="API_KEY..."
             class="h-8 text-xs font-mono"
           />
@@ -57,6 +63,7 @@
           <Input
             v-model="newCred.value"
             type="password"
+            data-testid="input-secret-value"
             placeholder="Value..."
             class="h-8 text-xs"
           />
@@ -64,12 +71,18 @@
       </div>
 
       <div class="flex items-center justify-end gap-2 pt-1">
-        <Button variant="outline" size="xs" @click="showAddForm = false">
+        <Button
+          variant="outline"
+          size="xs"
+          data-testid="btn-cancel-add-credential"
+          @click="showAddForm = false"
+        >
           Cancel
         </Button>
         <Button
           variant="default"
           size="xs"
+          data-testid="btn-save-credential"
           :disabled="!newCred.name || !newCred.value || isSubmitting"
           @click="onAddCredential"
         >
@@ -140,6 +153,11 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { Button, Input } from '@automa/ui';
+
+defineOptions({
+  name: 'StorageSecretsTab',
+});
+
 import {
   KeyRound,
   Loader2,

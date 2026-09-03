@@ -52,6 +52,10 @@ import { Globe, Square } from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import { killAllBrowserProcesses } from '../services/storage.service';
 
+defineOptions({
+  name: 'BrowsersQuickModal',
+});
+
 defineProps({
   modelValue: {
     type: Boolean,
