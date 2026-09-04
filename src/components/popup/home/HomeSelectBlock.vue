@@ -18,7 +18,7 @@
       :minimap="false"
       :editor-controls="false"
       :options="editorOptions"
-      class="bg-box-transparent h-56 w-full rounded-lg"
+      class="bg-muted border border-border h-56 w-full rounded-lg"
       @init="onEditorInit"
     />
     <ui-button
@@ -125,6 +125,6 @@ onBeforeUnmount(() => {
 }
 
 .vue-flow__handle.source {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 </style>

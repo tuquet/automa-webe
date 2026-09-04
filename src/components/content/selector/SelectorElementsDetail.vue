@@ -24,10 +24,10 @@
           <div
             v-for="(value, name) in element.attributes"
             :key="name"
-            class="bg-box-transparent mb-1 rounded-lg py-2 px-3"
+            class="bg-muted border border-border mb-1 rounded-lg py-2 px-3"
           >
             <p
-              class="text-overflow text-sm leading-tight text-gray-600"
+              class="text-overflow text-xs leading-tight text-muted-foreground"
               title="Attribute name"
             >
               {{ name }}
@@ -68,10 +68,10 @@
           <div
             v-for="option in element.options"
             :key="option.name"
-            class="bg-box-transparent mb-1 rounded-lg py-2 px-3"
+            class="bg-muted border border-border mb-1 rounded-lg py-2 px-3"
           >
             <p
-              class="text-overflow text-sm leading-tight text-gray-600"
+              class="text-overflow text-xs leading-tight text-muted-foreground"
               title="Option name"
             >
               {{ option.name }}

@@ -56,7 +56,7 @@
               style="height: 32px; width: 32px"
               alt="Can not display"
             />
-            <span v-else class="bg-box-transparent rounded-lg p-2">
+            <span v-else class="bg-muted text-muted-foreground rounded-lg p-2">
               <v-remixicon :name="workflow.icon" size="20" />
             </span>
             <div class="ml-2 flex-1 overflow-hidden">
@@ -65,7 +65,7 @@
               </p>
               <p
                 :title="workflow.description"
-                class="text-overflow text-sm leading-tight text-gray-600"
+                class="text-overflow text-xs leading-tight text-muted-foreground"
               >
                 {{ workflow.description }}
               </p>
