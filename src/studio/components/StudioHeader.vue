@@ -94,7 +94,7 @@
         <div class="max-h-60 overflow-y-auto py-1 px-1 space-y-0.5">
           <div
             v-if="filteredWorkflows.length === 0"
-            class="py-6 text-center text-muted-foreground text-[11px]"
+            class="py-6 text-center text-muted-foreground text-xs"
           >
             No workflows
           </div>
@@ -124,7 +124,7 @@
                 <span class="truncate font-medium text-xs">{{ wf.name }}</span>
                 <span
                   v-if="wf.path"
-                  class="text-[10px] text-muted-foreground font-mono truncate"
+                  class="text-xs text-muted-foreground font-mono truncate"
                 >
                   {{ wf.path }}
                 </span>
@@ -210,7 +210,7 @@
           v-if="logsCount > 0"
           variant="secondary"
           data-testid="logs-count-badge"
-          class="px-1 py-0 text-[10px] h-4 min-w-4 flex items-center justify-center font-mono"
+          class="px-1 py-0 text-xs h-4 min-w-4 flex items-center justify-center font-mono"
         >
           {{ logsCount }}
         </Badge>

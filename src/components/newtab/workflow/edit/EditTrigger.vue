@@ -34,11 +34,11 @@
           </div>
           <div class="min-w-0 flex-1">
             <div
-              class="text-xs font-medium text-foreground group-hover:text-primary transition-colors"
+              class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
             >
               {{ t('workflow.blocks.trigger.edit', 'Edit Triggers') }}
             </div>
-            <div class="text-[11px] text-muted-foreground truncate">
+            <div class="text-xs text-muted-foreground truncate">
               {{ state.triggers.length }}
               {{
                 state.triggers.length === 1
@@ -70,11 +70,11 @@
           </div>
           <div class="min-w-0 flex-1">
             <div
-              class="text-xs font-medium text-foreground group-hover:text-primary transition-colors"
+              class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
             >
               {{ t('workflow.blocks.trigger.parameters', 'Parameters') }}
             </div>
-            <div class="text-[11px] text-muted-foreground truncate">
+            <div class="text-xs text-muted-foreground truncate">
               {{ (data.parameters || []).length }}
               {{
                 (data.parameters || []).length === 1

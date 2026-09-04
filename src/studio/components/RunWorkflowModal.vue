@@ -55,16 +55,13 @@
                 </label>
                 <Badge
                   variant="outline"
-                  class="text-[10px] uppercase font-mono px-1 py-0"
+                  class="text-xs uppercase font-mono px-1.5 py-0"
                 >
                   {{ param.type || 'string' }}
                 </Badge>
               </div>
 
-              <p
-                v-if="param.description"
-                class="text-[11px] text-muted-foreground"
-              >
+              <p v-if="param.description" class="text-xs text-muted-foreground">
                 {{ param.description }}
               </p>
 

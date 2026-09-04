@@ -72,9 +72,7 @@
 
       <div class="space-y-2">
         <div>
-          <label
-            class="block text-[11px] font-medium text-muted-foreground mb-1"
-          >
+          <label class="block text-xs font-medium text-muted-foreground mb-1">
             Name
           </label>
           <Input
@@ -87,9 +85,7 @@
         </div>
 
         <div>
-          <label
-            class="block text-[11px] font-medium text-muted-foreground mb-1"
-          >
+          <label class="block text-xs font-medium text-muted-foreground mb-1">
             Columns
           </label>
           <Input

@@ -23,7 +23,7 @@
 
       <span
         v-if="state.latency > 0"
-        class="text-[10px] opacity-70 hidden sm:inline font-mono"
+        class="text-xs opacity-70 hidden sm:inline font-mono"
       >
         {{ state.latency }}ms
       </span>

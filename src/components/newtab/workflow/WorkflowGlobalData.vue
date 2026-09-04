@@ -25,7 +25,7 @@
           <span>Storage Variables</span>
           <span
             v-if="storageVars.length > 0"
-            class="px-1.5 py-0.5 rounded-full text-[10px] bg-foreground/10"
+            class="px-1.5 py-0.5 rounded-full text-xs bg-foreground/10"
           >
             {{ storageVars.length }}
           </span>
@@ -59,7 +59,7 @@
         <p class="text-foreground font-medium mb-1">
           💡 Click any token below to copy expression to clipboard:
         </p>
-        <p class="text-[11px] text-muted-foreground">
+        <p class="text-xs text-muted-foreground">
           Variables are securely stored in SQLite Storage and accessible across
           all workflows in campaign.
         </p>
@@ -90,14 +90,14 @@
             <span class="font-mono font-semibold text-xs text-accent truncate">
               &#123;&#123;variables.{{ v.name }}&#125;&#125;
             </span>
-            <span class="text-[11px] text-muted-foreground truncate mt-0.5">
+            <span class="text-xs text-muted-foreground truncate mt-0.5">
               Value: {{ String(v.value).slice(0, 40)
               }}{{ String(v.value).length > 40 ? '...' : '' }}
             </span>
           </div>
 
           <button
-            class="px-2.5 py-1 text-[11px] font-medium rounded bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground transition shrink-0"
+            class="px-2.5 py-1 text-xs font-medium rounded bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground transition shrink-0"
             title="Copy variable token to clipboard"
             @click="copyToken(`{{variables.${v.name}}}`)"
           >

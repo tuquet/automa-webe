@@ -21,7 +21,7 @@
 
       <span
         v-if="state.status === 'online' && state.latency > 0"
-        class="text-[10px] opacity-80 hidden sm:inline font-mono"
+        class="text-xs opacity-80 hidden sm:inline font-mono"
       >
         {{ state.latency }}ms
       </span>
@@ -44,7 +44,7 @@
           Automa Core Telemetry
         </span>
         <span
-          class="text-[10px] font-mono text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded-full"
+          class="text-xs font-mono text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded-full"
         >
           Online
         </span>
@@ -53,28 +53,28 @@
       <div class="space-y-1.5 text-muted-foreground">
         <div class="flex justify-between items-center">
           <span>Daemon Host:</span>
-          <span class="font-mono text-[11px] text-foreground">{{
+          <span class="font-mono text-xs text-foreground">{{
             state.baseUrl
           }}</span>
         </div>
 
         <div class="flex justify-between items-center">
           <span>Ping Latency:</span>
-          <span class="font-mono text-[11px] text-foreground"
+          <span class="font-mono text-xs text-foreground"
             >{{ state.latency }} ms</span
           >
         </div>
 
         <div v-if="metrics" class="flex justify-between items-center">
           <span>CPU Usage:</span>
-          <span class="font-mono text-[11px] font-medium text-foreground">
+          <span class="font-mono text-xs font-medium text-foreground">
             {{ (metrics.cpu_usage_pct || 0).toFixed(1) }}%
           </span>
         </div>
 
         <div v-if="metrics" class="flex justify-between items-center">
           <span>Memory RSS:</span>
-          <span class="font-mono text-[11px] font-medium text-foreground">
+          <span class="font-mono text-xs font-medium text-foreground">
             {{
               (metrics.memory_rss_bytes
                 ? metrics.memory_rss_bytes / 1024 / 1024
@@ -87,14 +87,14 @@
 
         <div v-if="metrics" class="flex justify-between items-center">
           <span>Active Runners:</span>
-          <span class="font-mono text-[11px] font-medium text-accent">
+          <span class="font-mono text-xs font-medium text-accent">
             {{ metrics.active_runners_count || 0 }}
           </span>
         </div>
       </div>
 
       <div
-        class="pt-1 border-t border-border flex items-center justify-between text-[11px]"
+        class="pt-1 border-t border-border flex items-center justify-between text-xs"
       >
         <a
           href="http://127.0.0.1:8765/swagger-ui"

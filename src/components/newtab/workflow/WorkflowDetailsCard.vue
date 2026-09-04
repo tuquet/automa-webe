@@ -62,14 +62,14 @@
       <div class="flex-1 overflow-hidden min-w-0">
         <p
           data-testid="workflow-name-display"
-          class="text-overflow text-xs font-semibold leading-tight text-foreground"
+          class="text-overflow text-sm font-semibold leading-tight text-foreground"
         >
           {{ workflow.name }}
         </p>
         <p
           v-if="workflow.description"
           data-testid="workflow-description-display"
-          class="cursor-pointer text-[11px] text-muted-foreground leading-tight mt-0.5"
+          class="cursor-pointer text-xs text-muted-foreground leading-tight mt-0.5"
           :class="descriptionCollapsed ? 'line-clamp' : 'whitespace-pre-wrap'"
           @click="descriptionCollapsed = !descriptionCollapsed"
         >

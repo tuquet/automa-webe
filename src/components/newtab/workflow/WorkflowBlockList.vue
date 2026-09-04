@@ -14,7 +14,7 @@
       >
         {{ category?.name || 'Blocks' }}
       </p>
-      <span class="mr-2 text-[10px] text-muted-foreground font-mono">
+      <span class="mr-2 text-xs text-muted-foreground font-mono">
         {{ blocks.length }}
       </span>
       <v-remixicon
@@ -86,7 +86,7 @@
           <!-- Optional Tag Badge (hidden when actions hover) -->
           <div
             v-if="block.tag"
-            class="group-hover:hidden inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-primary/10 text-primary border border-primary/20"
+            class="group-hover:hidden inline-flex items-center px-1.5 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
           >
             {{ block.tag }}
           </div>

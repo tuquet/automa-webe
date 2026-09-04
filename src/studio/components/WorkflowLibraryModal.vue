@@ -22,7 +22,7 @@
           <FileCode class="size-3.5" />
           <span>Workflows</span>
           <span
-            class="text-[10px] px-1 rounded font-mono"
+            class="text-xs px-1 rounded font-mono"
             :class="
               activeTab === 'workflows'
                 ? 'bg-primary-foreground/20 text-primary-foreground'
@@ -47,7 +47,7 @@
           <Package class="size-3.5" />
           <span>Packages</span>
           <span
-            class="text-[10px] px-1 rounded font-mono"
+            class="text-xs px-1 rounded font-mono"
             :class="
               activeTab === 'packages'
                 ? 'bg-primary-foreground/20 text-primary-foreground'
@@ -72,7 +72,7 @@
           <Users class="size-3.5" />
           <span>Campaigns</span>
           <span
-            class="text-[10px] px-1 rounded font-mono"
+            class="text-xs px-1 rounded font-mono"
             :class="
               activeTab === 'campaigns'
                 ? 'bg-primary-foreground/20 text-primary-foreground'
@@ -124,10 +124,9 @@
               <span class="font-medium text-xs text-foreground truncate">{{
                 c.name || c.id
               }}</span>
-              <span
-                class="text-[11px] text-muted-foreground font-mono truncate"
-                >{{ c.id || c.relative_path }}</span
-              >
+              <span class="text-xs text-muted-foreground font-mono truncate">{{
+                c.id || c.relative_path
+              }}</span>
             </div>
           </div>
         </div>

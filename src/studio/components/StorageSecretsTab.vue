@@ -40,9 +40,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <div>
-          <label
-            class="block text-[11px] font-medium text-muted-foreground mb-1"
-          >
+          <label class="block text-xs font-medium text-muted-foreground mb-1">
             Key *
           </label>
           <Input
@@ -55,9 +53,7 @@
         </div>
 
         <div>
-          <label
-            class="block text-[11px] font-medium text-muted-foreground mb-1"
-          >
+          <label class="block text-xs font-medium text-muted-foreground mb-1">
             Value *
           </label>
           <Input
@@ -104,7 +100,7 @@
       >
         <Lock class="size-7 inline-block mb-1 text-muted-foreground/50" />
         <p class="font-medium">No secrets</p>
-        <p class="text-[11px] text-muted-foreground mt-0.5">
+        <p class="text-xs text-muted-foreground mt-0.5">
           Reference via
           <span class="font-mono text-primary"
             >&#123;&#123;secrets.key&#125;&#125;</span
@@ -129,7 +125,7 @@
             >
               &#123;&#123;secrets.{{ c.name || c.key }}&#125;&#125;
             </span>
-            <span class="text-[10px] text-muted-foreground truncate">
+            <span class="text-xs text-muted-foreground truncate">
               ••••••••••••
             </span>
           </div>
