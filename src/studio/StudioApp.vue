@@ -250,7 +250,15 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  provide,
+  reactive,
+  ref,
+  watch,
+} from 'vue';
 import { useToast } from 'vue-toastification';
 import { Button } from '@automa/ui';
 import { Crosshair, Redo2, Undo2, Wand2 } from 'lucide-vue-next';
@@ -391,6 +399,18 @@ const {
     state.animateBlocks = val;
   },
 });
+
+provide('workflow-editor', editorInstance);
+provide('workflow', {
+  editState: reactive({}),
+  isPackage: false,
+  data: workflow,
+  columns: computed(() => workflow.value?.table || []),
+});
+provide('workflow-utils', {
+  executeFromBlock: () => {},
+});
+provide('autocompleteData', ref([]));
 
 // 4. Clipboard Composable
 const {

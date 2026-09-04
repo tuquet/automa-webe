@@ -108,7 +108,15 @@
   </vue-flow>
 </template>
 <script setup>
-import { onMounted, onBeforeUnmount, watch, computed, reactive } from 'vue';
+import {
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  computed,
+  reactive,
+  provide,
+  shallowRef,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   VueFlow,
@@ -198,6 +206,8 @@ const setMinValue = (num, min) => (num < min ? min : num);
 const { t } = useI18n();
 const store = useStore();
 const editor = useVueFlow(props.id);
+const editorRef = shallowRef(editor);
+provide('workflow-editor', editorRef);
 editor.onConnect((params) => {
   params.class = `source-${params.sourceHandle} target-${params.targetHandle}`;
   params.updatable = true;

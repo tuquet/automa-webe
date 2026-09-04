@@ -178,6 +178,7 @@ const { t } = useI18n();
 const triggersList = ref([...(props.triggers || [])]);
 
 function addTrigger(type) {
+  if (!triggersData[type]) return;
   if (triggersData[type].onlyOne) {
     const trigerExists = triggersList.value.some(
       (trigger) => trigger.type === type
@@ -188,7 +189,7 @@ function addTrigger(type) {
   triggersList.value.push({
     id: nanoid(5),
     type,
-    data: cloneDeep(triggersData[type].data),
+    data: triggersData[type].data ? cloneDeep(triggersData[type].data) : {},
   });
 }
 function updateTriggerData(index, data) {

@@ -100,7 +100,7 @@ export default {
     onMounted(() => {
       /* eslint-disable-next-line */
       const target = props.to
-        ? typeof to === 'string'
+        ? typeof props.to === 'string'
           ? document.querySelector(props.to)
           : props.to
         : targetEl.value;
@@ -111,8 +111,11 @@ export default {
         content: content.value,
         placement: props.placement,
         trigger: props.trigger,
-        interactive: true,
-        appendTo: () => document.body,
+        appendTo: (referenceNode) =>
+          referenceNode.closest('[role="dialog"]') ||
+          referenceNode.closest('.ui-modal') ||
+          document.body,
+        zIndex: 99999,
         onShow: (event) => {
           if (props.triggerWidth) {
             event.popper.style.width = `${

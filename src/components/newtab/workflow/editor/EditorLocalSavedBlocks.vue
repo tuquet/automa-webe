@@ -131,7 +131,7 @@ const state = reactive({
   query: '',
 });
 
-const editor = inject('workflow-editor');
+const editor = inject('workflow-editor', null);
 
 const sortedItems = computed(() =>
   packageStore.packages.slice().sort((a, b) => b.createdAt - a.createdAt)
@@ -166,22 +166,36 @@ function removeConnections({ id, type, oldEdges, newEdges }) {
     removedEdges.push(`${id}-${handleType}-${edge.id}`);
   });
 
-  const edgesToRemove = editor.value.getEdges.value.filter(
-    ({ sourceHandle, targetHandle }) => {
-      if (type === 'outputs') {
-        return removedEdges.includes(sourceHandle);
-      }
+  const editorInst = editor?.value || editor;
+  if (!editorInst) return;
 
-      return removedEdges.includes(targetHandle);
+  const rawEdges =
+    editorInst.getEdges?.value ||
+    (typeof editorInst.getEdges === 'function'
+      ? editorInst.getEdges()
+      : editorInst.edges?.value) ||
+    [];
+  const edgesToRemove = rawEdges.filter(({ sourceHandle, targetHandle }) => {
+    if (type === 'outputs') {
+      return removedEdges.includes(sourceHandle);
     }
-  );
 
-  editor.value.removeEdges(edgesToRemove);
+    return removedEdges.includes(targetHandle);
+  });
+
+  editorInst.removeEdges?.(edgesToRemove);
 }
 function updatePackages(item) {
-  const packageNodes = editor.value.getNodes.value.filter(
-    (node) => node.data.id === item.id
-  );
+  const editorInst = editor?.value || editor;
+  if (!editorInst) return;
+
+  const rawNodes =
+    editorInst.getNodes?.value ||
+    (typeof editorInst.getNodes === 'function'
+      ? editorInst.getNodes()
+      : editorInst.nodes?.value) ||
+    [];
+  const packageNodes = rawNodes.filter((node) => node.data.id === item.id);
   if (packageNodes.length === 0) return;
 
   packageNodes.forEach((node) => {

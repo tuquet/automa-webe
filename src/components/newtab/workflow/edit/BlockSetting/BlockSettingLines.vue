@@ -59,7 +59,7 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const editor = inject('workflow-editor');
+const editor = inject('workflow-editor', null);
 const state = reactive({
   retrieved: false,
   edges: {},
@@ -69,21 +69,41 @@ const state = reactive({
 const activeEdge = computed(() => state.edges[state.activeEdge]);
 
 const updateActiveEdge = debounce((name, value) => {
-  const edge = editor.value.getEdge.value(state.activeEdge);
+  const editorInst = editor?.value || editor;
+  if (!editorInst) return;
+
+  const edgeGetter = editorInst.getEdge?.value || editorInst.getEdge;
+  const edge =
+    typeof edgeGetter === 'function'
+      ? edgeGetter(state.activeEdge)
+      : editorInst.findEdge?.(state.activeEdge);
+  if (!edge) return;
 
   edge[name] = value;
-  state.edges[state.activeEdge][name] = value;
+  if (state.edges[state.activeEdge]) {
+    state.edges[state.activeEdge][name] = value;
+  }
 }, 250);
 
 onMounted(() => {
-  state.edges = editor.value.getEdges.value.reduce(
+  const editorInst = editor?.value || editor;
+  if (!editorInst) return;
+
+  const rawEdges =
+    editorInst.getEdges?.value ||
+    (typeof editorInst.getEdges === 'function'
+      ? editorInst.getEdges()
+      : editorInst.edges?.value) ||
+    [];
+  state.edges = rawEdges.reduce(
     (acc, { id, source, targetNode, label, animated, labelStyle, style }) => {
       if (source !== props.blockId) return acc;
 
+      const targetLabel = targetNode?.label || 'unknown';
       let name = t('workflow.blocks.base.settings.line.to', {
-        name: t(`workflow.blocks.${targetNode.label}.name`),
+        name: t(`workflow.blocks.${targetLabel}.name`, targetLabel),
       });
-      if (targetNode.data.description) {
+      if (targetNode?.data?.description) {
         name += ` (${targetNode.data.description.slice(0, 32)})`;
       }
 
