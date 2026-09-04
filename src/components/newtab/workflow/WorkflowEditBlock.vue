@@ -5,20 +5,21 @@
     class="scroll h-full overflow-auto px-3 py-1 text-xs"
   >
     <div
-      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-white pb-2 pt-1 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900"
+      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-background pb-2 pt-1 border-b border-border/60"
     >
-      <button
-        data-testid="btn-edit-block-back"
+      <ui-button
+        variant="ghost"
+        size="icon-xs"
+        data-testid="btn.workflow.edit_block.back"
         :title="t('common.back', 'Back')"
         aria-label="Back"
-        class="inline-flex items-center justify-center h-7 w-7 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition shrink-0 cursor-pointer"
         @click="handleClose"
       >
         <v-remixicon name="riArrowLeftLine" size="16" />
-      </button>
+      </ui-button>
 
       <span
-        class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-gray-100 dark:bg-gray-800/80 shrink-0 text-gray-700 dark:text-gray-200"
+        class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-muted shrink-0 text-foreground"
       >
         <img
           v-if="getBlockIcon() && getBlockIcon().startsWith('http')"
@@ -35,19 +36,19 @@
 
       <p
         data-testid="edit-block-title"
-        class="truncate text-xs font-semibold capitalize text-gray-900 dark:text-gray-100 flex-1 leading-tight"
+        class="truncate text-xs font-semibold capitalize text-foreground flex-1 leading-tight"
       >
         {{ getBlockName() }}
       </p>
 
       <a
-        data-testid="btn-edit-block-docs"
+        data-testid="btn.workflow.edit_block.docs"
         :title="t('common.docs', 'Documentation')"
         aria-label="Documentation"
         :href="`https://docs.extension.automa.site/blocks/${data.id}.html`"
         rel="noopener"
         target="_blank"
-        class="inline-flex items-center justify-center h-7 w-7 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0"
+        class="inline-flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition shrink-0"
       >
         <v-remixicon name="riInformationLine" size="16" />
       </a>

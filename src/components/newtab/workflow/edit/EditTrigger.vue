@@ -11,6 +11,7 @@
       <ui-button
         variant="secondary"
         class="w-full justify-start"
+        data-testid="btn.trigger.edit"
         @click="state.showTriggersModal = true"
       >
         <v-remixicon name="riFlashlightLine" class="mr-2" size="16" />
@@ -20,6 +21,7 @@
       <ui-button
         variant="secondary"
         class="w-full justify-start"
+        data-testid="btn.trigger.parameters"
         @click="state.showParamModal = true"
       >
         <v-remixicon name="riCommandLine" class="mr-2" size="16" />
@@ -56,6 +58,8 @@ import { useI18n } from 'vue-i18n';
 import { nanoid } from 'nanoid/non-secure';
 import SharedWorkflowTriggers from '@/components/newtab/shared/SharedWorkflowTriggers.vue';
 import EditWorkflowParameters from './EditWorkflowParameters.vue';
+
+defineOptions({ name: 'EditTrigger' });
 
 const props = defineProps({
   data: {

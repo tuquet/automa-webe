@@ -6,18 +6,21 @@
     <ui-expand
       v-for="(trigger, index) in triggersList"
       :key="index"
-      class="trigger-item mb-2 rounded-lg border"
+      class="trigger-item mb-2 rounded-md border border-border bg-card/50"
     >
       <template #header>
-        <p class="flex-1">
+        <p class="flex-1 text-xs font-medium text-foreground">
           {{ t(`workflow.blocks.trigger.items.${trigger.type}`) }}
         </p>
-        <v-remixicon
-          name="riDeleteBin7Line"
-          size="20"
-          class="delete-btn cursor-pointer"
+        <button
+          type="button"
+          data-testid="btn.trigger.delete"
+          aria-label="Delete Trigger"
+          class="delete-btn inline-flex items-center justify-center h-6 w-6 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition cursor-pointer"
           @click.stop="triggersList.splice(index, 1)"
-        />
+        >
+          <v-remixicon name="riDeleteBin7Line" size="16" />
+        </button>
       </template>
       <div class="px-4 py-2">
         <component
@@ -29,14 +32,9 @@
     </ui-expand>
     <ui-popover class="mt-4">
       <template #trigger>
-        <ui-button>
-          Add trigger
-          <hr class="h-4 border-r" />
-          <v-remixicon
-            name="riArrowLeftSLine"
-            class="ml-2 -mr-1"
-            rotate="-90"
-          />
+        <ui-button variant="secondary" data-testid="btn.trigger.add">
+          <span>Add trigger</span>
+          <v-remixicon name="riArrowDownSLine" class="ml-2 -mr-1" size="16" />
         </ui-button>
       </template>
       <ui-list class="space-y-1">
@@ -67,6 +65,8 @@ import TriggerContextMenu from '../workflow/edit/Trigger/TriggerContextMenu.vue'
 import TriggerSpecificDay from '../workflow/edit/Trigger/TriggerSpecificDay.vue';
 // import TriggerElementChange from '../workflow/edit/Trigger/TriggerElementChange.vue';
 import TriggerKeyboardShortcut from '../workflow/edit/Trigger/TriggerKeyboardShortcut.vue';
+
+defineOptions({ name: 'SharedWorkflowTriggers' });
 
 const props = defineProps({
   triggers: {

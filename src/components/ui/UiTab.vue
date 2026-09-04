@@ -1,18 +1,18 @@
 <template>
   <button
-    :aria-selected="uiTabs.modelValue.value === value"
+    :aria-selected="uiTabs.modelValue?.value === value"
     :class="[
-      uiTabs.type.value,
+      uiTabs.type?.value,
       {
-        'pointer-events-none opacity-75': disabled,
-        small: uiTabs.small.value,
-        'flex-1': uiTabs.fill.value,
-        'is-active': uiTabs.modelValue.value === value,
+        'pointer-events-none opacity-50': disabled,
+        small: uiTabs.small?.value,
+        'flex-1': uiTabs.fill?.value,
+        'is-active': uiTabs.modelValue?.value === value,
       },
     ]"
-    :tabIndex="uiTabs.modelValue.value === value ? 0 : -1"
+    :tabIndex="uiTabs.modelValue?.value === value ? 0 : -1"
     aria-role="tab"
-    class="ui-tab z-[1] transition-colors focus:ring-0"
+    class="ui-tab z-[1] transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-ring select-none text-xs font-medium cursor-pointer"
     @mouseenter="uiTabs.hoverHandler"
     @click="uiTabs.updateActive(value)"
   >
@@ -21,6 +21,8 @@
 </template>
 <script setup>
 import { inject } from 'vue';
+
+defineOptions({ name: 'UiTab' });
 
 /* eslint-disable-next-line */
 const props = defineProps({
@@ -39,24 +41,33 @@ const uiTabs = inject('ui-tabs', {});
 <style scoped>
 .ui-tab {
   z-index: 1;
-  @apply py-3 px-2 border-b-2 border-transparent;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid transparent;
+  color: var(--muted-foreground, #a1a1aa);
+}
+.ui-tab:hover {
+  color: var(--foreground, #f4f4f5);
 }
 .ui-tab.small {
-  @apply p-2;
+  padding: 0.25rem 0.5rem;
 }
 .ui-tab.fill {
-  @apply rounded-lg border-b-0 px-4 py-2;
+  border-radius: 0.25rem;
+  border-bottom: 0;
+  padding: 0.25rem 0.75rem;
 }
 .ui-tab.fill.small {
-  @apply p-2;
+  padding: 0.25rem 0.5rem;
 }
 .ui-tab.is-active {
-  @apply border-accent dark:border-gray-100 text-gray-800 dark:text-white;
+  border-bottom-color: rgb(var(--color-primary, 59 130 246));
+  color: var(--foreground, #f4f4f5);
+  font-weight: 600;
 }
 .ui-tab.is-active.fill {
-  @apply bg-black bg-opacity-5 dark:bg-gray-200 dark:bg-opacity-5;
-}
-.ui-tab.is-active {
-  @apply border-accent dark:border-gray-100 text-gray-800 dark:text-white;
+  background-color: var(--card, #18181b);
+  color: var(--foreground, #f4f4f5);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  font-weight: 500;
 }
 </style>

@@ -39,13 +39,23 @@
         </template>
       </ui-input>
       <div class="mt-8 flex space-x-2">
-        <ui-button class="w-6/12" @click="fireCallback('onCancel')">
+        <ui-button
+          variant="outline"
+          class="w-6/12"
+          @click="fireCallback('onCancel')"
+        >
           {{ state.options.cancelText }}
         </ui-button>
         <ui-button
           class="w-6/12"
           :loading="state.loading"
-          :variant="state.options.okVariant"
+          :variant="
+            state.options.okVariant === 'danger'
+              ? 'destructive'
+              : state.options.okVariant === 'accent'
+              ? 'default'
+              : state.options.okVariant || 'default'
+          "
           @click="fireCallback('onConfirm')"
         >
           {{ state.options.okText }}
@@ -62,6 +72,7 @@ import { throttle } from '@/utils/helper';
 import emitter from '@/lib/mitt';
 
 export default {
+  name: 'UiDialog',
   setup() {
     const { t } = useI18n();
 
@@ -75,7 +86,7 @@ export default {
       placeholder: '',
       inputType: 'text',
       showLoading: false,
-      okVariant: 'accent',
+      okVariant: 'default',
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
     };

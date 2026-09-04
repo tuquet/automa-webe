@@ -8,19 +8,19 @@
     >
       <v-remixicon name="riArrowLeftSLine" />
     </ui-button>
-    <div class="mx-4">
+    <div class="mx-3 flex items-center gap-1.5 text-xs text-muted-foreground">
       <input
         ref="inputEl"
         v-tooltip="t('components.pagination.currentPage')"
         :value="modelValue"
         :max="maxPage"
         min="0"
-        class="bg-input w-10 appearance-none rounded-lg p-2 text-center transition"
+        class="h-8 w-11 appearance-none rounded-md border border-input bg-background/50 px-1 py-1 text-center text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs"
         type="number"
         @click="$event.target.select()"
         @input="updatePage(+$event.target.value, $event.target)"
       />
-      {{ t('components.pagination.of', { page: maxPage }) }}
+      <span>{{ t('components.pagination.of', { page: maxPage }) }}</span>
     </div>
     <ui-button
       v-tooltip="t('components.pagination.nextPage')"
@@ -35,6 +35,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+defineOptions({ name: 'UiPagination' });
 
 const props = defineProps({
   modelValue: {

@@ -5,13 +5,13 @@
       { [color]: type === 'fill' },
     ]"
     aria-role="tablist"
-    class="ui-tabs relative flex items-center space-x-1 text-gray-600 dark:text-gray-200"
+    class="ui-tabs relative flex items-center space-x-1 text-muted-foreground"
     @mouseleave="showHoverIndicator = false"
   >
     <div
       v-show="showHoverIndicator"
       ref="hoverIndicator"
-      class="ui-tabs__indicator bg-box-transparent absolute left-0 z-0 rounded-lg"
+      class="ui-tabs__indicator bg-accent/50 absolute left-0 z-0 rounded-md"
       style="top: 50%; transform: translate(0, -50%)"
     ></div>
     <slot></slot>
@@ -19,6 +19,8 @@
 </template>
 <script setup>
 import { provide, toRefs, ref } from 'vue';
+
+defineOptions({ name: 'UiTabs' });
 
 const props = defineProps({
   modelValue: {
@@ -32,7 +34,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'bg-box-transparent',
+    default: 'bg-muted/80',
   },
   small: Boolean,
   fill: Boolean,
@@ -40,8 +42,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'change']);
 
 const tabTypes = {
-  default: 'border-b',
-  fill: 'p-2 rounded-lg',
+  default: 'border-b border-border/60',
+  fill: 'p-1 rounded-md border border-border/40 bg-muted/80',
 };
 
 const hoverIndicator = ref(null);
@@ -55,13 +57,13 @@ function hoverHandler({ target }) {
   const isFill = props.type === 'fill';
 
   if (target.classList.contains('is-active') && isFill) {
-    hoverIndicator.value.style.display = 'none';
+    showHoverIndicator.value = false;
 
     return;
   }
 
   const { height, width } = target.getBoundingClientRect();
-  const elHeight = isFill ? height + 3 : height - 11;
+  const elHeight = isFill ? height - 4 : height - 11;
 
   showHoverIndicator.value = true;
   hoverIndicator.value.style.width = `${width}px`;

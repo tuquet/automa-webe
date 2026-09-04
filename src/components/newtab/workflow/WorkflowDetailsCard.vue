@@ -9,7 +9,7 @@
           <span
             data-testid="workflow-icon-btn"
             :title="t('workflow.sidebar.workflowIcon')"
-            class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-gray-100 dark:bg-gray-700/60 cursor-pointer hover:opacity-80 transition"
+            class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-muted text-foreground cursor-pointer hover:bg-accent transition"
           >
             <ui-img
               v-if="workflow.icon && workflow.icon.startsWith('http')"
@@ -24,26 +24,27 @@
           </span>
         </template>
         <div class="w-64 text-xs">
-          <p class="mb-2 font-medium">
+          <p class="mb-2 font-medium text-foreground">
             {{ t('workflow.sidebar.workflowIcon') }}
           </p>
           <div class="mb-3 grid grid-cols-5 gap-1.5">
-            <span
+            <button
               v-for="icon in icons"
               :key="icon"
               v-close-popover
+              type="button"
               :title="icon"
               :class="{
                 'ring-2 ring-primary bg-primary/10 text-primary font-semibold':
                   (workflow.icon || 'riGlobalLine') === icon,
-                'hover:bg-gray-100 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-200':
+                'hover:bg-accent text-foreground':
                   (workflow.icon || 'riGlobalLine') !== icon,
               }"
-              class="inline-flex items-center justify-center h-8 w-8 cursor-pointer rounded-lg text-center transition"
+              class="inline-flex items-center justify-center h-8 w-8 cursor-pointer rounded-md text-center transition"
               @click="$emit('update', { icon })"
             >
               <v-remixicon :name="icon" size="18" />
-            </span>
+            </button>
           </div>
           <ui-input
             :model-value="
@@ -61,14 +62,14 @@
       <div class="flex-1 overflow-hidden min-w-0">
         <p
           data-testid="workflow-name-display"
-          class="text-overflow text-xs font-semibold leading-tight text-gray-900 dark:text-gray-100"
+          class="text-overflow text-xs font-semibold leading-tight text-foreground"
         >
           {{ workflow.name }}
         </p>
         <p
           v-if="workflow.description"
           data-testid="workflow-description-display"
-          class="cursor-pointer text-[11px] text-gray-500 dark:text-gray-400 leading-tight mt-0.5"
+          class="cursor-pointer text-[11px] text-muted-foreground leading-tight mt-0.5"
           :class="descriptionCollapsed ? 'line-clamp' : 'whitespace-pre-wrap'"
           @click="descriptionCollapsed = !descriptionCollapsed"
         >
