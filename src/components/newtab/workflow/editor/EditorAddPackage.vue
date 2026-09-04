@@ -12,7 +12,7 @@
         <span
           v-else
           icon
-          class="bg-box-transparent inline-block rounded-lg p-2"
+          class="bg-muted text-muted-foreground inline-block rounded-lg p-2"
         >
           <v-remixicon :name="state.icon || 'mdiPackageVariantClosed'" />
         </span>
@@ -22,8 +22,8 @@
         <div class="mt-4 grid grid-cols-6 gap-2">
           <div v-for="icon in icons" :key="icon">
             <span
-              :class="{ 'bg-box-transparent': icon === state.icon }"
-              class="hoverable inline-block cursor-pointer rounded-lg p-2"
+              :class="{ 'bg-accent text-accent-foreground': icon === state.icon }"
+              class="inline-block cursor-pointer rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
               @click="state.icon = icon"
             >
               <v-remixicon :name="icon" />

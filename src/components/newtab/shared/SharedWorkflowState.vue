@@ -4,7 +4,7 @@
       <div class="text-overflow mr-4 flex-1">
         <p class="text-overflow mr-2 w-full">{{ data.state.name }}</p>
         <p
-          class="text-overflow mr-2 w-full leading-tight text-gray-600 dark:text-gray-200"
+          class="text-overflow mr-2 w-full leading-tight text-xs text-muted-foreground"
           :title="`Started at: ${formatDate(
             data.state.startedTimestamp,
             'DD MMM, hh:mm A'
@@ -27,7 +27,7 @@
         <span>{{ t('common.stop') }}</span>
       </ui-button>
     </div>
-    <div class="bg-box-transparent divide-y rounded-lg px-4">
+    <div class="bg-muted border border-border divide-y divide-border rounded-lg px-4">
       <div
         v-for="block in data.state.currentBlock"
         :key="block.id || block.name"

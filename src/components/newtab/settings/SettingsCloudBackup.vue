@@ -8,7 +8,7 @@
         prepend-icon="riSearch2Line"
       />
       <ui-list class="mt-4">
-        <p class="mb-1 text-sm text-gray-600 dark:text-gray-200">
+        <p class="mb-1 text-xs text-muted-foreground">
           {{ t('settings.backupWorkflows.cloud.location') }}
         </p>
         <ui-list-item
@@ -16,14 +16,14 @@
           :key="location"
           :active="location === state.activeTab"
           :disabled="backupState.uploading || backupState.deleting"
-          color="bg-box-transparent"
+          color="bg-muted"
           class="mb-1 cursor-pointer"
           @click="state.activeTab = location"
         >
           {{ t(`settings.backupWorkflows.cloud.buttons.${location}`) }}
           <span
             v-if="location === 'cloud'"
-            class="ml-2 rounded-full bg-accent text-center text-sm text-gray-100 dark:text-black"
+            class="ml-2 rounded-full bg-accent text-center text-xs text-accent-foreground"
             style="height: 29px; width: 29px; line-height: 29px"
           >
             {{ state.cloudWorkflows.length }}

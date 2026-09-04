@@ -8,7 +8,7 @@
       <ui-list-item
         v-for="workflow in workflows"
         :key="workflow.id"
-        :class="{ 'bg-box-transparent': isActive(workflow.id) }"
+        :class="{ 'bg-muted': isActive(workflow.id) }"
         class="group overflow-hidden"
       >
         <ui-checkbox
@@ -29,7 +29,7 @@
         <div class="ml-2 flex-1 overflow-hidden">
           <p class="text-overflow flex-1">{{ workflow.name }}</p>
           <p
-            class="text-overflow text-sm leading-tight text-gray-600 dark:text-gray-200"
+            class="text-overflow text-xs leading-tight text-muted-foreground"
           >
             {{ workflow.description }}
           </p>
