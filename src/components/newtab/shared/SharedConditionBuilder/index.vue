@@ -39,7 +39,7 @@
                         :class="[
                           input.category === 'compare'
                             ? 'font-semibold'
-                            : 'text-gray-600 dark:text-gray-200',
+                            : 'text-muted-foreground',
                         ]"
                       >
                         {{ getConditionText(input) }}

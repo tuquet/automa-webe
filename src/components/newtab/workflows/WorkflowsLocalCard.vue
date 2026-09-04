@@ -16,7 +16,7 @@
             style="height: 40px; width: 40px"
             alt="Can not display"
           />
-          <span v-else class="bg-box-transparent inline-block rounded-lg p-2">
+          <span v-else class="bg-muted text-muted-foreground inline-block rounded-lg p-2">
             <v-remixicon :name="workflow.icon" />
           </span>
         </template>

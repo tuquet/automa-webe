@@ -2,7 +2,7 @@
   <div
     class="ui-switch relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors shadow-2xs"
     :class="[
-      modelValue ? 'bg-primary' : 'bg-input',
+      modelValue ? 'bg-primary' : 'bg-muted',
       { 'pointer-events-none opacity-50': disabled },
     ]"
   >

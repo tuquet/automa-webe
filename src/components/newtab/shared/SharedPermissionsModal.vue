@@ -15,7 +15,7 @@
           <p class="leading-tight">
             {{ t(`workflowPermissions.${permission}.title`) }}
           </p>
-          <p class="leading-tight text-gray-600 dark:text-gray-200">
+          <p class="leading-tight text-xs text-muted-foreground">
             {{ t(`workflowPermissions.${permission}.description`) }}
           </p>
         </div>
