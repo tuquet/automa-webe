@@ -12,7 +12,7 @@
     <button
       v-if="data.hasLocal"
       v-tooltip.group="t('workflow.share.fetchLocal')"
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       @click="$emit('fetchLocal')"
     >
       <v-remixicon name="riRefreshLine" />
@@ -20,14 +20,14 @@
     <button
       v-if="!data.hasLocal"
       v-tooltip.group="t('workflow.share.download')"
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       @click="$emit('insertLocal')"
     >
       <v-remixicon name="riDownloadLine" />
     </button>
     <button
       v-tooltip.group="t('workflow.share.edit')"
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       @click="state.showModal = true"
     >
       <v-remixicon name="riFileEditLine" />
@@ -36,7 +36,7 @@
   <ui-card padding="p-1 flex ml-4">
     <button
       v-tooltip.group="t('workflow.share.unpublish')"
-      class="hoverable relative mr-2 rounded-lg p-2"
+      class="relative mr-2 rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       @click="$emit('unpublish')"
     >
       <ui-spinner

@@ -1,9 +1,9 @@
 <template>
   <div class="mt-6 border-t pt-4">
-    <div class="flex items-center text-gray-600 dark:text-gray-300">
+    <div class="flex items-center text-xs text-muted-foreground">
       <span class="flex-1"> Folders </span>
       <button
-        class="rounded-md transition hover:text-black dark:hover:text-gray-100"
+        class="rounded-md transition-colors hover:text-foreground"
         @click="newFolder"
       >
         <v-remixicon

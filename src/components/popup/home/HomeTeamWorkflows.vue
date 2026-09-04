@@ -3,26 +3,26 @@
     <ui-card
       v-for="workflow in workflows"
       :key="workflow.id"
-      class="relative flex w-full items-center space-x-2 hover:ring-2 hover:ring-gray-900"
+      class="relative flex w-full items-center space-x-2 hover:ring-2 hover:ring-accent transition-all"
     >
       <div
         class="text-overflow mr-4 flex-1 cursor-pointer"
         @click="openWorkflowPage(workflow)"
       >
         <p class="text-overflow leading-tight">{{ workflow.name }}</p>
-        <div class="flex items-center text-gray-500">
+        <div class="flex items-center text-xs text-muted-foreground">
           <span>{{ dayjs(workflow.createdAt).fromNow() }}</span>
           <div class="grow" />
           <span
             :class="tagColors[workflow.tag]"
-            class="text-overflow ml-2 rounded-md px-2 py-1 text-sm text-gray-600"
+            class="text-overflow ml-2 rounded-md px-2 py-0.5 text-xs text-muted-foreground"
             style="max-width: 120px"
           >
             {{ workflow.tag }}
           </span>
         </div>
       </div>
-      <p v-if="workflow.isDisabled" class="text-sm text-gray-600">Disabled</p>
+      <p v-if="workflow.isDisabled" class="text-xs text-muted-foreground">Disabled</p>
       <button v-else title="Execute" @click="executeWorkflow(workflow)">
         <v-remixicon name="riPlayLine" />
       </button>

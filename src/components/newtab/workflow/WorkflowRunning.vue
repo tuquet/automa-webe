@@ -5,7 +5,7 @@
         <div class="text-overflow mr-4 flex-1">
           <p class="text-overflow mr-2 w-full">{{ item.state.name }}</p>
           <p
-            class="text-overflow mr-2 w-full leading-tight text-gray-600 dark:text-gray-200"
+            class="text-overflow mr-2 w-full leading-tight text-xs text-muted-foreground"
             :title="`Started at: ${formatDate(
               item.state.startedTimestamp,
               'DD MMM, hh:mm A'
@@ -28,7 +28,7 @@
           <span>{{ t('common.stop') }}</span>
         </ui-button>
       </div>
-      <div class="bg-box-transparent flex items-center rounded-lg px-4 py-2">
+      <div class="bg-muted border border-border flex items-center rounded-lg px-4 py-2">
         <template v-if="item.state.currentBlock">
           <v-remixicon :name="getBlock(item).icon" />
           <p class="ml-2 mr-4 flex-1">{{ getBlock(item).name }}</p>
