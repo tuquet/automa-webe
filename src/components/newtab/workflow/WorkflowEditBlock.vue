@@ -198,6 +198,8 @@ function getBlockIcon() {
 </script>
 <style scoped>
 #workflow-edit-block :deep(hr) {
-  @apply dark:border-gray-700 dark:border-opacity-40 my-4;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-color: var(--border);
 }
 </style>

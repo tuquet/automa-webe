@@ -208,10 +208,11 @@ table th,
 table,
 td {
   font-weight: normal;
-  @apply p-1;
+  padding: 0.25rem;
 }
 
 .to-do-type.is-active {
-  @apply bg-accent dark:text-black text-gray-100 !important;
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
 }
 </style>

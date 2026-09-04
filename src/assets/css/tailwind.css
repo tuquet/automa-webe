@@ -1,20 +1,53 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source "../../../packages/automa-ui/src";
 
-@layer utilities {
-  .hoverable {
-    @apply hover:bg-accent hover:text-accent-foreground transition-colors;
-  }
-  .bg-input {
-    @apply bg-muted hover:bg-accent transition-colors;
-  }
-  .bg-box-transparent {
-    @apply bg-accent text-accent-foreground;
-  }
-  .bg-box-transparent-2 {
-    @apply bg-accent text-accent-foreground;
-  }
+@custom-variant dark (&:where(.dark, .dark *, [data-theme='dark'], [data-theme='dark'] *, .vscode-dark, .vscode-dark *));
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary, #3b82f6);
+  --color-primary-foreground: var(--primary-foreground, #ffffff);
+  --color-secondary: var(--secondary, #f4f4f5);
+  --color-secondary-foreground: var(--secondary-foreground, #18181b);
+  --color-muted: var(--muted, #f4f4f5);
+  --color-muted-foreground: var(--muted-foreground, #71717a);
+  --color-accent: var(--accent, #f4f4f5);
+  --color-accent-foreground: var(--accent-foreground, #18181b);
+  --color-destructive: var(--destructive, #ef4444);
+  --color-destructive-foreground: var(--destructive-foreground, #ffffff);
+  --color-border: var(--border, #e4e4e7);
+  --color-input: var(--input, #e4e4e7);
+  --color-ring: var(--ring, #3b82f6);
+
+  --font-sans: var(--automa-font-sans, 'Inter var', sans-serif);
+  --font-mono: var(--automa-font-mono, monospace);
+}
+
+.hoverable {
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.hoverable:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.bg-input {
+  background-color: var(--muted);
+  transition: background-color 0.15s ease;
+}
+.bg-input:hover {
+  background-color: var(--accent);
+}
+
+.bg-box-transparent,
+.bg-box-transparent-2 {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }
 
 :host,
@@ -74,8 +107,8 @@
   --ring: #3b82f6;
 }
 
-* {
-  @apply dark:border-border;
+.dark * {
+  border-color: var(--border);
 }
 
 html.dark {
@@ -87,17 +120,21 @@ body,
   font-family: 'Inter var', sans-serif !important;
   font-size: 16px !important;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  @apply bg-gray-50 dark:bg-gray-950 leading-normal;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
 }
+
 table th,
 table td {
-  @apply py-2 px-4;
+  padding: 0.5rem 1rem;
 }
+
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  @apply ring-1 ring-primary/40 dark:ring-primary/40;
+  box-shadow: 0 0 0 1px rgb(59 130 246 / 0.4);
 }
 
 .text-overflow {
@@ -105,6 +142,7 @@ select:focus {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .line-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -114,19 +152,22 @@ select:focus {
 }
 
 .custom-table thead {
-  @apply bg-box-transparent;
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }
 .custom-table thead th {
-  @apply font-semibold;
+  font-weight: 600;
 }
 .custom-table thead th:first-child {
-  @apply rounded-l-lg;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
 }
 .custom-table thead th:last-child {
-  @apply rounded-r-lg;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
-.custom-table tbody {
-  @apply divide-y;
+.custom-table tbody > tr + tr {
+  border-top: 1px solid var(--border);
 }
 
 pre {
@@ -140,8 +181,11 @@ pre {
     height: 9px;
   }
   &::-webkit-scrollbar-thumb {
-    @apply bg-muted hover:bg-accent;
+    background-color: var(--muted);
     border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent);
   }
   &::-webkit-scrollbar-track {
     background: transparent;
@@ -154,11 +198,19 @@ pre {
 }
 
 .tippy-box[data-theme~='tooltip-theme'] {
-  @apply px-2 py-1 bg-popover text-popover-foreground border border-border text-xs rounded-md shadow-md;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
+
 .Vue-Toastification__toast {
   font-family: inherit !important;
 }
+
 .ProseMirror > * + * {
   margin-top: 0.75em;
 }
@@ -171,5 +223,10 @@ pre {
 }
 
 .input-label {
-  @apply mb-1.5 ml-0.5 block text-xs font-medium text-foreground;
+  margin-bottom: 0.375rem;
+  margin-left: 0.125rem;
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--foreground);
 }
