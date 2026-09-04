@@ -71,8 +71,8 @@ module.exports = {
         orange: colors.orange,
       },
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'],
-        mono: ['Source Code Pro', 'monospace'],
+        sans: ['var(--automa-font-sans)'],
+        mono: ['var(--automa-font-mono)'],
       },
       container: {
         center: true,
