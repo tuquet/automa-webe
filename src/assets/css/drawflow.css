@@ -127,7 +127,7 @@
 }
 
 .drawflow-node .drawflow-delete {
-  display: none !important;
+  display: none;
 }
 
 .drawflow-delete {
