@@ -28,27 +28,6 @@
   --font-mono: var(--automa-font-mono, monospace);
 }
 
-.hoverable {
-  transition: color 0.15s ease, background-color 0.15s ease;
-}
-.hoverable:hover {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
-}
-
-.bg-input {
-  background-color: var(--muted);
-  transition: background-color 0.15s ease;
-}
-.bg-input:hover {
-  background-color: var(--accent);
-}
-
-.bg-box-transparent,
-.bg-box-transparent-2 {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
-}
 
 :host,
 :root {
@@ -151,24 +130,6 @@ select:focus {
   text-overflow: ellipsis;
 }
 
-.custom-table thead {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
-}
-.custom-table thead th {
-  font-weight: 600;
-}
-.custom-table thead th:first-child {
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-.custom-table thead th:last-child {
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-}
-.custom-table tbody > tr + tr {
-  border-top: 1px solid var(--border);
-}
 
 pre {
   font-size: 15px;

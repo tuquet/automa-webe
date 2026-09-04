@@ -75,14 +75,14 @@ export default {
 }
 .checkbox-ui__input:checked ~ .checkbox-ui__mark,
 .checkbox-ui__input.indeterminate ~ .checkbox-ui__mark {
-  background-color: rgb(var(--color-primary, 59 130 246)) !important;
-  border-color: rgb(var(--color-primary, 59 130 246)) !important;
-  color: var(--primary-foreground, #ffffff) !important;
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
 }
 .checkbox-ui__input:checked ~ .checkbox-ui__mark .v-remixicon,
 .checkbox-ui__input.indeterminate ~ .checkbox-ui__mark .v-remixicon {
-  transform: scale(1) !important;
-  opacity: 1 !important;
+  transform: scale(1);
+  opacity: 1;
 }
 .checkbox-ui__mark {
   width: 100%;
@@ -94,9 +94,9 @@ export default {
   justify-content: center;
 }
 .checkbox-ui__mark .v-remixicon {
-  transform: scale(0.4) !important;
+  transform: scale(0.4);
   opacity: 0;
   transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease;
-  color: currentColor !important;
+  color: currentColor;
 }
 </style>

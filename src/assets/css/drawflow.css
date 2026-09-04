@@ -26,7 +26,8 @@
 .drawflow .drawflow-node {
   position: absolute;
   align-items: center;
-  background: white;
+  background: var(--card);
+  color: var(--card-foreground);
   min-width: 150px;
   min-height: 40px;
   z-index: 2;
@@ -70,11 +71,11 @@
   z-index: 1;
   margin-bottom: 5px;
   border-width: 3px;
-  @apply border-accent bg-white dark:bg-gray-900;
+  @apply border-accent bg-card;
 }
 
 .drawflow .drawflow-node .input {
-  @apply bg-accent !important;
+  @apply bg-accent;
 }
 
 .drawflow .icon-ui {
@@ -84,7 +85,7 @@
 .drawflow svg:not(.v-remixicon) {
   z-index: 0;
   position: absolute;
-  overflow: visible !important;
+  overflow: visible;
 }
 
 .drawflow .connection {
@@ -109,14 +110,14 @@
 
 .drawflow .connection .point {
   cursor: move;
-  stroke: #000;
+  stroke: var(--foreground);
   stroke-width: 2;
-  fill: #fff;
+  fill: var(--background);
 }
 
 .drawflow .connection .point.selected,
 .drawflow .connection .point:hover {
-  fill: theme('colors.blue.600');
+  fill: var(--primary);
 }
 
 .drawflow .main-path {

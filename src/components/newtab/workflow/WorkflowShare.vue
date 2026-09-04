@@ -205,6 +205,6 @@ onMounted(() => {
   min-height: 200px;
 }
 .content-editor .ProseMirror :first-child {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 </style>

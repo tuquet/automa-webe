@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
 }
 
 .cm-tooltip-autocomplete li[aria-selected] {
-  background-color: #095fff !important;
-  color: #ffffff !important;
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
 }
 </style>

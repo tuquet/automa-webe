@@ -212,7 +212,7 @@ td {
 }
 
 .to-do-type.is-active {
-  background-color: var(--accent) !important;
-  color: var(--accent-foreground) !important;
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }
 </style>

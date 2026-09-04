@@ -165,7 +165,7 @@ function emitValue(event) {
 </script>
 <style>
 .input-ui input[type='color'] {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>
