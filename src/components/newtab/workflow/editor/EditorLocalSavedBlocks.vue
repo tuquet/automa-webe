@@ -28,7 +28,7 @@
           v-for="item in items"
           :key="item.id"
           draggable="true"
-          class="hoverable relative flex shrink-0 cursor-move flex-col rounded-lg border-2 transition"
+          class="relative flex shrink-0 cursor-move flex-col rounded-lg border border-border bg-card transition-colors hover:border-primary"
           style="width: 288px; height: 125px"
           @dragstart="
             $event.dataTransfer.setData('savedBlocks', JSON.stringify(item))
@@ -57,14 +57,14 @@
                 {{ item.name }}
               </p>
               <p
-                class="line-clamp leading-tight text-gray-600 dark:text-gray-200"
+                class="line-clamp leading-tight text-xs text-muted-foreground"
               >
                 {{ item.description }}
               </p>
             </div>
           </div>
           <div
-            class="flex items-center space-x-3 px-4 pb-4 text-gray-600 dark:text-gray-200"
+            class="flex items-center space-x-3 px-4 pb-4 text-xs text-muted-foreground"
           >
             <span v-if="item.author" class="text-overflow">
               By {{ item.author }}
