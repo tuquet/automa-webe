@@ -1,6 +1,6 @@
 <template>
-  <ui-tabs v-model="state.activeTab" class="-mt-2">
-    <ui-tab v-for="tab in tabs" :key="tab.id" :value="tab.id">
+  <ui-tabs v-model="state.activeTab" type="fill" class="w-fit">
+    <ui-tab v-for="tab in tabs" :key="tab.id" :value="tab.id" small>
       {{ tab.name }}
     </ui-tab>
   </ui-tabs>
@@ -110,14 +110,6 @@ onMounted(() => {
     defaultSettings.general
   );
   state.settings = generalSettings;
-
-  setTimeout(() => {
-    state.retrieved = true;
-  }, 200);
+  state.retrieved = true;
 });
 </script>
-<style>
-.modal-block-settings {
-  min-height: 500px;
-}
-</style>

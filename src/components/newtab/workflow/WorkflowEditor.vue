@@ -97,7 +97,7 @@
     <ui-modal
       v-model="blockSettingsState.show"
       :title="t('workflow.blocks.base.settings.title')"
-      content-class="max-w-xl modal-block-settings"
+      content-class="max-w-xl"
       @close="clearBlockSettings"
     >
       <edit-block-settings

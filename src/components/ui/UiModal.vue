@@ -2,7 +2,7 @@
   <Dialog :open="modelValue" @update:open="onUpdateOpen">
     <DialogContent
       :class="[
-        'p-5 text-foreground max-h-[85vh] overflow-y-auto border border-border bg-card shadow-xl rounded-xl',
+        'p-5 text-foreground max-h-[85vh] overflow-y-auto border border-border bg-card shadow-xl rounded-xl flex flex-col',
         contentClass || 'max-w-lg',
       ]"
     >
