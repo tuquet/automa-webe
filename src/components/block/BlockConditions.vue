@@ -33,7 +33,7 @@
       <li
         v-for="item in data.conditions"
         :key="item.id"
-        class="relative flex w-full flex-1 items-center rounded-md border border-input bg-background/50 p-2 shadow-2xs text-xs"
+        class="relative flex w-full flex-1 items-center rounded-md border border-input bg-background p-2 shadow-2xs text-xs"
         @dblclick.stop="$emit('edit', { editCondition: item.id })"
       >
         <p

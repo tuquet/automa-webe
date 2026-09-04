@@ -39,7 +39,7 @@
             <div
               v-for="(param, idx) in runModalState.parameters"
               :key="idx"
-              class="p-2.5 rounded-lg bg-muted/40 border border-border space-y-1.5"
+              class="p-2.5 rounded-lg bg-muted border border-border space-y-1.5"
             >
               <div class="flex items-center justify-between">
                 <label

@@ -5,7 +5,7 @@
     class="scroll h-full overflow-auto px-3 py-1 text-xs"
   >
     <div
-      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-background pb-2 pt-1 border-b border-border/60"
+      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-background pb-2 pt-1 border-b border-border"
     >
       <ui-button
         variant="ghost"

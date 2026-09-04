@@ -21,9 +21,16 @@
         >
           <FileCode class="size-3.5" />
           <span>Workflows</span>
-          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
-            workflowsCount
-          }}</span>
+          <span
+            class="text-[10px] px-1 rounded font-mono"
+            :class="
+              activeTab === 'workflows'
+                ? 'bg-primary-foreground/20 text-primary-foreground'
+                : 'bg-muted text-muted-foreground'
+            "
+          >
+            {{ workflowsCount }}
+          </span>
         </button>
 
         <button
@@ -39,9 +46,16 @@
         >
           <Package class="size-3.5" />
           <span>Packages</span>
-          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
-            packagesCount
-          }}</span>
+          <span
+            class="text-[10px] px-1 rounded font-mono"
+            :class="
+              activeTab === 'packages'
+                ? 'bg-primary-foreground/20 text-primary-foreground'
+                : 'bg-muted text-muted-foreground'
+            "
+          >
+            {{ packagesCount }}
+          </span>
         </button>
 
         <button
@@ -57,9 +71,16 @@
         >
           <Users class="size-3.5" />
           <span>Campaigns</span>
-          <span class="text-[10px] px-1 rounded bg-background/20 font-mono">{{
-            campaigns.length
-          }}</span>
+          <span
+            class="text-[10px] px-1 rounded font-mono"
+            :class="
+              activeTab === 'campaigns'
+                ? 'bg-primary-foreground/20 text-primary-foreground'
+                : 'bg-muted text-muted-foreground'
+            "
+          >
+            {{ campaigns.length }}
+          </span>
         </button>
       </div>
     </div>

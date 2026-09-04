@@ -44,7 +44,7 @@
         id="btn.workflow.select_dropdown"
         type="button"
         data-testid="btn-selected-workflow"
-        class="px-2.5 py-1 text-xs font-medium rounded-lg border border-border bg-muted/50 hover:bg-muted transition flex items-center gap-1.5 truncate max-w-full text-foreground shadow-2xs cursor-pointer"
+        class="px-2.5 py-1 text-xs font-medium rounded-lg border border-border bg-muted hover:bg-accent transition flex items-center gap-1.5 truncate max-w-full text-foreground shadow-2xs cursor-pointer"
         :title="`Current Workflow: ${currentWorkflowName} ${
           currentFilePath ? `(${currentFilePath})` : ''
         } - Click to switch`"

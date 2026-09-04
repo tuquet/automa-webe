@@ -13,7 +13,7 @@
         @change="changeHandler"
       />
       <div
-        class="radio-ui__mark absolute inset-0 rounded-full border border-input bg-background/50 flex items-center justify-center transition-colors shadow-2xs"
+        class="radio-ui__mark absolute inset-0 rounded-full border border-input bg-background flex items-center justify-center transition-colors shadow-2xs"
         :class="{ 'border-primary': isChecked }"
       >
         <span v-if="isChecked" class="h-2 w-2 rounded-full bg-primary"></span>

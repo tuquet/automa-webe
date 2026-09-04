@@ -15,7 +15,7 @@
         :value="modelValue"
         :max="maxPage"
         min="0"
-        class="h-8 w-11 appearance-none rounded-md border border-input bg-background/50 px-1 py-1 text-center text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs"
+        class="h-8 w-11 appearance-none rounded-md border border-input bg-background px-1 py-1 text-center text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs"
         type="number"
         @click="$event.target.select()"
         @input="updatePage(+$event.target.value, $event.target)"

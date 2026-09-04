@@ -20,7 +20,7 @@
       </div>
     </div>
     <div
-      class="relative flex items-center rounded-md border border-input bg-background/50 text-xs shadow-2xs"
+      class="relative flex items-center rounded-md border border-input bg-background text-xs shadow-2xs"
     >
       <input
         :value="data.repeatFor"

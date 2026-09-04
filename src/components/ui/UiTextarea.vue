@@ -15,7 +15,7 @@
       :id="textareaId"
       ref="textarea"
       :value="modelValue"
-      class="flex w-full rounded-md border border-input bg-background/50 px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs resize-y"
+      class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs resize-y"
       @input="emitValue"
       @keyup="$emit('keyup', $event)"
       @keydown="$emit('keydown', $event)"

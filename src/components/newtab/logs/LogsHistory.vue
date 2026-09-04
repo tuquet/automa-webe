@@ -187,7 +187,7 @@
           <select
             v-model="pagination.perPage"
             data-testid="select-history-pagination-per-page"
-            class="h-7 rounded-md border border-input bg-background/50 px-2 text-xs text-foreground shadow-2xs focus:outline-none focus:ring-1 focus:ring-ring"
+            class="h-7 rounded-md border border-input bg-background px-2 text-xs text-foreground shadow-2xs focus:outline-none focus:ring-1 focus:ring-ring"
           >
             <option
               v-for="num in [25, 50, 75, 100, 150, 200]"

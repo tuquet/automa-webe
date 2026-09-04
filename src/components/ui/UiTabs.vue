@@ -34,7 +34,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'bg-muted/80',
+    default: 'bg-muted',
   },
   small: Boolean,
   fill: Boolean,
@@ -42,8 +42,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'change']);
 
 const tabTypes = {
-  default: 'border-b border-border/60',
-  fill: 'p-1 rounded-md border border-border/40 bg-muted/80',
+  default: 'border-b border-border',
+  fill: 'p-1 rounded-md border border-border bg-muted',
 };
 
 const hoverIndicator = ref(null);

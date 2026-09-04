@@ -61,7 +61,7 @@
     <!-- Create Table Form (Collapsible) -->
     <div
       v-if="showCreateTableForm"
-      class="my-3 p-3 rounded-lg bg-muted/40 border border-border space-y-3 shrink-0"
+      class="my-3 p-3 rounded-lg bg-muted border border-border space-y-3 shrink-0"
     >
       <h4
         class="font-semibold text-xs text-foreground flex items-center gap-1.5"

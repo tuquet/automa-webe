@@ -29,7 +29,7 @@
     <!-- Add Credential Form (Collapsible) -->
     <div
       v-if="showAddForm"
-      class="p-3 rounded-lg bg-muted/40 border border-border space-y-2.5"
+      class="p-3 rounded-lg bg-muted border border-border space-y-2.5"
     >
       <h4
         class="font-semibold text-xs text-foreground flex items-center gap-1.5"

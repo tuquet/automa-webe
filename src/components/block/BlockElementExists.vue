@@ -21,7 +21,7 @@
     <p
       :title="t('workflow.blocks.element-exists.selector')"
       :class="{ 'font-mono': !data.description }"
-      class="text-overflow mb-2 rounded-md border border-input bg-background/50 p-2 text-right text-xs shadow-2xs"
+      class="text-overflow mb-2 rounded-md border border-input bg-background p-2 text-right text-xs shadow-2xs"
       style="max-width: 200px"
     >
       {{

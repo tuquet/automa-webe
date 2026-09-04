@@ -18,7 +18,7 @@
         @change="changeHandler"
       />
       <div
-        class="checkbox-ui__mark absolute inset-0 rounded-sm border border-input bg-background/50 flex items-center justify-center transition-colors shadow-2xs"
+        class="checkbox-ui__mark absolute inset-0 rounded-sm border border-input bg-background flex items-center justify-center transition-colors shadow-2xs"
       >
         <v-remixicon
           :name="indeterminate ? 'riSubtractLine' : 'riCheckLine'"

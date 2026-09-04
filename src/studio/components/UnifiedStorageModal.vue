@@ -12,7 +12,7 @@
 
           <!-- Top Tabs Navigation -->
           <div
-            class="flex items-center gap-1 bg-muted/60 p-0.5 rounded-lg border border-border"
+            class="flex items-center gap-1 bg-muted p-0.5 rounded-lg border border-border"
           >
             <button
               type="button"

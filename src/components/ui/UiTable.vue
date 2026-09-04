@@ -60,7 +60,7 @@
         <span>{{ t('components.pagination.text1') }}</span>
         <select
           v-model="pagination.perPage"
-          class="h-7 appearance-none rounded-md border border-input bg-background/50 px-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs cursor-pointer"
+          class="h-7 appearance-none rounded-md border border-input bg-background px-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs cursor-pointer"
         >
           <option
             v-for="num in [10, 15, 25, 50, 100, 150]"

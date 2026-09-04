@@ -48,7 +48,7 @@
     >
       <template #item="{ element, index }">
         <div
-          class="group flex items-center space-x-2 rounded-md border border-input bg-background/50 p-2 shadow-2xs"
+          class="group flex items-center space-x-2 rounded-md border border-input bg-background p-2 shadow-2xs"
           style="cursor: grab"
           :data-block-id="element.id"
           @dragstart="onDragStart(element, $event)"

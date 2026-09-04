@@ -16,7 +16,7 @@
       <button
         :id="componentId"
         type="button"
-        class="flex h-8 w-full appearance-none rounded-md border border-input bg-background/50 px-3 py-1.5 pr-8 text-xs text-foreground text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs z-10 cursor-pointer"
+        class="flex h-8 w-full appearance-none rounded-md border border-input bg-background px-3 py-1.5 pr-8 text-xs text-foreground text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs z-10 cursor-pointer"
         :class="{ 'text-muted-foreground': !selectedOptionLabel }"
         :disabled="disabled"
         @click="toggleDropdown"
