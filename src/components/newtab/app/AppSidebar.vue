@@ -1,6 +1,6 @@
 <template>
   <aside
-    class="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center bg-white py-6 dark:bg-gray-800"
+    class="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center bg-card border-r border-border py-6"
   >
     <img
       :title="`v${extensionVersion}`"
@@ -14,7 +14,7 @@
       <div
         v-show="showHoverIndicator"
         ref="hoverIndicator"
-        class="bg-box-transparent absolute left-1/2 h-10 w-10 rounded-lg transition-transform duration-200"
+        class="bg-accent absolute left-1/2 h-10 w-10 rounded-lg transition-transform duration-200"
         style="transform: translate(-50%, 0)"
       ></div>
       <router-link
