@@ -28,9 +28,7 @@
         <v-remixicon v-else :name="workflow.icon" />
         <div class="ml-2 flex-1 overflow-hidden">
           <p class="text-overflow flex-1">{{ workflow.name }}</p>
-          <p
-            class="text-overflow text-xs leading-tight text-muted-foreground"
-          >
+          <p class="text-overflow text-xs leading-tight text-muted-foreground">
             {{ workflow.description }}
           </p>
         </div>

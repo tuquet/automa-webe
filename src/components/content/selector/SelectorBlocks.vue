@@ -28,7 +28,7 @@
     />
     <pre
       v-if="state.blockResult"
-      class="mt-2 h-full overflow-auto rounded-lg bg-accent p-2 text-sm text-gray-100"
+      class="mt-2 h-full overflow-auto rounded-lg bg-muted border border-border p-2 font-mono text-xs text-foreground"
       >{{ state.blockResult }}</pre
     >
   </div>

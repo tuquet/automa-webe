@@ -9,7 +9,7 @@
     :label-y="path[2]"
     :label-style="{ fill: 'white' }"
     :label-show-bg="true"
-    :label-bg-style="{ fill: '#3b82f6' }"
+    :label-bg-style="{ fill: 'var(--primary)' }"
     :label-bg-padding="[2, 4]"
     :label-bg-border-radius="2"
   />

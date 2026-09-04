@@ -28,7 +28,9 @@
           <span>{{ t('common.stop') }}</span>
         </ui-button>
       </div>
-      <div class="bg-muted border border-border flex items-center rounded-lg px-4 py-2">
+      <div
+        class="bg-muted border border-border flex items-center rounded-lg px-4 py-2"
+      >
         <template v-if="item.state.currentBlock">
           <v-remixicon :name="getBlock(item).icon" />
           <p class="ml-2 mr-4 flex-1">{{ getBlock(item).name }}</p>

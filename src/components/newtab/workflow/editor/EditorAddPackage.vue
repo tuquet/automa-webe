@@ -22,7 +22,9 @@
         <div class="mt-4 grid grid-cols-6 gap-2">
           <div v-for="icon in icons" :key="icon">
             <span
-              :class="{ 'bg-accent text-accent-foreground': icon === state.icon }"
+              :class="{
+                'bg-accent text-accent-foreground': icon === state.icon,
+              }"
               class="inline-block cursor-pointer rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
               @click="state.icon = icon"
             >

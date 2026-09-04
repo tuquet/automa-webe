@@ -41,9 +41,7 @@
           <p class="text-overflow">
             {{ item.name }}
           </p>
-          <p
-            class="text-overflow text-xs leading-none text-muted-foreground"
-          >
+          <p class="text-overflow text-xs leading-none text-muted-foreground">
             {{ item.description }}
           </p>
         </div>

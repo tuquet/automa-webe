@@ -6,7 +6,9 @@
   >
     <ui-popover v-tooltip="t('credential.use.title')" @show="checkCredentials">
       <template #trigger>
-        <button class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground">
+        <button
+          class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
           <v-remixicon name="riKey2Line" />
         </button>
       </template>

@@ -1,7 +1,9 @@
 <template>
   <edit-interaction-base v-bind="{ data }" @change="updateData">
     <hr />
-    <div class="bg-muted border border-input focus-within:ring-1 focus-within:ring-ring flex items-center rounded-lg px-4 transition">
+    <div
+      class="bg-muted border border-input focus-within:ring-1 focus-within:ring-ring flex items-center rounded-lg px-4 transition"
+    >
       <span>/</span>
       <input
         :value="data.regex"

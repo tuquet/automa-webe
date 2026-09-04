@@ -16,10 +16,7 @@
           <v-remixicon :name="data.icon || icon" />
         </span>
         <div class="grow"></div>
-        <span
-          v-if="data.isDisabled"
-          class="text-xs text-muted-foreground"
-        >
+        <span v-if="data.isDisabled" class="text-xs text-muted-foreground">
           Disabled
         </span>
         <button

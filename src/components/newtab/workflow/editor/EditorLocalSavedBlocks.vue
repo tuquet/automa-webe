@@ -56,9 +56,7 @@
               <p class="text-overflow font-semibold leading-tight">
                 {{ item.name }}
               </p>
-              <p
-                class="line-clamp leading-tight text-xs text-muted-foreground"
-              >
+              <p class="line-clamp leading-tight text-xs text-muted-foreground">
                 {{ item.description }}
               </p>
             </div>

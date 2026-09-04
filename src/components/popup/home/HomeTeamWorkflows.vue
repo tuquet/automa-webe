@@ -22,7 +22,9 @@
           </span>
         </div>
       </div>
-      <p v-if="workflow.isDisabled" class="text-xs text-muted-foreground">Disabled</p>
+      <p v-if="workflow.isDisabled" class="text-xs text-muted-foreground">
+        Disabled
+      </p>
       <button v-else title="Execute" @click="executeWorkflow(workflow)">
         <v-remixicon name="riPlayLine" />
       </button>

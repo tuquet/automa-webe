@@ -23,7 +23,7 @@
         </div>
         <p
           v-if="state.columns && state.columns.length === 0"
-          class="my-4 text-center text-gray-600 dark:text-gray-300"
+          class="my-4 text-center text-xs text-muted-foreground"
         >
           {{ t('message.noData') }}
         </p>

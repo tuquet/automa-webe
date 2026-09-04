@@ -26,9 +26,7 @@
       @count="state.contentLength = $event"
     >
       <template #append>
-        <p
-          class="absolute bottom-2 right-2 text-xs text-muted-foreground"
-        >
+        <p class="absolute bottom-2 right-2 text-xs text-muted-foreground">
           {{ state.contentLength }}/5000
         </p>
       </template>

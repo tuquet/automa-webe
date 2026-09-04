@@ -1,13 +1,13 @@
 <template>
   <ui-card
-    class="flex w-full items-center space-x-2 hover:ring-2 hover:ring-gray-900"
+    class="flex w-full items-center space-x-2 hover:ring-2 hover:ring-accent transition-all"
   >
     <div
       class="text-overflow flex-1 cursor-pointer"
       @click="$emit('details', workflow)"
     >
       <p class="text-overflow leading-tight">{{ workflow.name }}</p>
-      <p class="leading-tight text-gray-500">
+      <p class="leading-tight text-xs text-muted-foreground">
         {{ dayjs(workflow.createdAt).fromNow() }}
       </p>
     </div>

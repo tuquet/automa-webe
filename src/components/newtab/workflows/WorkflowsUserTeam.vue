@@ -18,7 +18,7 @@
   >
     <img src="@/assets/svg/files-and-folder.svg" class="mx-auto w-96" />
     <p class="text-lg font-semibold">Nothing to see here</p>
-    <p class="text-gray-600 dark:text-gray-200">
+    <p class="text-xs text-muted-foreground">
       Browse workflows that been shared by your team
     </p>
     <ui-button

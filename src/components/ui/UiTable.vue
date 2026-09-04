@@ -1,6 +1,8 @@
 <template>
   <div class="ui-table">
-    <table class="h-full w-full [&_thead]:bg-muted [&_thead]:text-muted-foreground [&_thead_th]:font-semibold [&_thead_th:first-child]:rounded-l-lg [&_thead_th:last-child]:rounded-r-lg [&_tbody>tr+tr]:border-t [&_tbody>tr+tr]:border-border">
+    <table
+      class="h-full w-full [&_thead]:bg-muted [&_thead]:text-muted-foreground [&_thead_th]:font-semibold [&_thead_th:first-child]:rounded-l-lg [&_thead_th:last-child]:rounded-r-lg [&_tbody>tr+tr]:border-t [&_tbody>tr+tr]:border-border"
+    >
       <thead>
         <tr>
           <th

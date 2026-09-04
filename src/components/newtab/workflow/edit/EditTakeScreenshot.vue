@@ -28,7 +28,9 @@
       <p class="ml-2 mt-4 text-xs text-muted-foreground">
         {{ t('workflow.blocks.take-screenshot.imageQuality') }}
       </p>
-      <div class="bg-muted border border-border flex items-center rounded-lg px-4 py-2">
+      <div
+        class="bg-muted border border-border flex items-center rounded-lg px-4 py-2"
+      >
         <input
           :value="data.quality"
           :title="t('workflow.blocks.take-screenshot.imageQuality')"

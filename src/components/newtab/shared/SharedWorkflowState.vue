@@ -27,7 +27,9 @@
         <span>{{ t('common.stop') }}</span>
       </ui-button>
     </div>
-    <div class="bg-muted border border-border divide-y divide-border rounded-lg px-4">
+    <div
+      class="bg-muted border border-border divide-y divide-border rounded-lg px-4"
+    >
       <div
         v-for="block in data.state.currentBlock"
         :key="block.id || block.name"
