@@ -6,17 +6,17 @@
     >
       <div class="flex items-center gap-2">
         <!-- Select Active Table Dropdown -->
-        <div v-if="tables.length > 0" class="flex items-center gap-1.5">
-          <select
+        <div
+          v-if="tables.length > 0"
+          class="flex items-center gap-1.5 min-w-[180px]"
+        >
+          <RemoteVirtualSelect
+            id="select.storage.table"
             v-model="activeTableId"
-            data-testid="select-storage-table"
-            class="h-8 px-2.5 py-1 rounded-md border border-input bg-background focus:outline-none focus:ring-1 focus:ring-ring font-medium text-xs text-foreground"
+            :custom-options="tableOptions"
+            class="h-8 w-full"
             @change="onTableSelect"
-          >
-            <option v-for="t in tables" :key="t.id" :value="t.id">
-              {{ t.name }} ({{ (t.columns || []).length }} cols)
-            </option>
-          </select>
+          />
         </div>
 
         <Button
@@ -158,7 +158,12 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
-import { Button, Input, VirtualDataTable } from '@automa/ui';
+import {
+  Button,
+  Input,
+  RemoteVirtualSelect,
+  VirtualDataTable,
+} from '@automa/ui';
 import { Loader2, Plus, RefreshCw, Table, Trash2 } from 'lucide-vue-next';
 import { useToast } from 'vue-toastification';
 import {
@@ -185,6 +190,14 @@ const newTable = reactive({
   name: '',
   columnsStr: 'email, status',
 });
+
+const tableOptions = computed(() =>
+  tables.value.map((t) => ({
+    value: t.id,
+    label: t.name,
+    description: `${(t.columns || []).length} cols`,
+  }))
+);
 
 const activeTable = computed(() => {
   return tables.value.find((t) => t.id === activeTableId.value);

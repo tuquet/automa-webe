@@ -90,7 +90,11 @@
     <div class="mt-4 md:flex md:items-center md:justify-between">
       <div>
         {{ t('components.pagination.text1') }}
-        <select v-model="pagination.perPage" class="bg-input rounded-md p-1">
+        <select
+          v-model="pagination.perPage"
+          data-testid="select-pagination-per-page"
+          class="h-7 rounded-md border border-input bg-background/50 px-2 text-xs text-foreground shadow-2xs focus:outline-none focus:ring-1 focus:ring-ring"
+        >
           <option v-for="num in [10, 15, 25, 50, 100]" :key="num" :value="num">
             {{ num }}
           </option>

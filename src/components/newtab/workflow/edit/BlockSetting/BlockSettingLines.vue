@@ -33,7 +33,8 @@
             :value="activeEdge.style?.stroke ?? null"
             type="color"
             name="color"
-            class="bg-input h-10 w-10 rounded-lg p-1"
+            data-testid="input-edge-stroke-color"
+            class="h-8 w-8 cursor-pointer rounded-md border border-input bg-background/50 p-0.5 shadow-2xs focus:outline-none focus:ring-1 focus:ring-ring"
             @input="updateActiveEdge('style', { stroke: $event.target.value })"
           />
           <span class="ml-2">

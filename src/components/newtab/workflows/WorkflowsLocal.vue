@@ -55,7 +55,8 @@
         {{ t('components.pagination.text1') }}
         <select
           :value="pagination.perPage"
-          class="bg-input rounded-md p-1"
+          data-testid="select-workflows-pagination-per-page"
+          class="h-7 rounded-md border border-input bg-background/50 px-2 text-xs text-foreground shadow-2xs focus:outline-none focus:ring-1 focus:ring-ring"
           @change="onPerPageChange"
         >
           <option v-for="num in [18, 32, 64, 128]" :key="num" :value="num">
@@ -72,6 +73,7 @@
         v-model="pagination.currentPage"
         :per-page="pagination.perPage"
         :records="filteredWorkflows.length"
+        class="mt-4 md:mt-0"
       />
     </div>
   </template>
@@ -87,11 +89,11 @@
       v-model="renameState.description"
       :placeholder="t('common.description')"
       height="165px"
-      class="w-full dark:text-gray-200"
+      class="w-full text-foreground"
       max="300"
       style="min-height: 140px"
     />
-    <p class="mb-6 text-right text-gray-600 dark:text-gray-200">
+    <p class="mb-6 text-right text-xs text-muted-foreground">
       {{ renameState.description.length }}/300
     </p>
     <div class="flex space-x-2">

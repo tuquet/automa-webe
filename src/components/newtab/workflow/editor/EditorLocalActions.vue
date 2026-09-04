@@ -308,11 +308,11 @@
       v-model="renameState.description"
       :placeholder="t('common.description')"
       height="165px"
-      class="w-full dark:text-gray-200"
+      class="w-full text-foreground"
       max="300"
       style="min-height: 140px"
     />
-    <p class="mb-6 text-right text-gray-600 dark:text-gray-200">
+    <p class="mb-6 text-right text-xs text-muted-foreground">
       {{ renameState.description.length }}/300
     </p>
     <div class="flex space-x-2">
