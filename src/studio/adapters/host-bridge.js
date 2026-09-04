@@ -132,11 +132,9 @@ export function notifyWorkflowChange(workflow) {
 
   // 2. Embedded Iframe
   if (window.parent && window.parent !== window) {
-    const targetOrigin =
-      window.location.origin === 'null' ? '*' : window.location.origin;
     window.parent.postMessage(
       { type: 'automa:workflow-changed', data: payload },
-      targetOrigin
+      '*'
     );
   }
 
