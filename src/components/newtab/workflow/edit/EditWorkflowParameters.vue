@@ -11,7 +11,7 @@
       <div
         class="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground mb-3"
       >
-        <v-remixicon name="riCommandLine" size="22" />
+        <v-remixicon name="Terminal" size="22" />
       </div>
       <h3 class="text-sm font-semibold text-foreground">
         {{ $t('workflow.parameters.emptyTitle', 'No parameters configured') }}
@@ -29,7 +29,7 @@
         class="mt-4 shadow-xs"
         @click="addParameter"
       >
-        <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+        <v-remixicon name="Plus" class="mr-1.5" size="16" />
         <span>{{ $t('workflow.parameters.add', 'Add parameter') }}</span>
       </ui-button>
     </div>
@@ -57,7 +57,7 @@
             <div class="grid grid-cols-12 gap-2 items-center">
               <div class="col-span-3 flex items-center">
                 <v-remixicon
-                  name="mdiDrag"
+                  name="GripVertical"
                   class="handle mr-1.5 cursor-move text-muted-foreground hover:text-foreground shrink-0"
                   size="18"
                 />
@@ -113,7 +113,7 @@
                   title="Delete parameter"
                   @click="state.parameters.splice(index, 1)"
                 >
-                  <v-remixicon name="riDeleteBin7Line" size="16" />
+                  <v-remixicon name="Trash2" size="16" />
                 </ui-button>
               </div>
             </div>
@@ -124,8 +124,8 @@
               >
                 <template #header="{ show }">
                   <v-remixicon
-                    :rotate="show ? 270 : 180"
-                    name="riArrowLeftSLine"
+                    :rotate="show ? 90 : 0"
+                    name="ChevronRight"
                     class="mr-1.5 transition-transform"
                     size="14"
                   />
@@ -172,7 +172,7 @@
       size="sm"
       @click="addParameter"
     >
-      <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+      <v-remixicon name="Plus" class="mr-1.5" size="16" />
       <span>{{ $t('workflow.parameters.add', 'Add parameter') }}</span>
     </ui-button>
     <div v-else class="grow" />

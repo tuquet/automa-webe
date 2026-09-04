@@ -30,11 +30,11 @@
           <div
             class="flex size-8 shrink-0 items-center justify-center rounded-md bg-background border border-border/70 text-foreground group-hover:text-primary transition-colors"
           >
-            <v-remixicon name="riFlashlightLine" size="16" />
+            <v-remixicon name="Zap" size="16" />
           </div>
           <div class="min-w-0 flex-1">
             <div
-              class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
+              class="text-xs font-medium text-foreground group-hover:text-primary transition-colors"
             >
               {{ t('workflow.blocks.trigger.edit', 'Edit Triggers') }}
             </div>
@@ -49,7 +49,7 @@
           </div>
         </div>
         <v-remixicon
-          name="riArrowRightSLine"
+          name="ChevronRight"
           class="text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all shrink-0 ml-2"
           size="16"
         />
@@ -66,11 +66,11 @@
           <div
             class="flex size-8 shrink-0 items-center justify-center rounded-md bg-background border border-border/70 text-foreground group-hover:text-primary transition-colors"
           >
-            <v-remixicon name="riCommandLine" size="16" />
+            <v-remixicon name="Terminal" size="16" />
           </div>
           <div class="min-w-0 flex-1">
             <div
-              class="text-sm font-medium text-foreground group-hover:text-primary transition-colors"
+              class="text-xs font-medium text-foreground group-hover:text-primary transition-colors"
             >
               {{ t('workflow.blocks.trigger.parameters', 'Parameters') }}
             </div>
@@ -85,7 +85,7 @@
           </div>
         </div>
         <v-remixicon
-          name="riArrowRightSLine"
+          name="ChevronRight"
           class="text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all shrink-0 ml-2"
           size="16"
         />
