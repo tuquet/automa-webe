@@ -57,7 +57,9 @@
             <v-remixicon
               size="13"
               name="Pin"
-              :class="pinned.includes(block.id) ? 'text-primary fill-primary' : ''"
+              :class="
+                pinned.includes(block.id) ? 'text-primary fill-primary' : ''
+              "
             />
           </button>
         </div>

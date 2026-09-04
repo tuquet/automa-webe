@@ -63,11 +63,7 @@
           >
             <v-remixicon name="Plus" class="mr-1.5" size="16" />
             <span>Add trigger</span>
-            <v-remixicon
-              name="ChevronDown"
-              class="ml-2 -mr-0.5"
-              size="14"
-            />
+            <v-remixicon name="ChevronDown" class="ml-2 -mr-0.5" size="14" />
           </ui-button>
         </template>
         <ui-list

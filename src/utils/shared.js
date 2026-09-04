@@ -2,7 +2,7 @@ export const tasks = {
   trigger: {
     name: 'Trigger',
     description: 'Block where workflow will start executing',
-    icon: 'riFlashlightLine',
+    icon: 'Zap',
     component: 'BlockBasic',
     editComponent: 'EditTrigger',
     category: 'general',
@@ -78,7 +78,7 @@ export const tasks = {
   'execute-workflow': {
     name: 'Execute workflow',
     description: '',
-    icon: 'riFlowChart',
+    icon: 'GitFork',
     component: 'BlockBasic',
     category: 'general',
     editComponent: 'EditExecuteWorkflow',
@@ -100,7 +100,7 @@ export const tasks = {
   'active-tab': {
     name: 'Active tab',
     description: "Set current tab that you're in as an active tab",
-    icon: 'riWindowLine',
+    icon: 'AppWindow',
     component: 'BlockBasic',
     category: 'browser',
     disableEdit: true,
@@ -115,7 +115,7 @@ export const tasks = {
   'new-tab': {
     name: 'New tab',
     description: 'Create a new tab',
-    icon: 'riGlobalLine',
+    icon: 'Globe',
     component: 'BlockBasic',
     editComponent: 'EditNewTab',
     category: 'browser',
@@ -140,7 +140,7 @@ export const tasks = {
   'switch-tab': {
     name: 'Switch tab',
     description: 'Switch active tab',
-    icon: 'riArrowLeftRightLine',
+    icon: 'ArrowLeftRight',
     component: 'BlockBasic',
     editComponent: 'EditSwitchTab',
     category: 'browser',
@@ -164,7 +164,7 @@ export const tasks = {
   'new-window': {
     name: 'New window',
     description: 'Create a new window',
-    icon: 'riWindow2Line',
+    icon: 'AppWindow',
     component: 'BlockBasic',
     editComponent: 'EditNewWindow',
     category: 'browser',
@@ -189,7 +189,7 @@ export const tasks = {
   proxy: {
     name: 'Proxy',
     description: 'Set the proxy of the browser',
-    icon: 'riShieldKeyholeLine',
+    icon: 'ShieldCheck',
     component: 'BlockBasic',
     category: 'browser',
     editComponent: 'EditProxy',
@@ -211,7 +211,7 @@ export const tasks = {
   'go-back': {
     name: 'Go back',
     description: 'Go back to the previous page',
-    icon: 'riArrowGoBackLine',
+    icon: 'Undo2',
     component: 'BlockBasic',
     category: 'browser',
     inputs: 1,
@@ -226,7 +226,7 @@ export const tasks = {
   'forward-page': {
     name: 'Go forward',
     description: 'Go forward to the next page',
-    icon: 'riArrowGoForwardLine',
+    icon: 'Redo2',
     component: 'BlockBasic',
     category: 'browser',
     inputs: 1,
@@ -240,7 +240,7 @@ export const tasks = {
   },
   'close-tab': {
     name: 'Close tab/window',
-    icon: 'riCloseCircleLine',
+    icon: 'XCircle',
     component: 'BlockBasic',
     category: 'browser',
     editComponent: 'EditCloseTab',
@@ -261,7 +261,7 @@ export const tasks = {
   'take-screenshot': {
     name: 'Take screenshot',
     description: 'Take a screenshot of current active tab',
-    icon: 'riImageLine',
+    icon: 'Image',
     component: 'BlockBasic',
     category: 'browser',
     editComponent: 'EditTakeScreenshot',
@@ -290,7 +290,7 @@ export const tasks = {
   'browser-event': {
     name: 'Browser event',
     description: 'Wait until the selected event is triggered',
-    icon: 'riLightbulbLine',
+    icon: 'Lightbulb',
     component: 'BlockBasic',
     category: 'browser',
     editComponent: 'EditBrowserEvent',
@@ -312,7 +312,7 @@ export const tasks = {
   },
   'event-click': {
     name: 'Click element',
-    icon: 'riCursorLine',
+    icon: 'MousePointer',
     component: 'BlockBasic',
     editComponent: 'EditInteractionBase',
     category: 'interaction',
@@ -335,7 +335,7 @@ export const tasks = {
   delay: {
     name: 'Delay',
     description: 'Add delay before executing the next block',
-    icon: 'riTimerLine',
+    icon: 'Timer',
     component: 'BlockDelay',
     editComponent: 'EditDelay',
     category: 'general',
@@ -352,7 +352,7 @@ export const tasks = {
   'get-text': {
     name: 'Get text',
     description: 'Get text from an element',
-    icon: 'riParagraph',
+    icon: 'Pilcrow',
     component: 'BlockBasic',
     editComponent: 'EditGetText',
     category: 'interaction',
@@ -394,7 +394,7 @@ export const tasks = {
   },
   'export-data': {
     name: 'Export data',
-    icon: 'riDownloadLine',
+    icon: 'Download',
     component: 'BlockBasic',
     editComponent: 'EditExportData',
     category: 'general',
@@ -418,7 +418,7 @@ export const tasks = {
   },
   'element-scroll': {
     name: 'Scroll element',
-    icon: 'riMouseLine',
+    icon: 'Mouse',
     component: 'BlockBasic',
     editComponent: 'EditScrollElement',
     category: 'interaction',
@@ -447,7 +447,7 @@ export const tasks = {
   link: {
     name: 'Link',
     description: 'Open link element',
-    icon: 'riLink',
+    icon: 'Link',
     component: 'BlockBasic',
     editComponent: 'EditLink',
     category: 'interaction',
@@ -471,7 +471,7 @@ export const tasks = {
   'attribute-value': {
     name: 'Attribute value',
     description: 'Get attribute value of an element',
-    icon: 'riBracketsLine',
+    icon: 'Brackets',
     component: 'BlockBasic',
     editComponent: 'EditAttributeValue',
     category: 'interaction',
@@ -510,7 +510,7 @@ export const tasks = {
   },
   forms: {
     name: 'Forms',
-    icon: 'riInputCursorMove',
+    icon: 'TextCursor',
     description: 'Manipulate form(input, select, checkbox, and radio) element',
     component: 'BlockBasic',
     editComponent: 'EditForms',
@@ -553,7 +553,7 @@ export const tasks = {
   },
   'repeat-task': {
     name: 'Repeat task',
-    icon: 'riRepeat2Line',
+    icon: 'Repeat',
     component: 'BlockRepeatTask',
     category: 'conditions',
     inputs: 1,
@@ -569,7 +569,7 @@ export const tasks = {
   'javascript-code': {
     name: 'JavaScript code',
     description: 'Execute your custom javascript code in a webpage',
-    icon: 'riCodeSSlashLine',
+    icon: 'Code2',
     component: 'BlockBasic',
     editComponent: 'EditJavascriptCode',
     category: 'interaction',
@@ -591,7 +591,7 @@ export const tasks = {
   'trigger-event': {
     name: 'Trigger event',
     description: 'Trigger event',
-    icon: 'riLightbulbFlashLine',
+    icon: 'Lightbulb',
     component: 'BlockBasic',
     editComponent: 'EditTriggerEvent',
     category: 'interaction',
@@ -617,7 +617,7 @@ export const tasks = {
   'google-sheets': {
     name: 'Google sheets',
     description: 'Read Google Sheets data',
-    icon: 'mdiGoogleSheet',
+    icon: 'FileSpreadsheet',
     component: 'BlockBasic',
     editComponent: 'EditGoogleSheets',
     category: 'onlineServices',
@@ -649,7 +649,7 @@ export const tasks = {
   'google-sheets-drive': {
     name: 'Google sheets (GDrive)',
     description: 'Read Google Sheets data',
-    icon: 'riDriveFill',
+    icon: 'HardDrive',
     component: 'BlockBasic',
     editComponent: 'EditGoogleSheetsDrive',
     category: 'onlineServices',
@@ -689,7 +689,7 @@ export const tasks = {
   'google-drive': {
     name: 'Google drive',
     description: 'Upload files to Google Drive',
-    icon: 'riDriveLine',
+    icon: 'HardDrive',
     component: 'BlockBasic',
     editComponent: 'EditGoogleDrive',
     category: 'onlineServices',
@@ -708,7 +708,7 @@ export const tasks = {
   conditions: {
     name: 'Conditions',
     description: 'Conditional block',
-    icon: 'riAB',
+    icon: 'CaseSensitive',
     component: 'BlockConditions',
     editComponent: 'EditConditions',
     category: 'conditions',
@@ -728,7 +728,7 @@ export const tasks = {
   'element-exists': {
     name: 'Element exists',
     description: 'Check if an element is exists',
-    icon: 'riFocus3Line',
+    icon: 'Crosshair',
     component: 'BlockElementExists',
     editComponent: 'EditElementExists',
     category: 'conditions',
@@ -751,7 +751,7 @@ export const tasks = {
   webhook: {
     name: 'HTTP Request',
     description: 'make an HTTP request',
-    icon: 'riEarthLine',
+    icon: 'Globe',
     component: 'BlockBasicWithFallback',
     editComponent: 'EditWebhook',
     category: 'general',
@@ -781,7 +781,7 @@ export const tasks = {
   'while-loop': {
     name: 'While loop',
     description: 'Execute blocks while the condition is met',
-    icon: 'riRefreshFill',
+    icon: 'RotateCw',
     component: 'BlockBasicWithFallback',
     editComponent: 'EditWhileLoop',
     category: 'conditions',
@@ -797,7 +797,7 @@ export const tasks = {
   },
   'loop-data': {
     name: 'Loop data',
-    icon: 'riRefreshLine',
+    icon: 'RotateCw',
     component: 'BlockBasic',
     editComponent: 'EditLoopData',
     category: 'conditions',
@@ -836,7 +836,7 @@ export const tasks = {
   },
   'loop-elements': {
     name: 'Loop elements',
-    icon: 'riRestartLine',
+    icon: 'RotateCcw',
     component: 'BlockBasic',
     editComponent: 'EditLoopElements',
     category: 'conditions',
@@ -872,7 +872,7 @@ export const tasks = {
   'loop-breakpoint': {
     name: 'Loop breakpoint',
     description: 'To tell where loop data must stop',
-    icon: 'riStopLine',
+    icon: 'Square',
     component: 'BlockLoopBreakpoint',
     category: 'conditions',
     disableEdit: true,
@@ -889,7 +889,7 @@ export const tasks = {
   'blocks-group': {
     name: 'Blocks group',
     description: 'Grouping blocks',
-    icon: 'riFolderZipLine',
+    icon: 'FolderArchive',
     component: 'BlockGroup',
     category: 'general',
     disableEdit: true,
@@ -906,7 +906,7 @@ export const tasks = {
   // 'blocks-group-2': {
   //   name: 'Blocks group',
   //   description: 'Grouping blocks',
-  //   icon: 'riFolderZipLine',
+  //   icon: 'FolderArchive',
   //   component: 'BlockGroup2',
   //   category: 'general',
   //   disableEdit: true,
@@ -926,7 +926,7 @@ export const tasks = {
   clipboard: {
     name: 'Clipboard',
     description: 'Get the copied text from the clipboard',
-    icon: 'riClipboardLine',
+    icon: 'Clipboard',
     component: 'BlockBasic',
     category: 'general',
     editComponent: 'EditClipboard',
@@ -951,7 +951,7 @@ export const tasks = {
   'insert-data': {
     name: 'Insert data',
     description: 'Insert data into table or variable',
-    icon: 'riDatabase2Line',
+    icon: 'Database',
     component: 'BlockBasic',
     category: 'data',
     editComponent: 'EditInsertData',
@@ -968,7 +968,7 @@ export const tasks = {
   'switch-to': {
     name: 'Switch frame',
     description: 'Switch between main window and iframe',
-    icon: 'riArrowUpDownLine',
+    icon: 'ArrowUpDown',
     component: 'BlockBasic',
     editComponent: 'EditSwitchTo',
     category: 'interaction',
@@ -987,7 +987,7 @@ export const tasks = {
   'upload-file': {
     name: 'Upload file',
     description: 'Upload file into <input type="file"> element',
-    icon: 'riFileUploadLine',
+    icon: 'Upload',
     component: 'BlockBasic',
     editComponent: 'EditUploadFile',
     category: 'interaction',
@@ -1008,7 +1008,7 @@ export const tasks = {
   'hover-element': {
     name: 'Hover element',
     description: 'Hover over an element',
-    icon: 'mdiCursorDefaultClickOutline',
+    icon: 'MousePointerClick',
     component: 'BlockBasic',
     editComponent: 'EditInteractionBase',
     category: 'interaction',
@@ -1032,7 +1032,7 @@ export const tasks = {
     name: 'Save assets',
     description:
       'Save assets (image, video, audio, or file) from an element or URL',
-    icon: 'riImageLine',
+    icon: 'Image',
     component: 'BlockBasic',
     editComponent: 'EditSaveAssets',
     category: 'interaction',
@@ -1065,7 +1065,7 @@ export const tasks = {
   'press-key': {
     name: 'Press key',
     description: 'Press a key or a combination',
-    icon: 'riKeyboardLine',
+    icon: 'Keyboard',
     component: 'BlockBasic',
     editComponent: 'EditPressKey',
     category: 'interaction',
@@ -1088,7 +1088,7 @@ export const tasks = {
     name: 'Handle dialog',
     description:
       'Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload).',
-    icon: 'riChat3Line',
+    icon: 'MessageSquare',
     component: 'BlockBasic',
     editComponent: 'EditHandleDialog',
     category: 'browser',
@@ -1107,7 +1107,7 @@ export const tasks = {
   'handle-download': {
     name: 'Handle download',
     description: 'Handle downloaded file',
-    icon: 'riFileDownloadLine',
+    icon: 'Download',
     component: 'BlockBasic',
     editComponent: 'EditHandleDownload',
     category: 'browser',
@@ -1134,7 +1134,7 @@ export const tasks = {
   'reload-tab': {
     name: 'Reload tab',
     description: 'Reload the active tab',
-    icon: 'riRestartLine',
+    icon: 'RotateCcw',
     component: 'BlockBasic',
     category: 'browser',
     inputs: 1,
@@ -1149,7 +1149,7 @@ export const tasks = {
   'delete-data': {
     name: 'Delete data',
     description: 'Delete table or variable data',
-    icon: 'riDeleteBin7Line',
+    icon: 'Trash2',
     editComponent: 'EditDeleteData',
     component: 'BlockBasic',
     category: 'data',
@@ -1166,7 +1166,7 @@ export const tasks = {
   'wait-connections': {
     name: 'Wait connections',
     description: 'Wait for all connections before continuing to the next block',
-    icon: 'riTimerFlashLine',
+    icon: 'Timer',
     editComponent: 'EditWaitConnections',
     component: 'BlockBasic',
     category: 'general',
@@ -1185,7 +1185,7 @@ export const tasks = {
   notification: {
     name: 'Notification',
     description: 'Display a notification',
-    icon: 'riNotification3Line',
+    icon: 'Bell',
     editComponent: 'EditNotification',
     component: 'BlockBasic',
     category: 'general',
@@ -1206,7 +1206,7 @@ export const tasks = {
   'log-data': {
     name: 'Get log data',
     description: 'Get the latest log data of a workflow',
-    icon: 'riFileHistoryLine',
+    icon: 'History',
     editComponent: 'EditLogData',
     component: 'BlockBasic',
     category: 'data',
@@ -1227,7 +1227,7 @@ export const tasks = {
   'tab-url': {
     name: 'Get tab URL',
     description: 'Get the tab URL',
-    icon: 'riLinksLine',
+    icon: 'Link2',
     editComponent: 'EditTabURL',
     component: 'BlockBasic',
     category: 'browser',
@@ -1251,7 +1251,7 @@ export const tasks = {
   'slice-variable': {
     name: 'Slice variable',
     description: 'Extracts a section of a variable value',
-    icon: 'riSliceLine',
+    icon: 'Scissors',
     editComponent: 'EditSliceVariable',
     component: 'BlockBasic',
     category: 'data',
@@ -1272,7 +1272,7 @@ export const tasks = {
   'increase-variable': {
     name: 'Increase variable',
     description: 'Increase the value of a variable by specific amount',
-    icon: 'riIncreaseDecreaseLine',
+    icon: 'TrendingUp',
     editComponent: 'EditIncreaseVariable',
     component: 'BlockBasic',
     category: 'data',
@@ -1290,7 +1290,7 @@ export const tasks = {
   'regex-variable': {
     name: 'RegEx variable',
     description: 'Matching a variable value against a regular expression',
-    icon: 'mdiRegex',
+    icon: 'Regex',
     editComponent: 'EditRegexVariable',
     component: 'BlockBasic',
     category: 'data',
@@ -1311,7 +1311,7 @@ export const tasks = {
   'data-mapping': {
     name: 'Data mapping',
     description: 'Map data of a variable or table',
-    icon: 'riMindMap',
+    icon: 'Network',
     editComponent: 'EditDataMapping',
     component: 'BlockBasic',
     category: 'data',
@@ -1334,7 +1334,7 @@ export const tasks = {
   'sort-data': {
     name: 'Sort data',
     description: 'Sort the items of data',
-    icon: 'riSortAsc',
+    icon: 'ArrowUpNarrowWide',
     editComponent: 'EditSortData',
     component: 'BlockBasic',
     category: 'data',
@@ -1358,7 +1358,7 @@ export const tasks = {
   'create-element': {
     name: 'Create element',
     description: 'Create an element and insert it into the page',
-    icon: 'riHtml5Line',
+    icon: 'FileCode',
     editComponent: 'EditCreateElement',
     component: 'BlockBasic',
     category: 'interaction',
@@ -1385,7 +1385,7 @@ export const tasks = {
   cookie: {
     name: 'Cookie',
     description: 'Get, set, or remove cookies',
-    icon: 'mdiCookieOutline',
+    icon: 'Cookie',
     editComponent: 'EditCookie',
     component: 'BlockBasic',
     category: 'browser',
@@ -1430,7 +1430,7 @@ export const tasks = {
   'block-package': {
     name: 'Block package',
     description: 'Block package',
-    icon: 'riHtml5Line',
+    icon: 'FileCode',
     editComponent: 'EditPackage',
     component: 'BlockPackage',
     category: 'package',
@@ -1443,7 +1443,7 @@ export const tasks = {
   note: {
     name: 'Note',
     description: '',
-    icon: 'riFileEditLine',
+    icon: 'FileEdit',
     component: 'BlockNote',
     category: 'general',
     disableEdit: true,
@@ -1464,7 +1464,7 @@ export const tasks = {
   'workflow-state': {
     name: 'Workflow State',
     description: 'Manage workflows states',
-    icon: 'riSettings3Line',
+    icon: 'Settings',
     component: 'BlockBasic',
     editComponent: 'EditWorkflowState',
     category: 'general',
@@ -1486,7 +1486,7 @@ export const tasks = {
   'parameter-prompt': {
     name: 'Parameter prompt',
     description: '',
-    icon: 'riCommandLine',
+    icon: 'Terminal',
     component: 'BlockBasic',
     category: 'general',
     editComponent: 'EditParameterPrompt',
@@ -1619,22 +1619,22 @@ export const supportLocales = [
 export const communities = [
   {
     name: 'GitHub',
-    icon: 'riGithubFill',
+    icon: 'Github',
     url: 'https://github.com/AutomaApp/automa',
   },
   {
     name: 'Twitter',
-    icon: 'riTwitterLine',
+    icon: 'Twitter',
     url: 'https://twitter.com/AutomaApp',
   },
   {
     name: 'Discord',
-    icon: 'riDiscordLine',
+    icon: 'MessageCircle',
     url: 'https://discord.gg/C6khwwTE84',
   },
   {
     name: 'YouTube',
-    icon: 'riYoutubeLine',
+    icon: 'Youtube',
     url: 'https://www.youtube.com/channel/UCL3qU64hW0fsIj2vOayOQUQ',
   },
 ];
