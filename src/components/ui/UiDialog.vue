@@ -44,12 +44,14 @@
         <ui-button
           variant="outline"
           class="w-6/12"
+          data-testid="dialog-cancel-btn"
           @click="fireCallback('onCancel')"
         >
           {{ state.options.cancelText }}
         </ui-button>
         <ui-button
           class="w-6/12"
+          data-testid="dialog-confirm-btn"
           :loading="state.loading"
           :variant="
             state.options.okVariant === 'danger'

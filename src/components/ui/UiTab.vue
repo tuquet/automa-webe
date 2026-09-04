@@ -43,10 +43,10 @@ const uiTabs = inject('ui-tabs', {});
   z-index: 1;
   padding: 0.5rem 0.75rem;
   border-bottom: 2px solid transparent;
-  color: var(--muted-foreground, #a1a1aa);
+  color: var(--muted-foreground);
 }
 .ui-tab:hover {
-  color: var(--foreground, #f4f4f5);
+  color: var(--foreground);
 }
 .ui-tab.small {
   padding: 0.25rem 0.5rem;
@@ -60,14 +60,14 @@ const uiTabs = inject('ui-tabs', {});
   padding: 0.25rem 0.5rem;
 }
 .ui-tab.is-active {
-  border-bottom-color: rgb(var(--color-primary, 59 130 246));
-  color: var(--foreground, #f4f4f5);
+  border-bottom-color: var(--primary, #3b82f6);
+  color: var(--foreground);
   font-weight: 600;
 }
 .ui-tab.is-active.fill {
-  background-color: var(--card, #18181b);
-  color: var(--foreground, #f4f4f5);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  background-color: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   font-weight: 500;
 }
 </style>

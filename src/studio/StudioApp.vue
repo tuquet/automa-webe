@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col h-screen w-screen overflow-hidden bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans select-none"
+    class="flex flex-col h-screen w-screen overflow-hidden bg-background text-foreground font-sans select-none"
   >
     <!-- Top Header Bar Component (Hidden in Headless Mode) -->
     <studio-header
@@ -243,11 +243,14 @@
         @close="modals.library = false"
       />
     </ui-modal>
+
+    <!-- Dedicated Portal Root for Overlays inside Iframe/VS Code Webview -->
+    <div id="studio-overlay-root" />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { Button } from '@automa/ui';
 import { Crosshair, Redo2, Undo2, Wand2 } from 'lucide-vue-next';
@@ -612,9 +615,20 @@ watch(
   { deep: true }
 );
 
+function onParentMessage(event) {
+  if (event.data?.type === 'automa:click-outside') {
+    document.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+  }
+}
+
 onMounted(() => {
+  window.addEventListener('message', onParentMessage);
   loadAvailableWorkflows();
   runLiveLint(workflow.value);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('message', onParentMessage);
 });
 </script>
 

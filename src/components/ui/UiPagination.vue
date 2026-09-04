@@ -3,6 +3,8 @@
     <ui-button
       v-tooltip="t('components.pagination.prevPage')"
       :disabled="modelValue <= 1"
+      variant="outline"
+      data-testid="pagination-prev-btn"
       icon
       @click="updatePage(modelValue - 1)"
     >
@@ -15,6 +17,7 @@
         :value="modelValue"
         :max="maxPage"
         min="0"
+        data-testid="pagination-page-input"
         class="h-8 w-11 appearance-none rounded-md border border-input bg-background px-1 py-1 text-center text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs"
         type="number"
         @click="$event.target.select()"
@@ -25,6 +28,8 @@
     <ui-button
       v-tooltip="t('components.pagination.nextPage')"
       :disabled="modelValue >= maxPage"
+      variant="outline"
+      data-testid="pagination-next-btn"
       icon
       @click="updatePage(modelValue + 1)"
     >
