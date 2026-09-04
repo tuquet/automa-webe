@@ -1,15 +1,35 @@
 <template>
   <div
     class="scroll overflow-auto"
-    style="min-height: 350px; max-height: calc(100vh - 14rem)"
+    style="min-height: 250px; max-height: calc(100vh - 14rem)"
   >
+    <!-- Empty State -->
+    <div
+      v-if="triggersList.length === 0"
+      class="my-4 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 p-8 text-center bg-muted/20"
+    >
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground mb-3"
+      >
+        <v-remixicon name="riFlashlightLine" size="22" />
+      </div>
+      <h3 class="text-sm font-semibold text-foreground">
+        No triggers configured
+      </h3>
+      <p class="mt-1 text-xs text-muted-foreground max-w-sm leading-relaxed">
+        Triggers define when and how your workflow starts running automatically
+        (e.g. interval, cron schedule, date, or context menu).
+      </p>
+    </div>
+
+    <!-- Triggers List -->
     <ui-expand
       v-for="(trigger, index) in triggersList"
-      :key="index"
-      class="trigger-item mb-2 rounded-md border border-border bg-card/50"
+      :key="trigger.id || index"
+      class="trigger-item mb-2.5 rounded-lg border border-border bg-card shadow-2xs overflow-hidden"
     >
       <template #header>
-        <p class="flex-1 text-xs font-medium text-foreground">
+        <p class="flex-1 text-xs font-semibold text-foreground">
           {{ t(`workflow.blocks.trigger.items.${trigger.type}`) }}
         </p>
         <button
@@ -22,7 +42,7 @@
           <v-remixicon name="riDeleteBin7Line" size="16" />
         </button>
       </template>
-      <div class="px-4 py-2">
+      <div class="px-4 py-3 border-t border-border/50 bg-muted/10">
         <component
           :is="triggersData[trigger.type]?.component"
           :data="trigger.data"
@@ -30,26 +50,42 @@
         />
       </div>
     </ui-expand>
-    <ui-popover class="mt-4">
-      <template #trigger>
-        <ui-button variant="secondary" data-testid="btn.trigger.add">
-          <span>Add trigger</span>
-          <v-remixicon name="riArrowDownSLine" class="ml-2 -mr-1" size="16" />
-        </ui-button>
-      </template>
-      <ui-list class="space-y-1">
-        <ui-list-item
-          v-for="triggerType in triggersTypes"
-          :key="triggerType"
-          v-close-popover
-          class="cursor-pointer"
-          small
-          @click="addTrigger(triggerType)"
+
+    <div
+      class="mt-4 flex items-center justify-between border-t border-border/60 pt-3"
+    >
+      <ui-popover>
+        <template #trigger>
+          <ui-button
+            variant="secondary"
+            size="sm"
+            data-testid="btn.trigger.add"
+          >
+            <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+            <span>Add trigger</span>
+            <v-remixicon
+              name="riArrowDownSLine"
+              class="ml-2 -mr-0.5"
+              size="14"
+            />
+          </ui-button>
+        </template>
+        <ui-list
+          class="space-y-1 p-1 bg-popover text-popover-foreground border border-border rounded-lg shadow-md min-w-44"
         >
-          {{ t(`workflow.blocks.trigger.items.${triggerType}`) }}
-        </ui-list-item>
-      </ui-list>
-    </ui-popover>
+          <ui-list-item
+            v-for="triggerType in triggersTypes"
+            :key="triggerType"
+            v-close-popover
+            class="cursor-pointer rounded-md text-xs hover:bg-accent hover:text-accent-foreground px-2.5 py-1.5 transition-colors"
+            small
+            @click="addTrigger(triggerType)"
+          >
+            {{ t(`workflow.blocks.trigger.items.${triggerType}`) }}
+          </ui-list-item>
+        </ui-list>
+      </ui-popover>
+    </div>
   </div>
 </template>
 <script setup>

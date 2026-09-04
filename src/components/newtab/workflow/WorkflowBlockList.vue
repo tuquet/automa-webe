@@ -2,30 +2,40 @@
   <ui-expand
     :data-testid="`block-category-${category?.name || 'blocks'}`"
     hide-header-icon
-    header-class="flex items-center py-1.5 focus:ring-0 w-full text-left text-xs font-semibold text-foreground"
+    header-class="flex items-center py-2 focus:ring-0 w-full text-left text-xs font-semibold text-foreground group select-none"
   >
     <template #header="{ show }">
       <span
-        :class="category?.color || 'bg-accent'"
-        class="h-2.5 w-2.5 rounded-full"
+        :class="category?.color || 'bg-primary'"
+        class="h-2 w-2 rounded-full mr-2 shrink-0 ring-2 ring-border/50"
       ></span>
-      <p class="ml-2 flex-1 capitalize text-xs font-semibold text-foreground">
+      <p
+        class="flex-1 capitalize text-xs font-semibold text-foreground tracking-tight"
+      >
         {{ category?.name || 'Blocks' }}
       </p>
-      <v-remixicon :name="show ? 'riSubtractLine' : 'riAddLine'" size="16" />
+      <span class="mr-2 text-[10px] text-muted-foreground font-mono">
+        {{ blocks.length }}
+      </span>
+      <v-remixicon
+        :name="show ? 'riArrowDownSLine' : 'riArrowRightSLine'"
+        size="16"
+        class="text-muted-foreground transition-transform"
+      />
     </template>
-    <div class="mb-3 grid grid-cols-2 gap-1.5">
+    <div class="mb-3 grid grid-cols-2 gap-2">
       <div
         v-for="block in blocks"
         :key="block.id"
         :data-testid="`block-item-${block.id}`"
         :title="getBlockTitle(block)"
         draggable="true"
-        class="bg-muted text-card-foreground group relative cursor-move select-none rounded-md p-2.5 transition hover:bg-accent hover:shadow-sm"
+        class="group relative flex flex-col justify-between p-2.5 rounded-lg border border-border/60 bg-card hover:bg-accent/40 hover:border-border hover:shadow-xs transition-all duration-150 cursor-grab active:cursor-grabbing select-none"
         @dragstart="$event.dataTransfer.setData('block', JSON.stringify(block))"
       >
+        <!-- Hover Action Toolbar (Hidden by default, shown on hover via opacity) -->
         <div
-          class="invisible absolute right-1.5 top-1.5 flex items-center text-muted-foreground group-hover:visible"
+          class="opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none group-hover:pointer-events-auto absolute right-1.5 top-1.5 z-10 flex items-center gap-0.5 bg-card/90 backdrop-blur-xs rounded-md border border-border/50 p-0.5 shadow-2xs"
         >
           <a
             :data-testid="`btn-docs-block-${block.id}`"
@@ -33,48 +43,61 @@
             :title="t('common.docs')"
             target="_blank"
             rel="noopener"
+            class="inline-flex items-center justify-center p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition"
           >
-            <v-remixicon name="riInformationLine" size="14" />
+            <v-remixicon name="riInformationLine" size="13" />
           </a>
-          <span
+          <button
+            type="button"
             :data-testid="`btn-pin-block-${block.id}`"
             :title="`${pinned.includes(block.id) ? 'Unpin' : 'Pin'} block`"
-            class="ml-1 cursor-pointer"
-            @click="$emit('pin', block)"
+            class="inline-flex items-center justify-center p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition cursor-pointer"
+            @click.stop="$emit('pin', block)"
           >
             <v-remixicon
-              size="14"
+              size="13"
               :name="
                 pinned.includes(block.id) ? 'riPushpin2Fill' : 'riPushpin2Line'
               "
             />
-          </span>
+          </button>
         </div>
-        <img
-          v-if="block.icon.startsWith('http')"
-          :src="block.icon"
-          alt=""
-          width="20"
-          class="mb-1.5 dark:invert"
-        />
-        <v-remixicon
-          v-else
-          :path="getIconPath(block.icon)"
-          :name="block.icon"
-          size="20"
-          class="mb-1.5 text-foreground"
-        />
+
+        <!-- Block Icon Container -->
+        <div class="mb-2 flex items-center justify-between">
+          <div
+            class="inline-flex items-center justify-center size-7 rounded-md bg-muted/60 text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0"
+          >
+            <img
+              v-if="block.icon.startsWith('http')"
+              :src="block.icon"
+              alt=""
+              width="16"
+              height="16"
+              class="h-4 w-4 object-contain dark:invert"
+            />
+            <v-remixicon
+              v-else
+              :path="getIconPath(block.icon)"
+              :name="block.icon"
+              size="16"
+            />
+          </div>
+          <!-- Optional Tag Badge (hidden when actions hover) -->
+          <div
+            v-if="block.tag"
+            class="group-hover:hidden inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-primary/10 text-primary border border-primary/20"
+          >
+            {{ block.tag }}
+          </div>
+        </div>
+
+        <!-- Block Label -->
         <p
-          class="text-overflow capitalize leading-tight text-xs font-medium text-foreground"
+          class="truncate capitalize text-xs font-medium text-foreground tracking-tight group-hover:text-primary transition-colors"
         >
           {{ block.name }}
         </p>
-        <div
-          v-if="block.tag"
-          class="flex items-center justify-center absolute top-0 right-0 min-w-[42px] h-[18px] group-hover:invisible rounded-tr-md rounded-bl-[16px] rounded-tl-0 rounded-br-0 bg-primary/20 text-primary text-[10px] font-semibold"
-        >
-          {{ block.tag }}
-        </div>
       </div>
     </div>
   </ui-expand>

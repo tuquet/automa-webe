@@ -12,7 +12,7 @@
         <v-remixicon
           v-if="prependIcon"
           size="16"
-          class="absolute left-2.5 text-muted-foreground"
+          class="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
           :name="prependIcon"
         ></v-remixicon>
       </slot>
@@ -34,14 +34,14 @@
         :class="[
           statusColors[status],
           inputClass,
+          prependIcon || $slots.prepend ? 'pl-9 pr-3' : 'px-3',
           {
             'opacity-50 pointer-events-none': disabled,
-            'pl-8': prependIcon || $slots.prepend,
             'appearance-none': list,
           },
         ]"
         :value="modelValue"
-        class="flex h-8 w-full rounded-md border border-input bg-background px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs"
+        class="flex h-8 w-full rounded-md border border-input bg-background py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs"
         @keydown="$emit('keydown', $event)"
         @keyup="$emit('keyup', $event)"
         @blur="$emit('blur', $event)"

@@ -3,15 +3,43 @@
     class="scroll overflow-auto"
     style="max-height: calc(100vh - 15rem); min-height: 200px"
   >
-    <p
+    <!-- Empty State -->
+    <div
       v-if="state.parameters.length === 0"
-      class="my-4 text-center text-xs text-muted-foreground"
+      class="my-4 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 p-8 text-center bg-muted/20"
     >
-      No parameters
-    </p>
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground mb-3"
+      >
+        <v-remixicon name="riCommandLine" size="22" />
+      </div>
+      <h3 class="text-sm font-semibold text-foreground">
+        {{ $t('workflow.parameters.emptyTitle', 'No parameters configured') }}
+      </h3>
+      <p class="mt-1 text-xs text-muted-foreground max-w-sm leading-relaxed">
+        {{
+          $t(
+            'workflow.parameters.emptyDesc',
+            'Parameters allow you to supply custom inputs, variables, or dynamic values when executing this workflow.'
+          )
+        }}
+      </p>
+      <ui-button
+        variant="secondary"
+        class="mt-4 shadow-xs"
+        @click="addParameter"
+      >
+        <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+        <span>{{ $t('workflow.parameters.add', 'Add parameter') }}</span>
+      </ui-button>
+    </div>
+
+    <!-- Parameter Table List -->
     <section v-else class="w-full">
-      <div class="grid grid-cols-12 space-x-2 text-sm">
-        <div class="col-span-3" style="padding-left: 28px">Name</div>
+      <div
+        class="grid grid-cols-12 gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/60 pb-2 mb-3 px-1"
+      >
+        <div class="col-span-3 pl-7">Name</div>
         <div class="col-span-2">Type</div>
         <div class="col-span-3">Placeholder</div>
         <div class="col-span-4">Default Value</div>
@@ -23,19 +51,27 @@
         handle=".handle"
       >
         <template #item="{ element: param, index }">
-          <div class="mb-4">
-            <div class="grid grid-cols-12 space-x-2">
-              <div class="col-span-3 flex">
-                <v-remixicon name="mdiDrag" class="handle mr-2 cursor-move" />
+          <div
+            class="mb-3 rounded-lg border border-border/60 bg-muted/20 p-2.5 transition-colors hover:border-border/90"
+          >
+            <div class="grid grid-cols-12 gap-2 items-center">
+              <div class="col-span-3 flex items-center">
+                <v-remixicon
+                  name="mdiDrag"
+                  class="handle mr-1.5 cursor-move text-muted-foreground hover:text-foreground shrink-0"
+                  size="18"
+                />
                 <ui-input
                   :model-value="param.name"
                   placeholder="Parameter name"
+                  class="w-full text-xs font-mono"
                   @change="updateParam(index, $event)"
                 />
               </div>
               <div class="col-span-2">
                 <ui-select
                   :model-value="param.type"
+                  class="w-full text-xs"
                   @change="updateParamType(index, $event)"
                 >
                   <option
@@ -51,58 +87,63 @@
                 <ui-input
                   v-model="param.placeholder"
                   placeholder="A parameter"
+                  class="w-full text-xs"
                 />
               </div>
-              <div class="col-span-4 flex items-center">
+              <div class="col-span-4 flex items-center gap-1.5">
                 <component
                   :is="paramTypes[param.type]?.valueComp"
                   v-if="paramTypes[param.type]?.valueComp"
                   v-model="param.defaultValue"
                   :param-data="param"
                   :editor="true"
-                  class="flex-1"
-                  style="max-width: 232px"
+                  class="flex-1 min-w-0"
                 />
                 <ui-input
                   v-else
                   v-model="param.defaultValue"
                   :type="param.type === 'number' ? 'number' : 'text'"
                   placeholder="NULL"
+                  class="flex-1 min-w-0 text-xs"
                 />
                 <ui-button
                   icon
-                  class="ml-2"
+                  variant="ghost"
+                  class="shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 size-8"
+                  title="Delete parameter"
                   @click="state.parameters.splice(index, 1)"
                 >
-                  <v-remixicon name="riDeleteBin7Line" />
+                  <v-remixicon name="riDeleteBin7Line" size="16" />
                 </ui-button>
               </div>
             </div>
-            <div class="w-full">
+            <div class="w-full mt-2">
               <ui-expand
                 hide-header-icon
-                header-class="flex items-center focus:ring-0 w-full"
+                header-class="flex items-center text-xs text-muted-foreground hover:text-foreground focus:ring-0 w-full select-none"
               >
                 <template #header="{ show }">
                   <v-remixicon
                     :rotate="show ? 270 : 180"
                     name="riArrowLeftSLine"
-                    class="mr-2 -ml-1 transition-transform"
+                    class="mr-1.5 transition-transform"
+                    size="14"
                   />
-                  <span>Options</span>
+                  <span>Options & Validation</span>
                 </template>
-                <div class="mt-2 mb-4 pl-[28px]">
-                  <div class="mb-2 flex items-start">
+                <div class="mt-2.5 pt-2 border-t border-border/40 pl-6">
+                  <div class="mb-2 flex items-start gap-4">
                     <ui-textarea
                       v-model="param.description"
-                      placeholder="Description"
+                      placeholder="Description or help text for this parameter"
                       title="Description"
-                      style="max-width: 400px"
+                      class="max-w-md text-xs"
+                      rows="2"
                     />
                     <ui-checkbox
                       v-if="['string', 'number'].includes(param.type)"
                       :model-value="param.data?.required"
-                      class="ml-6"
+                      class="pt-1 text-xs"
                       @change="param.data.required = $event"
                     >
                       Parameter required
@@ -122,17 +163,31 @@
       </draggable>
     </section>
   </div>
-  <div class="mt-4 flex items-center">
-    <ui-button variant="accent" @click="addParameter">
-      {{ $t('workflow.parameters.add') }}
+  <div
+    class="mt-4 flex items-center justify-between border-t border-border/60 pt-3"
+  >
+    <ui-button
+      v-if="state.parameters.length > 0"
+      variant="secondary"
+      size="sm"
+      @click="addParameter"
+    >
+      <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+      <span>{{ $t('workflow.parameters.add', 'Add parameter') }}</span>
     </ui-button>
-    <div class="grow" />
+    <div v-else class="grow" />
     <ui-checkbox
       v-if="!hidePreferTab"
       :model-value="preferTab"
+      class="text-xs"
       @change="$emit('update:preferTab', $event)"
     >
-      {{ $t('workflow.parameters.preferInTab') }}
+      {{
+        $t(
+          'workflow.parameters.preferInTab',
+          'Execute workflow parameters in a new tab'
+        )
+      }}
     </ui-checkbox>
   </div>
 </template>

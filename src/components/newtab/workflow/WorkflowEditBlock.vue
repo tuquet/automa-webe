@@ -5,7 +5,7 @@
     class="scroll h-full overflow-auto px-3 py-1 text-xs"
   >
     <div
-      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-background pb-2 pt-1 border-b border-border"
+      class="sticky top-0 z-20 mb-3 flex items-center gap-2 bg-card pb-2.5 pt-2 border-b border-border/70"
     >
       <ui-button
         variant="ghost"
@@ -13,13 +13,14 @@
         data-testid="btn.workflow.edit_block.back"
         :title="t('common.back', 'Back')"
         aria-label="Back"
+        class="size-7 rounded-md"
         @click="handleClose"
       >
         <v-remixicon name="riArrowLeftLine" size="16" />
       </ui-button>
 
       <span
-        class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-muted shrink-0 text-foreground"
+        class="inline-flex items-center justify-center size-7 rounded-md bg-muted/70 shrink-0 text-foreground border border-border/50"
       >
         <img
           v-if="getBlockIcon() && getBlockIcon().startsWith('http')"
