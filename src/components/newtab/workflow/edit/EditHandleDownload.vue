@@ -50,7 +50,7 @@
       </ui-checkbox>
       <template v-if="data.waitForDownload">
         <hr class="my-4 w-full" />
-        <p class="text-sm text-gray-600 dark:text-gray-300">
+        <p class="text-xs text-muted-foreground">
           {{ t('workflow.blocks.handle-download.filePath') }}
         </p>
         <insert-workflow-data :data="data" variables @update="updateData" />

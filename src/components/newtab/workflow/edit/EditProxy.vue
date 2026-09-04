@@ -47,7 +47,7 @@
       @change="updateData({ bypassList: $event })"
     >
     </ui-textarea>
-    <p class="text-sm text-gray-600 dark:text-gray-200">
+    <p class="text-xs text-muted-foreground">
       {{ t('workflow.blocks.proxy.bypass.note') }}
     </p>
     <ui-checkbox

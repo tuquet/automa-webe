@@ -29,7 +29,7 @@
       {{ t('workflow.blocks.loop-data.reverse') }}
     </ui-checkbox>
     <div class="mt-4 mb-8 border-t pt-4">
-      <p class="text-sm text-gray-600 dark:text-gray-200">
+      <p class="text-xs text-muted-foreground">
         {{ t('workflow.blocks.loop-elements.loadMore') }}
       </p>
       <ui-select
