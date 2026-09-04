@@ -7,7 +7,7 @@
     <v-remixicon
       v-tooltip="{ content: maskInfo, allowHTML: true }"
       name="riInformationLine"
-      class="ml-1 text-gray-600 dark:text-gray-200"
+      class="ml-1 text-muted-foreground"
       size="20"
     />
     <label v-if="false" class="ml-4 flex items-center">

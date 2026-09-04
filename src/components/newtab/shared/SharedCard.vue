@@ -1,7 +1,7 @@
 <template>
   <ui-card
     :data-workflow-id="data.hostId"
-    class="group flex flex-col hover:ring-2 hover:ring-accent dark:hover:ring-gray-200"
+    class="group flex flex-col hover:ring-2 hover:ring-accent transition-all"
   >
     <slot name="header">
       <div class="mb-4 flex items-center">
@@ -12,13 +12,13 @@
           style="height: 40px; width: 40px"
           alt="Can not display"
         />
-        <span v-else class="bg-box-transparent rounded-lg p-2">
+        <span v-else class="bg-muted text-muted-foreground rounded-lg p-2">
           <v-remixicon :name="data.icon || icon" />
         </span>
         <div class="grow"></div>
         <span
           v-if="data.isDisabled"
-          class="text-sm text-gray-600 dark:text-gray-200"
+          class="text-xs text-muted-foreground"
         >
           Disabled
         </span>
@@ -57,12 +57,12 @@
       </p>
       <p
         v-show="data.description"
-        class="line-clamp mb-1 leading-tight text-gray-600 dark:text-gray-200"
+        class="line-clamp mb-1 leading-tight text-xs text-muted-foreground"
       >
         {{ data.description }}
       </p>
     </div>
-    <div class="flex items-center text-gray-600 dark:text-gray-200">
+    <div class="flex items-center text-xs text-muted-foreground">
       <p class="flex-1">{{ state.date }}</p>
       <slot name="footer-content" />
     </div>

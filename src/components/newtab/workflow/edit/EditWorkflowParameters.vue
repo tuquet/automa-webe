@@ -5,7 +5,7 @@
   >
     <p
       v-if="state.parameters.length === 0"
-      class="my-4 text-center text-gray-600 dark:text-gray-200"
+      class="my-4 text-center text-xs text-muted-foreground"
     >
       No parameters
     </p>

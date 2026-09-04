@@ -1,6 +1,6 @@
 <template>
   <div
-    class="ml-2 inline-flex items-center rounded-lg bg-white dark:bg-gray-800"
+    class="ml-2 inline-flex items-center rounded-lg bg-card border border-border"
   >
     <button
       v-tooltip="
@@ -8,7 +8,7 @@
           shortcut['editor:search-blocks'].readable
         })`
       "
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       icon
       @click="toggleActiveSearch"
     >
@@ -42,14 +42,14 @@
             {{ item.name }}
           </p>
           <p
-            class="text-overflow text-sm leading-none text-gray-600 dark:text-gray-300"
+            class="text-overflow text-xs leading-none text-muted-foreground"
           >
             {{ item.description }}
           </p>
         </div>
         <span
           title="Block id"
-          class="text-overflow text-center bg-box-transparent w-16 rounded-md p-1 text-xs text-gray-600 dark:text-gray-300"
+          class="text-overflow text-center bg-muted w-16 rounded-md p-1 text-xs text-muted-foreground"
         >
           {{ item.id }}
         </span>
