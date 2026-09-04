@@ -18,7 +18,7 @@
           <v-remixicon
             size="28"
             name="riArrowDropDownLine"
-            class="-mr-2 text-gray-600 dark:text-gray-200"
+            class="-mr-2 text-muted-foreground"
           />
         </ui-button>
       </template>
@@ -56,7 +56,7 @@
           <p class="flex-1">
             {{ t(`workflow.blocks.trigger.days.${day.id}`) }}
           </p>
-          <span class="text-gray-600 dark:text-gray-200">
+          <span class="text-xs text-muted-foreground">
             <v-remixicon
               name="riDeleteBin7Line"
               class="group invisible mr-1 inline-block group-hover:visible"
@@ -69,7 +69,7 @@
           <div
             v-for="(time, timeIndex) in day.times"
             :key="day.id + time"
-            class="group flex items-center rounded-lg border p-2"
+            class="group flex items-center rounded-lg border border-border bg-card p-2 text-xs"
           >
             <span class="flex-1"> {{ formatTime(time) }} </span>
             <v-remixicon

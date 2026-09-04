@@ -66,7 +66,11 @@
             </td>
           </tr>
         </template>
-        <tr v-for="log in logs" :key="log.id" class="transition-colors hover:bg-accent hover:text-accent-foreground">
+        <tr
+          v-for="log in logs"
+          :key="log.id"
+          class="transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
           <slot name="item-prepend" :log="log" />
           <td
             class="text-overflow w-4/12"

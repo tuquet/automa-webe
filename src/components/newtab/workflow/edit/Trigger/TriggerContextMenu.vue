@@ -23,7 +23,7 @@
         trigger-class="w-full"
       >
         <template #trigger>
-          <span class="ml-1 text-sm text-gray-600 dark:text-gray-200">
+          <span class="ml-1 text-xs text-muted-foreground">
             {{ t('workflow.blocks.trigger.contextMenus.appearIn') }}
           </span>
           <ui-button class="w-full">
@@ -33,7 +33,7 @@
             <v-remixicon
               size="28"
               name="riArrowDropDownLine"
-              class="-mr-2 text-gray-600 dark:text-gray-200"
+              class="-mr-2 text-muted-foreground"
             />
           </ui-button>
         </template>

@@ -21,9 +21,7 @@
           <p class="text-overflow">
             {{ t('workflow.blocks.debugMode.title') }}
           </p>
-          <p
-            class="text-overflow leading-tight text-muted-foreground"
-          >
+          <p class="text-overflow leading-tight text-muted-foreground">
             {{ t('workflow.blocks.debugMode.description') }}
           </p>
         </div>

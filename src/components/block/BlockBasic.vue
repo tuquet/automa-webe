@@ -19,7 +19,11 @@
     />
     <div class="flex items-center">
       <span
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-2 inline-block rounded-lg p-2 dark:text-black"
       >
         <svg
@@ -32,18 +36,24 @@
         >
           <path
             d="M5.22626 4.28601V8.14343H1.36884V4.28601H5.22626Z"
-            stroke="black"
+            stroke="currentColor"
           />
           <path
             d="M12.6076 0.50061V3.64319H9.46503V0.50061H12.6076Z"
-            stroke="black"
+            stroke="currentColor"
           />
           <path
             d="M12.6309 8.35657V11.4991H9.48834V8.35657H12.6309Z"
-            stroke="black"
+            stroke="currentColor"
           />
-          <path d="M5.66516 6.37384H7.27247V2.13159H9.45839" stroke="black" />
-          <path d="M5.15082 6.43445H7.26688V9.9986H9.91184" stroke="black" />
+          <path
+            d="M5.66516 6.37384H7.27247V2.13159H9.45839"
+            stroke="currentColor"
+          />
+          <path
+            d="M5.15082 6.43445H7.26688V9.9986H9.91184"
+            stroke="currentColor"
+          />
         </svg>
 
         <v-remixicon

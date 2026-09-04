@@ -62,9 +62,7 @@
           placeholder="Short description"
           class="scroll h-32 w-full resize-none"
         />
-        <p
-          class="absolute bottom-2 right-2 text-sm text-muted-foreground"
-        >
+        <p class="absolute bottom-2 right-2 text-sm text-muted-foreground">
           {{ state.workflow.description.length }}/300
         </p>
       </div>
@@ -76,9 +74,7 @@
         @count="state.contentLength = $event"
       >
         <template #append>
-          <p
-            class="absolute bottom-2 right-2 text-sm text-muted-foreground"
-          >
+          <p class="absolute bottom-2 right-2 text-sm text-muted-foreground">
             {{ state.contentLength }}/5000
           </p>
         </template>

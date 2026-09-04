@@ -35,9 +35,7 @@
       <div
         class="flex items-center justify-between border-b border-border pb-1.5"
       >
-        <span
-          class="font-semibold text-foreground flex items-center"
-        >
+        <span class="font-semibold text-foreground flex items-center">
           <v-remixicon
             name="riComputerLine"
             size="14"
@@ -55,28 +53,28 @@
       <div class="space-y-1.5 text-muted-foreground">
         <div class="flex justify-between items-center">
           <span>Daemon Host:</span>
-          <span class="font-mono text-[11px] text-foreground">{{ state.baseUrl }}</span>
+          <span class="font-mono text-[11px] text-foreground">{{
+            state.baseUrl
+          }}</span>
         </div>
 
         <div class="flex justify-between items-center">
           <span>Ping Latency:</span>
-          <span class="font-mono text-[11px] text-foreground">{{ state.latency }} ms</span>
+          <span class="font-mono text-[11px] text-foreground"
+            >{{ state.latency }} ms</span
+          >
         </div>
 
         <div v-if="metrics" class="flex justify-between items-center">
           <span>CPU Usage:</span>
-          <span
-            class="font-mono text-[11px] font-medium text-foreground"
-          >
+          <span class="font-mono text-[11px] font-medium text-foreground">
             {{ (metrics.cpu_usage_pct || 0).toFixed(1) }}%
           </span>
         </div>
 
         <div v-if="metrics" class="flex justify-between items-center">
           <span>Memory RSS:</span>
-          <span
-            class="font-mono text-[11px] font-medium text-foreground"
-          >
+          <span class="font-mono text-[11px] font-medium text-foreground">
             {{
               (metrics.memory_rss_bytes
                 ? metrics.memory_rss_bytes / 1024 / 1024

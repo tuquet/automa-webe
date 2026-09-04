@@ -12,7 +12,11 @@
     <Handle :id="`${id}-input-1`" type="target" :position="Position.Left" />
     <div class="mb-2 flex items-center">
       <div
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-4 inline-block rounded-lg p-2 text-sm dark:text-black"
       >
         <v-remixicon name="riTimerLine" size="20" class="mr-1 inline-block" />
@@ -40,7 +44,7 @@
       v-if="block.details.id !== 'trigger'"
       :title="t('workflow.blocks.base.moveToGroup')"
       draggable="true"
-      class="move-to-group invisible absolute -top-2 -right-2 z-50 rounded-md bg-white p-1 shadow-md dark:bg-gray-700"
+      class="move-to-group invisible absolute -top-2 -right-2 z-50 rounded-md bg-card border border-border p-1 shadow-md text-foreground"
       @dragstart="handleStartDrag"
       @mousedown.stop
     >

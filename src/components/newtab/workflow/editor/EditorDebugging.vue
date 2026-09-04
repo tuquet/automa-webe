@@ -68,9 +68,7 @@
                 @click="$emit('goToBlock', block.id)"
               />
             </div>
-            <p
-              class="leading-tight text-overflow text-muted-foreground"
-            >
+            <p class="leading-tight text-overflow text-muted-foreground">
               {{ t('workflow.testing.startRun') }}:
               {{ dayjs(block.startedAt).format('HH:mm:ss, SSS') }}
             </p>

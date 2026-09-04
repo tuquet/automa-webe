@@ -106,7 +106,9 @@
   <ui-card padding="p-1 ml-4 flex items-center pointer-events-auto">
     <ui-popover v-if="canEdit" class="md:hidden">
       <template #trigger>
-        <button class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground">
+        <button
+          class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
           <v-remixicon name="riMore2Line" />
         </button>
       </template>
@@ -170,7 +172,9 @@
     </button>
     <ui-popover>
       <template #trigger>
-        <button class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground">
+        <button
+          class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
           <v-remixicon name="riMore2Line" />
         </button>
       </template>

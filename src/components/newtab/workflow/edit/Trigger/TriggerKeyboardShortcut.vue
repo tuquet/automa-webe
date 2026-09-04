@@ -31,7 +31,7 @@
     >
       {{ t('workflow.blocks.trigger.shortcut.checkbox') }}
     </ui-checkbox>
-    <p class="mt-4 leading-tight text-gray-600 dark:text-gray-200">
+    <p class="mt-4 text-xs leading-tight text-muted-foreground">
       {{ t('workflow.blocks.trigger.shortcut.note') }}
     </p>
   </div>

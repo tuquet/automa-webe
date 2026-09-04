@@ -36,12 +36,12 @@
         </option>
       </ui-select>
     </template>
-    <p class="ml-1 text-sm text-gray-600 dark:text-gray-200">
+    <p class="ml-1 text-sm text-muted-foreground">
       {{ t('workflow.blocks.javascript-code.name') }}
     </p>
     <pre
       v-if="!state.showCodeModal"
-      class="max-h-80 overflow-auto rounded-lg bg-gray-900 p-4 text-gray-200"
+      class="max-h-80 overflow-auto rounded-lg bg-muted border border-border p-4 font-mono text-xs text-foreground"
       @click="state.showCodeModal = true"
       v-text="data.code"
     />
@@ -238,6 +238,6 @@ watch(
 </script>
 <style scoped>
 code {
-  @apply bg-gray-900 text-sm text-white p-1 rounded-md;
+  @apply bg-muted text-sm text-foreground p-1 rounded-md font-mono;
 }
 </style>

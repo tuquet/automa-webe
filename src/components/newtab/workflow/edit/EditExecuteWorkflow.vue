@@ -74,9 +74,7 @@
           @change="updateData({ insertVars: $event })"
         />
       </label>
-      <span
-        class="ml-1 block text-sm leading-tight text-muted-foreground"
-      >
+      <span class="ml-1 block text-sm leading-tight text-muted-foreground">
         {{ t('workflow.blocks.execute-workflow.useCommas') }}
       </span>
     </template>

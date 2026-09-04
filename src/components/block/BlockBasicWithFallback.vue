@@ -13,7 +13,11 @@
     <Handle :id="`${id}-input-1`" type="target" :position="Position.Left" />
     <div class="flex items-center">
       <span
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-2 inline-block rounded-lg p-2 dark:text-black"
       >
         <v-remixicon :name="block.details.icon || 'riGlobalLine'" />
@@ -25,7 +29,7 @@
         >
           {{ t(`workflow.blocks.${block.details.id}.name`) }}
         </p>
-        <p class="text-overflow leading-tight text-gray-600 dark:text-gray-200">
+        <p class="text-overflow leading-tight text-xs text-muted-foreground">
           {{ data.description }}
         </p>
       </div>

@@ -43,7 +43,7 @@
             />
           </template>
         </ui-input>
-        <span class="text-sm text-gray-600 dark:text-gray-200">
+        <span class="text-xs text-muted-foreground">
           {{
             t('workflow.blocks.trigger.element-change.attributeFilter.separate')
           }}

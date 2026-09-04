@@ -125,6 +125,6 @@ onMounted(() => {
 </script>
 <style>
 .info-icon {
-  @apply text-gray-600 dark:text-gray-300 inline-block;
+  @apply text-muted-foreground inline-block;
 }
 </style>

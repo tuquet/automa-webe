@@ -18,7 +18,11 @@
         class="mr-2 rounded-lg"
       />
       <div
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-4 inline-block overflow-hidden rounded-lg p-2 text-sm dark:text-black"
       >
         <v-remixicon

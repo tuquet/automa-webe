@@ -12,7 +12,11 @@
   >
     <Handle :id="`${id}-input-1`" type="target" :position="Position.Left" />
     <div
-      :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+      :class="
+        data.disableBlock
+          ? 'bg-muted text-muted-foreground'
+          : block.category.color
+      "
       class="mb-2 inline-block rounded-lg p-2 text-sm dark:text-black"
     >
       <v-remixicon name="riFocus3Line" size="20" class="mr-1 inline-block" />
@@ -74,8 +78,8 @@ const componentId = useComponentId('block-delay');
 </script>
 <style>
 .drawflow .element-exists .outputs {
-  top: 70px !important;
-  transform: none !important;
+  top: 70px;
+  transform: none;
 }
 .drawflow .element-exists .output {
   margin-bottom: 22px;

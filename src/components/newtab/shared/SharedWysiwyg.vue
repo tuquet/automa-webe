@@ -29,10 +29,7 @@
       >
         <v-remixicon name="riH2" />
       </button>
-      <span
-        class="h-5 w-px bg-border"
-        style="margin: 0 12px"
-      ></span>
+      <span class="h-5 w-px bg-border" style="margin: 0 12px"></span>
       <button
         v-for="item in menuItems"
         :key="item.id"
@@ -45,10 +42,7 @@
       >
         <v-remixicon :name="item.icon" />
       </button>
-      <span
-        class="h-5 w-px bg-border"
-        style="margin: 0 12px"
-      ></span>
+      <span class="h-5 w-px bg-border" style="margin: 0 12px"></span>
       <button
         :class="{
           'bg-accent text-primary': editor.isActive('blockquote'),

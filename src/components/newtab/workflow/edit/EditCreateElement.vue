@@ -64,7 +64,7 @@
         </ui-tab-panel>
         <ui-tab-panel value="javascript" class="h-full">
           <div class="mb-4">
-            <span class="text-sm text-gray-500 dark:text-gray-300">
+            <span class="text-xs text-muted-foreground">
               Available functions
             </span>
             <div class="flex items-center space-x-2">
@@ -74,7 +74,7 @@
                 :href="`https://docs.extension.automa.site/blocks/javascript-code.html#${func.id}`"
                 target="_blank"
                 rel="noopener"
-                class="bg-box-transparent inline-block rounded-md p-1 text-sm"
+                class="bg-muted border border-border inline-block rounded-md p-1 text-xs text-foreground"
               >
                 <code>
                   {{ func.name }}

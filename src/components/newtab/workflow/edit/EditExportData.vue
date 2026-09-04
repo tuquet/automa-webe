@@ -80,7 +80,7 @@
           <v-remixicon
             :rotate="show ? 270 : 180"
             name="riArrowLeftSLine"
-            class="text-gray-600 transition-transform dark:text-gray-300"
+            class="text-muted-foreground transition-transform"
           />
           {{ t('common.options') }}
         </template>

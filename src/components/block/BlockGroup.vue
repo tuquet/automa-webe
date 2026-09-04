@@ -16,7 +16,9 @@
       <div class="mb-2 flex items-center">
         <div
           :class="
-            data.disableBlock ? 'bg-box-transparent' : block.category.color
+            data.disableBlock
+              ? 'bg-muted text-muted-foreground'
+              : block.category.color
           "
           class="mr-4 inline-flex items-center rounded-lg p-2 text-sm dark:text-black"
         >
@@ -70,7 +72,7 @@
             </p>
             <p
               :title="element.data.description"
-              class="text-overflow text-gray-600 dark:text-gray-200"
+              class="text-overflow text-xs text-muted-foreground"
             >
               {{ element.data.description }}
             </p>
@@ -110,7 +112,7 @@
       </template>
       <template #footer>
         <div
-          class="rounded-lg border border-dashed p-2 text-center text-gray-600 dark:text-gray-200"
+          class="rounded-lg border border-dashed border-border p-2 text-center text-xs text-muted-foreground"
         >
           {{ t('workflow.blocks.blocks-group.dropText') }}
         </div>

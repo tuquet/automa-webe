@@ -130,7 +130,9 @@
       </div>
 
       <div class="flex flex-col space-y-4 mb-4">
-        <span class="text-sm text-muted-foreground font-semibold">AI Power Token</span>
+        <span class="text-sm text-muted-foreground font-semibold"
+          >AI Power Token</span
+        >
         <ui-input
           :model-value="aiPowerToken"
           class="w-full"

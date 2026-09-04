@@ -4,13 +4,8 @@
       width: `${data.width || 400}px`,
       height: `${data.height || 300}px`,
     }"
-    class="group-block-2 group relative rounded-lg border-2"
-    style="
-      min-width: 400px;
-      min-height: 300px;
-      border-color: #2563eb;
-      background-color: rgb(37, 99, 235, 0.3);
-    "
+    class="group-block-2 group relative rounded-lg border-2 border-primary/60 bg-primary/10"
+    style="min-width: 400px; min-height: 300px"
   >
     <div class="flex items-center p-4">
       <input

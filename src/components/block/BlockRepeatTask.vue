@@ -12,7 +12,11 @@
     <Handle :id="`${id}-input-1`" type="target" :position="Position.Left" />
     <div class="mb-2 flex items-center">
       <div
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-4 inline-block rounded-lg p-2 text-sm dark:text-black"
       >
         <v-remixicon name="riRepeat2Line" size="20" class="mr-1 inline-block" />
@@ -79,8 +83,8 @@ function handleInput({ target }) {
 </script>
 <style>
 .drawflow .repeat-task .outputs {
-  top: 74px !important;
-  transform: none !important;
+  top: 74px;
+  transform: none;
 }
 .drawflow .repeat-task .output {
   margin-bottom: 22px;

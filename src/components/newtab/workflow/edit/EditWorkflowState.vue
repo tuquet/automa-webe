@@ -51,7 +51,7 @@
     </template>
     <div
       v-if="data.type === 'stop-specific'"
-      class="bg-input focus-within:bg-box-transparent-2 mt-4 rounded-lg transition"
+      class="bg-muted border border-input focus-within:ring-1 focus-within:ring-ring mt-4 rounded-lg transition"
     >
       <div
         v-if="data.workflowsToStop.length > 0"
@@ -61,14 +61,14 @@
         <div
           v-for="item in data.workflowsToStop"
           :key="item"
-          class="bg-box-transparent mb-1 mr-1 inline-flex items-center rounded-md p-1 text-sm"
+          class="bg-accent text-accent-foreground mb-1 mr-1 inline-flex items-center rounded-md p-1 text-xs"
         >
           <span class="flex-1">
             {{ selectedWorkflows[item] }}
           </span>
           <v-remixicon
             name="riCloseLine"
-            class="cursor-pointer text-gray-600 dark:text-gray-300"
+            class="cursor-pointer text-muted-foreground hover:text-foreground"
             size="20"
             @click="removeSelectedItem(item)"
           />

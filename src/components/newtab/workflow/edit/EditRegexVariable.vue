@@ -34,20 +34,20 @@
     <div class="mt-3 flex items-end">
       <div class="mr-2 flex-1">
         <label
-          class="ml-1 block text-sm text-gray-600 dark:text-gray-200"
+          class="ml-1 block text-xs text-muted-foreground"
           for="var-expression"
         >
           RegEx
         </label>
         <div
-          class="bg-input flex items-center rounded-lg px-4 transition-colors"
+          class="bg-muted border border-input focus-within:ring-1 focus-within:ring-ring flex items-center rounded-lg px-4 transition-colors"
         >
           <span>/</span>
           <input
             id="var-expression"
             :value="data.expression"
             placeholder="Expression"
-            class="w-11/12 bg-transparent py-2 px-1 focus:ring-0"
+            class="w-11/12 bg-transparent py-2 px-1 focus:ring-0 text-foreground"
             @input="updateData({ expression: $event.target.value })"
           />
           <span class="text-right">/</span>
@@ -55,7 +55,10 @@
       </div>
       <ui-popover>
         <template #trigger>
-          <button class="bg-input rounded-lg p-2" title="Flags">
+          <button
+            class="bg-muted border border-input rounded-lg p-2 text-xs text-foreground hover:bg-accent hover:text-accent-foreground"
+            title="Flags"
+          >
             {{ data.flag.length === 0 ? 'flags' : data.flag.join('') }}
           </button>
         </template>

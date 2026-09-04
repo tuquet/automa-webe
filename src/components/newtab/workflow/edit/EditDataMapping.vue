@@ -43,7 +43,7 @@
       >
         <table class="w-full">
           <thead>
-            <tr class="bg-box-transparent">
+            <tr class="bg-muted text-muted-foreground">
               <th class="w-6/12 rounded-l-lg">
                 {{ t('workflow.blocks.data-mapping.source') }}
               </th>
@@ -75,7 +75,7 @@
                   <v-remixicon
                     name="riArrowLeftLine"
                     rotate="180"
-                    class="absolute -right-2 top-4 text-gray-600 dark:text-gray-300"
+                    class="absolute -right-2 top-4 text-muted-foreground"
                   />
                 </div>
               </td>
@@ -234,7 +234,7 @@ onMounted(() => {
 </script>
 <style>
 .data-map {
-  padding: 0 !important;
+  padding: 0;
   .modal-ui__content-header {
     @apply px-4 pt-4;
   }

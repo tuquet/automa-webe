@@ -96,7 +96,7 @@
       <ui-tab-panel value="body" class="mt-4">
         <pre
           v-if="!showBodyModal"
-          class="max-h-80 overflow-auto rounded-lg bg-gray-900 p-4 text-gray-200"
+          class="max-h-80 overflow-auto rounded-lg bg-muted border border-border p-4 font-mono text-xs text-foreground"
           @click="showBodyModal = true"
           v-text="data.body"
         />
@@ -208,6 +208,6 @@ watch(
 </script>
 <style scoped>
 code {
-  @apply bg-gray-900 text-sm text-white p-1 rounded-md;
+  @apply bg-muted text-sm text-foreground p-1 rounded-md font-mono;
 }
 </style>

@@ -11,7 +11,9 @@
   <div class="flex flex-col-reverse items-start lg:flex-row">
     <div class="w-full lg:w-auto lg:flex-1">
       <div class="rounded-lg bg-card text-card-foreground border border-border">
-        <div class="mb-4 flex items-center border-b border-border p-4 text-foreground">
+        <div
+          class="mb-4 flex items-center border-b border-border p-4 text-foreground"
+        >
           <div v-if="currentLog.status === 'error' && errorBlock">
             <p class="line-clamp leading-tight">
               {{ errorBlock.message }}
@@ -87,7 +89,9 @@
               v-for="(item, index) in history"
               :key="item.id || index"
               :disabled="!ctxData[item.id]"
-              :class="{ 'bg-accent text-accent-foreground': item.id === state.itemId }"
+              :class="{
+                'bg-accent text-accent-foreground': item.id === state.itemId,
+              }"
               hide-header-icon
               class="group flex w-full cursor-default items-start rounded-md px-2 py-1 text-left focus:ring-0 transition-colors hover:bg-accent hover:text-accent-foreground"
               @click="setActiveLog(item)"

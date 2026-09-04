@@ -1,19 +1,19 @@
 <template>
   <edit-interaction-base v-bind="{ data }" @change="updateData">
     <hr />
-    <div class="bg-input flex items-center rounded-lg px-4 transition">
+    <div class="bg-muted border border-input focus-within:ring-1 focus-within:ring-ring flex items-center rounded-lg px-4 transition">
       <span>/</span>
       <input
         :value="data.regex"
         placeholder="Regex"
-        class="w-11/12 bg-transparent p-2 focus:ring-0"
+        class="w-11/12 bg-transparent p-2 focus:ring-0 text-foreground"
         @input="updateData({ regex: $event.target.value })"
       />
       <ui-popover>
         <template #trigger>
           <button>/{{ regexExp.join('') || 'flags' }}</button>
         </template>
-        <p class="mb-2 text-gray-600 dark:text-gray-200">Expression flags</p>
+        <p class="mb-2 text-xs text-muted-foreground">Expression flags</p>
         <div class="space-y-1">
           <div v-for="item in exps" :key="item.id">
             <ui-checkbox

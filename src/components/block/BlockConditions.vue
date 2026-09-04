@@ -13,7 +13,11 @@
     <Handle :id="`${id}-input-1`" type="target" :position="Position.Left" />
     <div class="flex items-center">
       <div
-        :class="data.disableBlock ? 'bg-box-transparent' : block.category.color"
+        :class="
+          data.disableBlock
+            ? 'bg-muted text-muted-foreground'
+            : block.category.color
+        "
         class="mr-4 inline-block rounded-lg p-2 text-sm dark:text-black"
       >
         <v-remixicon name="riAB" size="20" class="mr-1 inline-block" />
@@ -63,7 +67,7 @@
       </li>
       <p
         v-if="data.conditions && data.conditions.length !== 0"
-        class="text-right text-gray-600 dark:text-gray-200"
+        class="text-right text-xs text-muted-foreground"
       >
         <span title="Fallback"> &#9432; </span>
         Fallback
@@ -107,8 +111,8 @@ const block = useEditorBlock(props.label);
 </script>
 <style>
 .condition-handle {
-  position: relative !important;
-  top: 82px !important;
-  margin-bottom: 32px !important;
+  position: relative;
+  top: 82px;
+  margin-bottom: 32px;
 }
 </style>

@@ -139,7 +139,7 @@ function onMouseup({ target }) {
 }
 .dark .block-note {
   &:not(.white) {
-    @apply text-gray-900;
+    color: rgb(15 23 42);
   }
   &.white * {
     border-color: rgb(255 255 255 / 12%);

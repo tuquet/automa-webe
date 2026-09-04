@@ -1,8 +1,6 @@
 <template>
   <div class="global-data flex flex-col space-y-3">
-    <div
-      class="flex items-center justify-between border-b border-border pb-2"
-    >
+    <div class="flex items-center justify-between border-b border-border pb-2">
       <div class="flex space-x-2">
         <button
           class="px-3 py-1.5 text-xs font-semibold rounded-lg transition"
@@ -57,9 +55,7 @@
       class="space-y-3 overflow-y-auto"
       style="max-height: calc(100vh - 14rem); min-height: 300px"
     >
-      <div
-        class="p-3 rounded-lg bg-muted/50 border border-border text-xs"
-      >
+      <div class="p-3 rounded-lg bg-muted/50 border border-border text-xs">
         <p class="text-foreground font-medium mb-1">
           💡 Click any token below to copy expression to clipboard:
         </p>
@@ -94,9 +90,7 @@
             <span class="font-mono font-semibold text-xs text-accent truncate">
               &#123;&#123;variables.{{ v.name }}&#125;&#125;
             </span>
-            <span
-              class="text-[11px] text-muted-foreground truncate mt-0.5"
-            >
+            <span class="text-[11px] text-muted-foreground truncate mt-0.5">
               Value: {{ String(v.value).slice(0, 40)
               }}{{ String(v.value).length > 40 ? '...' : '' }}
             </span>
