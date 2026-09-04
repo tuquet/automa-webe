@@ -77,12 +77,14 @@ export function useStudioWorkflow(automaCoreState) {
   const toast = useToast();
   const currentFilePath = ref('');
   const isDirty = ref(false);
+  const editorKey = ref(0);
 
   function loadWorkflowData(data, filePath = '') {
     const sanitized = sanitizeWorkflowAST(data);
     setAutomaWorkflow(sanitized);
     currentFilePath.value = filePath;
     isDirty.value = false;
+    editorKey.value += 1;
     notifyWorkflowChange(studioState.currentWorkflow);
   }
 
@@ -158,6 +160,7 @@ export function useStudioWorkflow(automaCoreState) {
   }
 
   return {
+    editorKey,
     currentFilePath,
     isDirty,
     loadWorkflowData,

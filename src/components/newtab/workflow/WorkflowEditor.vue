@@ -312,22 +312,41 @@ function onMousedown(event) {
     event.preventDefault();
   }
 }
-function applyFlowData() {
+function applyFlowData(customData) {
+  const flowData = customData || props.data;
   if (settings.snapToGrid) {
     editor.snapToGrid.value = true;
     editor.snapGrid.value = Object.values(settings.snapGrid);
   }
 
   editor.setNodes(
-    props.data?.nodes?.map((node) => ({ ...node, events: {} })) || []
+    flowData?.nodes?.map((node) => ({ ...node, events: {} })) || []
   );
-  editor.setEdges(props.data?.edges || []);
+  editor.setEdges(flowData?.edges || []);
   editor.setViewport({
-    x: props.data?.x || 0,
-    y: props.data?.y || 0,
-    zoom: props.data?.zoom || 1,
+    x: flowData?.x || 0,
+    y: flowData?.y || 0,
+    zoom: flowData?.zoom || 1,
   });
+
+  setTimeout(() => {
+    try {
+      editor.fitView?.({ padding: 0.2 });
+    } catch (_) {
+      // Ignored
+    }
+  }, 50);
 }
+
+watch(
+  () => props.data,
+  (newData) => {
+    if (newData) {
+      applyFlowData(newData);
+    }
+  },
+  { deep: false }
+);
 
 watch(
   () => props.disabled,

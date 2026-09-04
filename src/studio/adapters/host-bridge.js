@@ -152,6 +152,11 @@ export function setWorkflowData(newWorkflow) {
   if (!clone.drawflow) {
     clone.drawflow = { nodes: [], edges: [] };
   }
+  for (const key of Object.keys(studioState.currentWorkflow)) {
+    if (!(key in clone)) {
+      delete studioState.currentWorkflow[key];
+    }
+  }
   Object.assign(studioState.currentWorkflow, clone);
 }
 

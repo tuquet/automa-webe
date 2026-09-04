@@ -101,6 +101,7 @@
       >
         <workflow-editor
           v-if="workflow.drawflow"
+          :key="`workflow-editor-${workflow.id || workflow.name || 'default'}-${editorKey}`"
           ref="editorRef"
           data-testid="workflow-editor-canvas"
           :data="workflow.drawflow"
@@ -332,6 +333,7 @@ const isJobPaused = ref(false);
 
 // 1. Workflow Lifecycle Composable
 const {
+  editorKey,
   currentFilePath,
   isDirty,
   loadWorkflowData,
