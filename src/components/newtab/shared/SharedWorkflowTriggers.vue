@@ -11,7 +11,7 @@
       <div
         class="flex h-12 w-12 items-center justify-center rounded-xl bg-muted/60 text-muted-foreground mb-3"
       >
-        <v-remixicon name="riFlashlightLine" size="22" />
+        <v-remixicon name="Zap" size="22" />
       </div>
       <h3 class="text-sm font-semibold text-foreground">
         No triggers configured
@@ -39,7 +39,7 @@
           class="delete-btn inline-flex items-center justify-center h-6 w-6 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition cursor-pointer"
           @click.stop="triggersList.splice(index, 1)"
         >
-          <v-remixicon name="riDeleteBin7Line" size="16" />
+          <v-remixicon name="Trash2" size="16" />
         </button>
       </template>
       <div class="px-4 py-3 border-t border-border/50 bg-muted/10">
@@ -61,10 +61,10 @@
             size="sm"
             data-testid="btn.trigger.add"
           >
-            <v-remixicon name="riAddLine" class="mr-1.5" size="16" />
+            <v-remixicon name="Plus" class="mr-1.5" size="16" />
             <span>Add trigger</span>
             <v-remixicon
-              name="riArrowDownSLine"
+              name="ChevronDown"
               class="ml-2 -mr-0.5"
               size="14"
             />
