@@ -61,7 +61,7 @@
       v-if="userStore.user"
       v-tooltip:right.group="t('settings.menu.profile')"
       to="/profile"
-      class="bg-box-transparent inline-block rounded-full p-1 transition-transform hover:scale-110"
+      class="bg-muted inline-block rounded-full p-1 transition-transform hover:scale-110"
     >
       <img
         :src="userStore.user.avatar_url"
@@ -216,6 +216,6 @@ async function injectElementSelector() {
   top: 0;
   height: 100%;
   width: 4px;
-  @apply bg-accent dark:bg-gray-100;
+  @apply bg-primary;
 }
 </style>
