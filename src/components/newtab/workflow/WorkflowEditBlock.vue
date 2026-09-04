@@ -5,29 +5,45 @@
     class="scroll h-full overflow-auto px-3 py-1 text-xs"
   >
     <div
-      class="sticky top-0 z-20 mb-2 flex items-center space-x-2 bg-white pb-2 pt-1 border-b border-gray-100 dark:border-gray-700/50 dark:bg-gray-800"
+      class="sticky top-0 z-20 mb-2 flex items-center gap-2 bg-white pb-2 pt-1 border-b border-gray-200 dark:border-gray-800 dark:bg-gray-900"
     >
       <button
         data-testid="btn-edit-block-back"
-        class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition"
+        :title="t('common.back', 'Back')"
+        aria-label="Back"
+        class="inline-flex items-center justify-center h-7 w-7 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 transition shrink-0 cursor-pointer"
         @click="handleClose"
       >
         <v-remixicon name="riArrowLeftLine" size="16" />
       </button>
+
+      <span
+        class="inline-flex items-center justify-center h-7 w-7 rounded-md bg-gray-100 dark:bg-gray-800/80 shrink-0 text-gray-700 dark:text-gray-200"
+      >
+        <img
+          v-if="getBlockIcon() && getBlockIcon().startsWith('http')"
+          :src="getBlockIcon()"
+          class="h-4 w-4 object-contain dark:invert"
+          alt=""
+        />
+        <v-remixicon v-else :name="getBlockIcon() || 'riCommandLine'" size="16" />
+      </span>
+
       <p
         data-testid="edit-block-title"
-        class="inline-block text-xs font-semibold capitalize text-gray-900 dark:text-gray-100"
+        class="truncate text-xs font-semibold capitalize text-gray-900 dark:text-gray-100 flex-1 leading-tight"
       >
         {{ getBlockName() }}
       </p>
-      <div class="grow"></div>
+
       <a
         data-testid="btn-edit-block-docs"
-        :title="t('common.docs')"
+        :title="t('common.docs', 'Documentation')"
+        aria-label="Documentation"
         :href="`https://docs.extension.automa.site/blocks/${data.id}.html`"
         rel="noopener"
         target="_blank"
-        class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition p-1"
+        class="inline-flex items-center justify-center h-7 w-7 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition shrink-0"
       >
         <v-remixicon name="riInformationLine" size="16" />
       </a>
@@ -52,6 +68,9 @@ import customEditComponents from '@business/blocks/editComponents';
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useToast } from 'vue-toastification';
+import { tasks } from '@/utils/shared';
+
+defineOptions({ name: 'WorkflowEditBlock' });
 
 const editModules = import.meta.glob('./edit/Edit*.vue', { eager: true });
 const components = Object.entries(editModules).reduce((acc, [path, module]) => {
@@ -166,9 +185,14 @@ function getBlockName() {
 
   return te(key) ? t(key) : props.data.name;
 }
+function getBlockIcon() {
+  if (props.data?.icon) return props.data.icon;
+  const task = tasks[props.data?.id];
+  return task?.icon || 'riCommandLine';
+}
 </script>
-<style>
-#workflow-edit-block hr {
+<style scoped>
+#workflow-edit-block :deep(hr) {
   @apply dark:border-gray-700 dark:border-opacity-40 my-4;
 }
 </style>
