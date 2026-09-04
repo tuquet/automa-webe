@@ -1,9 +1,9 @@
 <template>
-  <div class="input-ui inline-block">
+  <div :class="{ 'w-full': block, 'inline-block': !block }" class="input-ui">
     <label
       v-if="label || $slots.label"
       :for="componentId"
-      class="ml-1 inline-block text-sm leading-none text-gray-600 dark:text-gray-200"
+      class="mb-1.5 ml-0.5 block text-xs font-medium text-foreground"
     >
       <slot name="label">{{ label }}</slot>
     </label>
@@ -11,7 +11,8 @@
       <slot name="prepend">
         <v-remixicon
           v-if="prependIcon"
-          class="absolute left-0 ml-2 text-gray-600 dark:text-gray-200"
+          size="16"
+          class="absolute left-2.5 text-muted-foreground"
           :name="prependIcon"
         ></v-remixicon>
       </slot>
@@ -34,13 +35,13 @@
           statusColors[status],
           inputClass,
           {
-            'opacity-75 pointer-events-none': disabled,
-            'pl-10': prependIcon || $slots.prepend,
+            'opacity-50 pointer-events-none': disabled,
+            'pl-8': prependIcon || $slots.prepend,
             'appearance-none': list,
           },
         ]"
         :value="modelValue"
-        class="bg-input w-full rounded-lg bg-transparent py-2 px-4 transition"
+        class="flex h-8 w-full rounded-md border border-input bg-background/50 px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs"
         @keydown="$emit('keydown', $event)"
         @keyup="$emit('keyup', $event)"
         @blur="$emit('blur', $event)"
@@ -56,7 +57,10 @@
 import { IMaskDirective as vImask } from 'vue-imask';
 import { useComponentId } from '@/composable/componentId';
 
+defineOptions({ name: 'UiInput' });
+
 const props = defineProps({
+  block: Boolean,
   modelModifiers: {
     default: () => ({}),
   },
@@ -138,7 +142,7 @@ const emit = defineEmits([
 const componentId = useComponentId('ui-input');
 
 const statusColors = {
-  error: 'ring-red-400 ring-2 focus:ring-red-400 focus:ring-2',
+  error: 'border-destructive focus-visible:ring-destructive',
 };
 
 function emitValue(event) {

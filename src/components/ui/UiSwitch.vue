@@ -1,7 +1,10 @@
 <template>
   <div
-    class="ui-switch bg-input relative inline-flex h-6 w-12 items-center justify-center rounded-full p-1"
-    :class="{ 'pointer-events-none opacity-50': disabled }"
+    class="ui-switch relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors shadow-2xs"
+    :class="[
+      modelValue ? 'bg-primary' : 'bg-input',
+      { 'pointer-events-none opacity-50': disabled },
+    ]"
   >
     <input
       :checked="modelValue"
@@ -11,17 +14,16 @@
       @input="emitEvent"
     />
     <div
-      class="ui-switch__ball absolute z-40 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow-xl"
+      class="ui-switch__ball pointer-events-none block h-4 w-4 rounded-full bg-background shadow-md ring-0 transition-transform duration-200"
+      :class="modelValue ? 'translate-x-4' : 'translate-x-0'"
     >
       <slot v-if="$slots.ball" name="ball"></slot>
     </div>
-    <div
-      class="ui-switch__background absolute left-0 top-0 h-full w-full rounded-md bg-accent"
-    ></div>
   </div>
 </template>
 <script>
 export default {
+  name: 'UiSwitch',
   props: {
     modelValue: {
       type: Boolean,
@@ -43,40 +45,7 @@ export default {
 };
 </script>
 <style scoped>
-.ui-switch {
-  overflow: hidden;
-  transition: all 250ms ease;
-}
-
 .ui-switch:active {
-  transform: scale(0.93);
-}
-
-.ui-switch__ball {
-  transition: all 250ms ease;
-  left: 6px;
-}
-
-.ui-switch__background {
-  transition: all 250ms ease;
-  margin-left: -100%;
-}
-
-.ui-switch:hover .ui-switch__ball {
-  transform: scale(1.1);
-}
-
-.ui-switch input:focus ~ .ui-switch__ball {
-  transform: scale(1.1);
-}
-
-.ui-switch input:checked ~ .ui-switch__ball {
-  @apply dark:bg-gray-900;
-  background-color: white;
-  left: calc(100% - 21px);
-}
-
-.ui-switch input:checked ~ .ui-switch__background {
-  margin-left: 0;
+  transform: scale(0.96);
 }
 </style>

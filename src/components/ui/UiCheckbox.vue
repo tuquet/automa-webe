@@ -5,9 +5,9 @@
   >
     <div
       :class="{
-        'pointer-events-none opacity-75': disabled,
+        'pointer-events-none opacity-50': disabled,
       }"
-      class="relative inline-block h-5 w-5 rounded focus-within:ring-2 focus-within:ring-accent"
+      class="relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-sm"
     >
       <input
         :class="{ indeterminate }"
@@ -18,18 +18,18 @@
         @change="changeHandler"
       />
       <div
-        class="bg-input checkbox-ui__mark absolute top-0 left-0 cursor-pointer rounded border border-gray-300 dark:border-gray-600"
+        class="checkbox-ui__mark absolute inset-0 rounded-sm border border-input bg-background/50 flex items-center justify-center transition-colors shadow-2xs"
       >
         <v-remixicon
           :name="indeterminate ? 'riSubtractLine' : 'riCheckLine'"
-          size="16"
-          class="text-white"
+          size="12"
+          class="text-primary-foreground"
         ></v-remixicon>
       </div>
     </div>
     <span
       v-if="$slots.default"
-      class="ml-2 inline-block text-xs leading-tight text-gray-700 dark:text-gray-200"
+      class="ml-2 inline-block text-xs font-medium leading-none text-foreground select-none"
     >
       <slot></slot>
     </span>
@@ -37,6 +37,7 @@
 </template>
 <script>
 export default {
+  name: 'UiCheckbox',
   props: {
     modelValue: {
       type: Boolean,
@@ -70,13 +71,13 @@ export default {
 </script>
 <style scoped>
 .checkbox-ui:hover .checkbox-ui__mark {
-  @apply border-gray-400 dark:border-gray-500;
+  border-color: var(--ring, #3b82f6);
 }
 .checkbox-ui__input:checked ~ .checkbox-ui__mark,
 .checkbox-ui__input.indeterminate ~ .checkbox-ui__mark {
-  @apply bg-accent border-accent text-white shadow-sm;
-  background-color: rgb(var(--color-accent, 24 24 27)) !important;
-  border-color: rgb(var(--color-accent, 24 24 27)) !important;
+  background-color: rgb(var(--color-primary, 59 130 246)) !important;
+  border-color: rgb(var(--color-primary, 59 130 246)) !important;
+  color: var(--primary-foreground, #ffffff) !important;
 }
 .checkbox-ui__input:checked ~ .checkbox-ui__mark .v-remixicon,
 .checkbox-ui__input.indeterminate ~ .checkbox-ui__mark .v-remixicon {
@@ -96,6 +97,6 @@ export default {
   transform: scale(0.4) !important;
   opacity: 0;
   transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 150ms ease;
-  color: #ffffff !important;
+  color: currentColor !important;
 }
 </style>

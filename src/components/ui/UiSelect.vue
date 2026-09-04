@@ -1,9 +1,12 @@
 <template>
-  <div :class="{ 'inline-block': !block }" class="ui-select cursor-pointer">
+  <div
+    :class="{ 'w-full': block, 'inline-block': !block }"
+    class="ui-select cursor-pointer"
+  >
     <label
       v-if="label || $slots.label"
       :for="selectId"
-      class="ml-1 text-sm text-gray-600 dark:text-gray-200"
+      class="mb-1.5 ml-0.5 block text-xs font-medium text-foreground"
     >
       <slot name="label">
         {{ label }}
@@ -12,19 +15,19 @@
     <div class="ui-select__content relative flex w-full items-center">
       <v-remixicon
         v-if="prependIcon"
-        size="20"
+        size="16"
         :name="prependIcon"
-        class="absolute left-0 ml-2 text-gray-600 dark:text-gray-200"
+        class="absolute left-2.5 text-muted-foreground z-20"
       />
       <select
         :id="selectId"
         :disabled="disabled"
         :class="{
           'pl-8': prependIcon,
-          'opacity-75 pointer-events-none': disabled,
+          'opacity-50 pointer-events-none': disabled,
         }"
         :value="modelValue"
-        class="bg-input z-10 h-full w-full appearance-none rounded-lg bg-transparent px-4 py-2 pr-10 transition"
+        class="flex h-8 w-full appearance-none rounded-md border border-input bg-background/50 px-3 py-1.5 pr-8 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs z-10 cursor-pointer"
         @change="emitValue"
       >
         <option v-if="placeholder" value="" disabled selected>
@@ -33,9 +36,9 @@
         <slot></slot>
       </select>
       <v-remixicon
-        size="28"
-        name="riArrowDropDownLine"
-        class="absolute right-0 mr-2 text-gray-600 dark:text-gray-200"
+        size="16"
+        name="riArrowDownSLine"
+        class="pointer-events-none absolute right-2.5 text-muted-foreground z-20"
       />
     </div>
   </div>
@@ -44,6 +47,7 @@
 import { useComponentId } from '@/composable/componentId';
 
 export default {
+  name: 'UiSelect',
   props: {
     modelValue: {
       type: [String, Number],
@@ -98,6 +102,7 @@ export default {
 }
 .ui-select option,
 .ui-select optgroup {
-  @apply bg-gray-100 dark:bg-gray-700;
+  background-color: var(--card, #18181b);
+  color: var(--card-foreground, #f4f4f5);
 }
 </style>

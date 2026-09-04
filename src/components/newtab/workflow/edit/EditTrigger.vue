@@ -7,17 +7,25 @@
       class="mb-2 w-full"
       @change="updateData({ description: $event })"
     />
-    <ui-button
-      variant="accent"
-      class="mt-4 w-full"
-      @click="state.showTriggersModal = true"
-    >
-      Edit Triggers
-    </ui-button>
-    <ui-button class="mt-4" @click="state.showParamModal = true">
-      <v-remixicon name="riCommandLine" class="mr-2 -ml-1" />
-      <span>Parameters</span>
-    </ui-button>
+    <div class="mt-3 flex flex-col gap-2">
+      <ui-button
+        variant="secondary"
+        class="w-full justify-start"
+        @click="state.showTriggersModal = true"
+      >
+        <v-remixicon name="riFlashlightLine" class="mr-2" size="16" />
+        <span>{{ t('workflow.blocks.trigger.edit', 'Edit Triggers') }}</span>
+      </ui-button>
+
+      <ui-button
+        variant="secondary"
+        class="w-full justify-start"
+        @click="state.showParamModal = true"
+      >
+        <v-remixicon name="riCommandLine" class="mr-2" size="16" />
+        <span>{{ t('workflow.blocks.trigger.parameters', 'Parameters') }}</span>
+      </ui-button>
+    </div>
     <ui-modal
       v-model="state.showParamModal"
       title="Parameters"

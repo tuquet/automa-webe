@@ -26,7 +26,11 @@
           class="h-4 w-4 object-contain dark:invert"
           alt=""
         />
-        <v-remixicon v-else :name="getBlockIcon() || 'riCommandLine'" size="16" />
+        <v-remixicon
+          v-else
+          :name="getBlockIcon() || 'riCommandLine'"
+          size="16"
+        />
       </span>
 
       <p

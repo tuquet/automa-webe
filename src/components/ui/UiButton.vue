@@ -2,10 +2,11 @@
   <Button
     :as="tag"
     :variant="resolvedVariant"
-    :size="icon ? 'icon-sm' : 'sm'"
+    :size="resolvedSize"
     :disabled="disabled || loading"
     :class="[
       circle ? '!rounded-full' : '',
+      block ? 'w-full' : '',
       color ? color : '',
       'relative select-none',
     ]"
@@ -31,11 +32,18 @@ import { computed } from 'vue';
 import { Button } from '@automa/ui';
 import UiSpinner from './UiSpinner.vue';
 
+defineOptions({ name: 'UiButton' });
+
 const props = defineProps({
   icon: Boolean,
   disabled: Boolean,
   loading: Boolean,
   circle: Boolean,
+  block: Boolean,
+  size: {
+    type: String,
+    default: '',
+  },
   color: {
     type: String,
     default: '',
@@ -54,6 +62,12 @@ const props = defineProps({
   },
 });
 
+const resolvedSize = computed(() => {
+  if (props.icon) return 'icon-sm';
+  if (props.size) return props.size;
+  return 'sm';
+});
+
 const resolvedVariant = computed(() => {
   if (props.btnType === 'transparent') {
     return 'ghost';
@@ -61,12 +75,21 @@ const resolvedVariant = computed(() => {
   if (props.variant === 'danger') {
     return 'destructive';
   }
-  if (props.variant === 'primary' || props.variant === 'accent') {
+  if (props.variant === 'primary') {
     return 'default';
   }
   if (props.variant === 'secondary') {
     return 'secondary';
   }
-  return 'outline';
+  if (props.variant === 'ghost') {
+    return 'ghost';
+  }
+  if (props.variant === 'outline') {
+    return 'outline';
+  }
+  if (props.variant === 'accent') {
+    return 'default';
+  }
+  return 'secondary';
 });
 </script>

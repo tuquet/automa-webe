@@ -101,7 +101,9 @@
       >
         <workflow-editor
           v-if="workflow.drawflow"
-          :key="`workflow-editor-${workflow.id || workflow.name || 'default'}-${editorKey}`"
+          :key="`workflow-editor-${
+            workflow.id || workflow.name || 'default'
+          }-${editorKey}`"
           ref="editorRef"
           data-testid="workflow-editor-canvas"
           :data="workflow.drawflow"

@@ -16,7 +16,11 @@
               :src="workflow.icon"
               class="h-5 w-5 rounded object-cover"
             />
-            <v-remixicon v-else :name="workflow.icon || 'riGlobalLine'" size="18" />
+            <v-remixicon
+              v-else
+              :name="workflow.icon || 'riGlobalLine'"
+              size="18"
+            />
           </span>
         </template>
         <div class="w-64 text-xs">
@@ -42,7 +46,11 @@
             </span>
           </div>
           <ui-input
-            :model-value="workflow.icon && workflow.icon.startsWith('http') ? workflow.icon : ''"
+            :model-value="
+              workflow.icon && workflow.icon.startsWith('http')
+                ? workflow.icon
+                : ''
+            "
             type="url"
             placeholder="http://example.com/img.png"
             label="Icon URL"
