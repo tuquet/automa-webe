@@ -1,15 +1,15 @@
 <template>
   <div class="global-data flex flex-col space-y-3">
     <div
-      class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-2"
+      class="flex items-center justify-between border-b border-border pb-2"
     >
       <div class="flex space-x-2">
         <button
           class="px-3 py-1.5 text-xs font-semibold rounded-lg transition"
           :class="
             activeTab === 'local'
-              ? 'bg-accent text-white shadow-sm'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              ? 'bg-accent text-accent-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
           "
           @click="activeTab = 'local'"
         >
@@ -19,15 +19,15 @@
           class="px-3 py-1.5 text-xs font-semibold rounded-lg transition flex items-center space-x-1"
           :class="
             activeTab === 'storage'
-              ? 'bg-accent text-white shadow-sm'
-              : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              ? 'bg-accent text-accent-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
           "
           @click="loadStorageVariables"
         >
           <span>Storage Variables</span>
           <span
             v-if="storageVars.length > 0"
-            class="px-1.5 py-0.5 rounded-full text-[10px] bg-white/20"
+            class="px-1.5 py-0.5 rounded-full text-[10px] bg-foreground/10"
           >
             {{ storageVars.length }}
           </span>
@@ -35,7 +35,7 @@
       </div>
       <p
         v-if="activeTab === 'local'"
-        class="text-xs text-gray-500"
+        class="text-xs text-muted-foreground"
         title="Characters limit"
       >
         {{ globalData.length }}/{{ maxLength.toLocaleString() }}
@@ -58,12 +58,12 @@
       style="max-height: calc(100vh - 14rem); min-height: 300px"
     >
       <div
-        class="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 text-xs"
+        class="p-3 rounded-lg bg-muted/50 border border-border text-xs"
       >
-        <p class="text-gray-600 dark:text-gray-300 font-medium mb-1">
+        <p class="text-foreground font-medium mb-1">
           💡 Click any token below to copy expression to clipboard:
         </p>
-        <p class="text-[11px] text-gray-500 dark:text-gray-400">
+        <p class="text-[11px] text-muted-foreground">
           Variables are securely stored in SQLite Storage and accessible across
           all workflows in campaign.
         </p>
@@ -71,14 +71,14 @@
 
       <div
         v-if="isLoadingStorage"
-        class="py-8 text-center text-xs text-gray-500"
+        class="py-8 text-center text-xs text-muted-foreground"
       >
         Loading Storage variables...
       </div>
 
       <div
         v-else-if="storageVars.length === 0"
-        class="py-8 text-center text-xs text-gray-500"
+        class="py-8 text-center text-xs text-muted-foreground"
       >
         No variables stored in SQLite Storage yet. (Add variables via
         automa-vscode or daemon API).
@@ -88,14 +88,14 @@
         <div
           v-for="v in storageVars"
           :key="v.id || v.name"
-          class="p-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-between hover:border-accent transition group"
+          class="p-2.5 rounded-lg border border-border bg-card text-card-foreground flex items-center justify-between hover:border-accent transition group"
         >
           <div class="flex flex-col min-w-0 pr-2">
             <span class="font-mono font-semibold text-xs text-accent truncate">
               &#123;&#123;variables.{{ v.name }}&#125;&#125;
             </span>
             <span
-              class="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5"
+              class="text-[11px] text-muted-foreground truncate mt-0.5"
             >
               Value: {{ String(v.value).slice(0, 40)
               }}{{ String(v.value).length > 40 ? '...' : '' }}
@@ -103,7 +103,7 @@
           </div>
 
           <button
-            class="px-2.5 py-1 text-[11px] font-medium rounded bg-gray-100 dark:bg-gray-700 hover:bg-accent hover:text-white transition shrink-0"
+            class="px-2.5 py-1 text-[11px] font-medium rounded bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground transition shrink-0"
             title="Copy variable token to clipboard"
             @click="copyToken(`{{variables.${v.name}}}`)"
           >

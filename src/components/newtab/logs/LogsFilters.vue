@@ -12,7 +12,7 @@
     <div class="workflow-sort ml-4 flex w-5/12 items-center md:ml-0 md:w-auto">
       <ui-button
         icon
-        class="rounded-r-none border-r border-gray-300"
+        class="rounded-r-none border-r border-border"
         @click="updateSorts('order', sorts.order === 'asc' ? 'desc' : 'asc')"
       >
         <v-remixicon
@@ -38,7 +38,7 @@
       </template>
       <div class="w-48">
         <p class="mb-2 flex-1 font-semibold">{{ t('log.filter.title') }}</p>
-        <p class="mb-2 text-sm text-gray-600 dark:text-gray-200">
+        <p class="mb-2 text-sm text-muted-foreground">
           {{ t('log.filter.byStatus') }}
         </p>
         <div class="grid grid-cols-2 gap-2">
@@ -53,7 +53,7 @@
             {{ status.name }}
           </ui-radio>
         </div>
-        <p class="mb-1 mt-3 text-sm text-gray-600 dark:text-gray-200">
+        <p class="mb-1 mt-3 text-sm text-muted-foreground">
           {{ t('log.filter.byDate.title') }}
         </p>
         <ui-select

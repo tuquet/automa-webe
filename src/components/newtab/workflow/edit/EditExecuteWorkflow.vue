@@ -40,7 +40,7 @@
       class="w-full"
       @change="updateData({ executeId: $event })"
     />
-    <p class="mt-4 ml-1 mb-1 text-sm text-gray-600 dark:text-gray-200">
+    <p class="mt-4 ml-1 mb-1 text-sm text-muted-foreground">
       {{ t('common.globalData') }}
     </p>
     <ui-checkbox
@@ -52,7 +52,7 @@
     </ui-checkbox>
     <pre
       v-if="!state.showGlobalData"
-      class="max-h-80 overflow-auto rounded-lg bg-gray-900 p-4 text-gray-200"
+      class="max-h-80 overflow-auto rounded-lg bg-card text-card-foreground border border-border p-4"
       @click="state.showGlobalData = true"
       v-text="data.globalData || '____'"
     />
@@ -65,7 +65,7 @@
     </ui-checkbox>
     <template v-if="!data.insertAllVars">
       <label class="mt-4 block">
-        <span class="ml-1 block text-sm text-gray-600 dark:text-gray-200">
+        <span class="ml-1 block text-sm text-muted-foreground">
           {{ t('workflow.blocks.execute-workflow.insertVars') }}
         </span>
         <ui-textarea
@@ -75,7 +75,7 @@
         />
       </label>
       <span
-        class="ml-1 block text-sm leading-tight text-gray-600 dark:text-gray-200"
+        class="ml-1 block text-sm leading-tight text-muted-foreground"
       >
         {{ t('workflow.blocks.execute-workflow.useCommas') }}
       </span>

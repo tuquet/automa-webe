@@ -77,7 +77,7 @@
             name="riCloseLine"
             height="20"
             width="20"
-            class="text-gray-200 dark:text-gray-600 ml-1 -mr-1 cursor-pointer"
+            class="text-muted-foreground hover:text-foreground ml-1 -mr-1 cursor-pointer"
             @click="actionModal.data.events.splice(index, 1)"
           />
         </div>
@@ -113,7 +113,7 @@
               ></div>
               <div class="text-sm ml-2">
                 <p>{{ t(`workflow.events.types.${event}.name`) }}</p>
-                <p class="text-gray-600 dark:text-gray-300 leading-tight">
+                <p class="text-muted-foreground leading-tight">
                   {{ t(`workflow.events.types.${event}.description`) }}
                 </p>
               </div>

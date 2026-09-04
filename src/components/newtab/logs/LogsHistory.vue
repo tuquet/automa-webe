@@ -10,8 +10,8 @@
   </router-link>
   <div class="flex flex-col-reverse items-start lg:flex-row">
     <div class="w-full lg:w-auto lg:flex-1">
-      <div class="dark rounded-lg bg-gray-900 text-gray-100">
-        <div class="mb-4 flex items-center border-b p-4 text-gray-200">
+      <div class="rounded-lg bg-card text-card-foreground border border-border">
+        <div class="mb-4 flex items-center border-b border-border p-4 text-foreground">
           <div v-if="currentLog.status === 'error' && errorBlock">
             <p class="line-clamp leading-tight">
               {{ errorBlock.message }}
@@ -25,7 +25,7 @@
                 <v-remixicon
                   name="riArrowLeftLine"
                   size="20"
-                  class="inline-block text-gray-300"
+                  class="inline-block text-muted-foreground"
                   rotate="135"
                 />
               </a>
@@ -78,7 +78,7 @@
           <slot name="prepend" />
           <p
             v-if="currentLog.history.length === 0"
-            class="text-center text-gray-300"
+            class="text-center text-muted-foreground"
           >
             The workflow log is not saved
           </p>
@@ -87,14 +87,14 @@
               v-for="(item, index) in history"
               :key="item.id || index"
               :disabled="!ctxData[item.id]"
-              :class="{ 'bg-box-transparent': item.id === state.itemId }"
+              :class="{ 'bg-accent text-accent-foreground': item.id === state.itemId }"
               hide-header-icon
-              class="hoverable group flex w-full cursor-default items-start rounded-md px-2 py-1 text-left focus:ring-0"
+              class="group flex w-full cursor-default items-start rounded-md px-2 py-1 text-left focus:ring-0 transition-colors hover:bg-accent hover:text-accent-foreground"
               @click="setActiveLog(item)"
             >
               <div
                 style="min-width: 54px"
-                class="text-overflow mr-4 shrink-0 text-gray-400"
+                class="text-overflow mr-4 shrink-0 text-muted-foreground"
               >
                 <span
                   v-if="item.timestamp"
@@ -129,7 +129,7 @@
               </span>
               <p
                 :title="item.message"
-                class="line-clamp ml-2 flex-1 text-sm leading-tight text-gray-600 dark:text-gray-200"
+                class="line-clamp ml-2 flex-1 text-sm leading-tight text-muted-foreground"
               >
                 {{ item.message }}
                 <a
@@ -142,7 +142,7 @@
                   <v-remixicon
                     name="riArrowLeftLine"
                     size="20"
-                    class="inline-block text-gray-300"
+                    class="inline-block text-muted-foreground"
                     rotate="135"
                   />
                 </a>
@@ -155,7 +155,7 @@
               >
                 <v-remixicon
                   title="Open log detail"
-                  class="ml-2 cursor-pointer text-gray-300"
+                  class="ml-2 cursor-pointer text-muted-foreground hover:text-foreground"
                   size="20"
                   name="riFileTextLine"
                   @click.stop="navigate"
@@ -170,7 +170,7 @@
                   name="riExternalLinkLine"
                   size="20"
                   title="Go to block"
-                  class="invisible ml-2 cursor-pointer text-gray-300 group-hover:visible"
+                  class="invisible ml-2 cursor-pointer text-muted-foreground hover:text-foreground group-hover:visible"
                 />
               </router-link>
             </div>
@@ -212,12 +212,12 @@
     </div>
     <div
       v-if="state.itemId && activeLog"
-      class="dark mb-4 w-full rounded-lg bg-gray-900 text-gray-100 lg:ml-8 lg:mb-0 lg:w-4/12"
+      class="mb-4 w-full rounded-lg bg-card text-card-foreground border border-border lg:ml-8 lg:mb-0 lg:w-4/12"
     >
       <div class="relative p-4">
         <v-remixicon
           name="riCloseLine"
-          class="absolute top-2 right-2 cursor-pointer text-gray-500"
+          class="absolute top-2 right-2 cursor-pointer text-muted-foreground hover:text-foreground"
           @click="clearActiveItem"
         />
         <table class="ctx-data-table w-full">
@@ -229,11 +229,11 @@
           </thead>
           <tbody>
             <tr>
-              <td class="text-gray-300">Name</td>
+              <td class="text-muted-foreground">Name</td>
               <td>{{ activeLog.name }}</td>
             </tr>
             <tr>
-              <td class="text-gray-300">Description</td>
+              <td class="text-muted-foreground">Description</td>
               <td>
                 <p class="line-clamp leading-tight">
                   {{ activeLog.description }}
@@ -241,11 +241,11 @@
               </td>
             </tr>
             <tr>
-              <td class="text-gray-300">Status</td>
+              <td class="text-muted-foreground">Status</td>
               <td class="capitalize">{{ activeLog.type }}</td>
             </tr>
             <tr>
-              <td class="text-gray-300">Timestamp/Duration</td>
+              <td class="text-muted-foreground">Timestamp/Duration</td>
               <td>
                 <span v-if="activeLog.timestamp">
                   {{ dayjs(activeLog.timestamp).format('DD MMM, HH:mm:ss') }}
@@ -255,7 +255,7 @@
               </td>
             </tr>
             <tr v-if="activeLog.message">
-              <td class="text-gray-300">Message</td>
+              <td class="text-muted-foreground">Message</td>
               <td>
                 <p class="line-clamp leading-tight">
                   {{ activeLog.message }}

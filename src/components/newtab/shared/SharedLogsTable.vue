@@ -34,7 +34,7 @@
             </td>
             <td
               :title="t('log.duration')"
-              class="log-time w-2/12 dark:text-gray-200"
+              class="log-time w-2/12 text-muted-foreground"
             >
               <v-remixicon name="riTimerLine"></v-remixicon>
               <span>{{
@@ -66,7 +66,7 @@
             </td>
           </tr>
         </template>
-        <tr v-for="log in logs" :key="log.id" class="hoverable">
+        <tr v-for="log in logs" :key="log.id" class="transition-colors hover:bg-accent hover:text-accent-foreground">
           <slot name="item-prepend" :log="log" />
           <td
             class="text-overflow w-4/12"
@@ -88,7 +88,7 @@
             </router-link>
           </td>
           <td
-            class="log-time w-3/12 dark:text-gray-200"
+            class="log-time w-3/12 text-muted-foreground"
             style="min-width: 200px"
           >
             <v-remixicon
@@ -102,7 +102,7 @@
           </td>
           <td
             :title="t('log.duration')"
-            class="log-time w-2/12 dark:text-gray-200"
+            class="log-time w-2/12 text-muted-foreground"
             style="min-width: 85px"
           >
             <v-remixicon name="riTimerLine"></v-remixicon>
@@ -111,7 +111,7 @@
           <td class="text-right">
             <span
               :class="
-                statusColors[log.status] || 'bg-gray-200 dark:bg-gray-700'
+                statusColors[log.status] || 'bg-muted text-muted-foreground'
               "
               :title="log.status === 'error' ? getErrorMessage(log) : null"
               class="inline-block w-24 rounded-md py-1 text-center text-sm dark:text-black font-medium capitalize"

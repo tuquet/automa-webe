@@ -4,7 +4,7 @@
       <button
         v-tooltip:bottom="t('workflow.blocks.go-back.name')"
         role="button"
-        class="bg-input mr-2 h-12 rounded-lg px-1 text-gray-600 transition dark:text-gray-300"
+        class="bg-muted mr-2 h-12 rounded-lg px-1 text-muted-foreground transition hover:text-foreground"
         @click="$emit('close')"
       >
         <v-remixicon name="riArrowLeftSLine" />
@@ -13,7 +13,7 @@
         <h1 class="text-overflow max-w-md text-2xl font-semibold">
           {{ currentLog.name }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-200">
+        <p class="text-muted-foreground">
           {{
             t(`log.description.text`, {
               status: t(

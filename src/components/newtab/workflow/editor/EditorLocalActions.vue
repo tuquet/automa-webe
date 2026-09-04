@@ -15,7 +15,7 @@
       <template #trigger>
         <button
           v-tooltip.group="t('workflow.host.title')"
-          class="hoverable rounded-lg p-2"
+          class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
         >
           <v-remixicon
             :class="{ 'text-primary': hosted }"
@@ -24,7 +24,7 @@
         </button>
       </template>
       <div :class="{ 'text-center': state.isUploadingHost }" class="w-64">
-        <div class="flex items-center text-gray-600 dark:text-gray-200">
+        <div class="flex items-center text-muted-foreground">
           <p>
             {{ t('workflow.host.set') }}
           </p>
@@ -62,7 +62,7 @@
         <button
           v-tooltip.group="t('workflow.share.title')"
           :class="{ 'text-primary': shared }"
-          class="hoverable rounded-lg p-2"
+          class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
           @click="shareWorkflow(!userDontHaveTeamsAccess)"
         >
           <v-remixicon name="riShareLine" />
@@ -97,7 +97,7 @@
       v-for="item in modalActions"
       :key="item.id"
       v-tooltip.group="item.name"
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
       @click="$emit('modal', item.id)"
     >
       <v-remixicon :name="item.icon" />
@@ -106,7 +106,7 @@
   <ui-card padding="p-1 ml-4 flex items-center pointer-events-auto">
     <ui-popover v-if="canEdit" class="md:hidden">
       <template #trigger>
-        <button class="hoverable rounded-lg p-2">
+        <button class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground">
           <v-remixicon name="riMore2Line" />
         </button>
       </template>
@@ -132,7 +132,7 @@
           { 'cursor-default': isDataChanged },
           workflow.testingMode
             ? 'bg-primary bg-opacity-20 text-primary'
-            : 'hoverable',
+            : 'transition-colors hover:bg-accent hover:text-accent-foreground',
         ]"
         class="rounded-lg p-2"
         @click="toggleTestingMode"
@@ -145,7 +145,7 @@
             shortcuts['editor:execute-workflow'].readable
           })`
         "
-        class="hoverable rounded-lg p-2"
+        class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="executeCurrWorkflow"
       >
         <v-remixicon name="riPlayLine" />
@@ -164,13 +164,13 @@
     <button
       v-if="!canEdit"
       v-tooltip.group="state.triggerText"
-      class="hoverable rounded-lg p-2"
+      class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
     >
       <v-remixicon name="riFlashlightLine" />
     </button>
     <ui-popover>
       <template #trigger>
-        <button class="hoverable rounded-lg p-2">
+        <button class="rounded-lg p-2 transition-colors hover:bg-accent hover:text-accent-foreground">
           <v-remixicon name="riMore2Line" />
         </button>
       </template>

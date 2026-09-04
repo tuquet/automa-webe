@@ -2,7 +2,7 @@
   <ui-card class="share-workflow scroll w-full max-w-4xl overflow-auto">
     <template v-if="!isUpdate">
       <h1 class="text-xl font-semibold">Share workflow with team</h1>
-      <p class="text-gray-600 dark:text-gray-200">
+      <p class="text-muted-foreground">
         This workflow will be shared with your team
       </p>
     </template>
@@ -36,7 +36,7 @@
         <div class="relative my-2">
           <label
             for="short-description"
-            class="ml-2 text-sm text-gray-600 dark:text-gray-200"
+            class="ml-2 text-sm text-muted-foreground"
           >
             Short description
           </label>
@@ -49,7 +49,7 @@
             class="scroll h-28 w-full resize-none"
           />
           <p
-            class="absolute bottom-2 right-2 text-sm text-gray-600 dark:text-gray-200"
+            class="absolute bottom-2 right-2 text-sm text-muted-foreground"
           >
             {{ state.workflow.description.length }}/300
           </p>
@@ -58,12 +58,12 @@
           v-model="state.workflow.content"
           :placeholder="t('common.description')"
           :limit="5000"
-          class="content-editor bg-box-transparent prose prose-zinc relative max-w-none rounded-lg p-4 dark:prose-invert"
+          class="content-editor bg-card border border-border prose prose-zinc relative max-w-none rounded-lg p-4 dark:prose-invert"
           @count="state.contentLength = $event"
         >
           <template #append>
             <p
-              class="absolute bottom-2 right-2 text-sm text-gray-600 dark:text-gray-200"
+              class="absolute bottom-2 right-2 text-sm text-muted-foreground"
             >
               {{ state.contentLength }}/5000
             </p>
@@ -125,7 +125,7 @@
             {{ category }}
           </option>
         </ui-select>
-        <span class="ml-2 mt-5 block text-sm text-gray-600 dark:text-gray-200">
+        <span class="ml-2 mt-5 block text-sm text-muted-foreground">
           Environment
         </span>
         <ui-tabs v-model="state.workflow.tag" type="fill" fill>

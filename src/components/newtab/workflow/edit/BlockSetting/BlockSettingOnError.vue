@@ -150,7 +150,7 @@
                 <td>
                   <v-remixicon
                     name="riCloseLine"
-                    class="cursor-pointer text-gray-600 dark:text-gray-200"
+                    class="cursor-pointer text-muted-foreground hover:text-foreground"
                     @click="state.dataToInsert.splice(index, 1)"
                   />
                 </td>

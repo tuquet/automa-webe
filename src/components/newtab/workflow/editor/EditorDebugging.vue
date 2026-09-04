@@ -64,12 +64,12 @@
                 title="Go to block"
                 name="riEyeLine"
                 size="18"
-                class="text-gray-600 dark:text-gray-200 cursor-pointer"
+                class="text-muted-foreground hover:text-foreground cursor-pointer"
                 @click="$emit('goToBlock', block.id)"
               />
             </div>
             <p
-              class="leading-tight text-overflow text-gray-600 dark:text-gray-200"
+              class="leading-tight text-overflow text-muted-foreground"
             >
               {{ t('workflow.testing.startRun') }}:
               {{ dayjs(block.startedAt).format('HH:mm:ss, SSS') }}
@@ -113,13 +113,13 @@
                   {{ getBlockName(item.name) }}
                 </p>
                 <p
-                  class="text-gray-600 leading-tight dark:text-gray-300 tabular-nums"
+                  class="text-muted-foreground leading-tight tabular-nums"
                   :title="t('log.duration')"
                 >
                   {{ item.duration }}s
                 </p>
               </div>
-              <p class="flex-1 text-gray-600 leading-tight dark:text-gray-300">
+              <p class="flex-1 text-muted-foreground leading-tight">
                 {{ item.description }}
               </p>
             </ui-list-item>

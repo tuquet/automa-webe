@@ -61,7 +61,7 @@
           </div>
         </template>
         <template v-else>
-          <p class="text-sm text-gray-500">No inputs</p>
+          <p class="text-sm text-muted-foreground">No inputs</p>
         </template>
       </div>
 
@@ -78,7 +78,7 @@
           />
         </template>
         <template v-else>
-          <p class="text-sm text-gray-500">No outputs</p>
+          <p class="text-sm text-muted-foreground">No outputs</p>
         </template>
       </div>
 
@@ -86,7 +86,7 @@
         <insert-workflow-data :data="data" variables @update="updateData" />
       </div>
 
-      <span class="text-sm text-gray-500 block text-center mt-10"
+      <span class="text-sm text-muted-foreground block text-center mt-10"
         >Powered by Automa
         <a href="https://aipower.automa.site/">AI Power</a></span
       >
@@ -98,24 +98,24 @@
     >
       <div class="mb-6">
         <p>
-          <span class="text-gray-500 text-[14px] leading-[24px]"
+          <span class="text-muted-foreground text-[14px] leading-[24px]"
             >Enter your AI Power token to enable AI Workflow features</span
           >
         </p>
       </div>
 
       <div
-        class="bg-[#f2f2f2] dark:bg-gray-900 mb-6 p-6 rounded-lg w-full space-y-4"
+        class="bg-muted/50 border border-border mb-6 p-6 rounded-lg w-full space-y-4"
       >
         <p
-          class="font-semibold text-[16px] dark:text-gray-300 leading-[24px] flex items-center"
+          class="font-semibold text-[16px] text-foreground leading-[24px] flex items-center"
         >
           <v-remixicon name="riKey" size="16" class="mr-1"></v-remixicon>
           How to get your AI Power Token
         </p>
 
         <ol
-          class="space-y-2 list-decimal list-inside text-sm text-gray-600 dark:text-gray-400"
+          class="space-y-2 list-decimal list-inside text-sm text-muted-foreground"
         >
           <li>Go to Settings → Authorizations in your AI Power dashboard</li>
           <li>Navigate to "AI Power Authorization" section</li>
@@ -130,7 +130,7 @@
       </div>
 
       <div class="flex flex-col space-y-4 mb-4">
-        <span class="text-sm text-gray-500 font-semibold">AI Power Token</span>
+        <span class="text-sm text-muted-foreground font-semibold">AI Power Token</span>
         <ui-input
           :model-value="aiPowerToken"
           class="w-full"

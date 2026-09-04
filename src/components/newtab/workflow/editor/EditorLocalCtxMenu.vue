@@ -18,7 +18,7 @@
         </span>
         <span
           v-if="item.shortcut"
-          class="text-sm capitalize text-gray-600 dark:text-gray-200"
+          class="text-sm capitalize text-muted-foreground"
         >
           {{ item.shortcut }}
         </span>

@@ -4,7 +4,7 @@
       <p>
         {{ t('workflow.settings.onError.title') }}
       </p>
-      <p class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-sm leading-tight text-muted-foreground">
         {{ t('workflow.settings.onError.description') }}
       </p>
     </div>
@@ -19,7 +19,7 @@
     <div
       v-if="settings.onError === 'restart-workflow'"
       :title="t('workflow.settings.restartWorkflow.description')"
-      class="bg-input ml-4 flex items-center rounded-lg transition-colors"
+      class="bg-muted ml-4 flex items-center rounded-lg transition-colors"
     >
       <input
         :value="settings.restartTimes ?? 3"
@@ -35,7 +35,7 @@
   <div v-if="!isFirefox" class="flex items-center pt-4">
     <div class="mr-4 flex-1">
       <p>Workflow Execution</p>
-      <p class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-sm leading-tight text-muted-foreground">
         Workflow execution environment (Use "Popup" if workflow runs more than 5
         minutes)
       </p>
@@ -60,7 +60,7 @@
       <p>
         {{ t('workflow.settings.notification.title') }}
       </p>
-      <p class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-sm leading-tight text-muted-foreground">
         {{
           t(
             `workflow.settings.notification.${
@@ -98,7 +98,7 @@
           })
         }}
       </p>
-      <p v-else class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p v-else class="text-sm leading-tight text-muted-foreground">
         {{ item.description }}
       </p>
     </div>
@@ -114,7 +114,7 @@
       <p>
         {{ t('workflow.settings.clearCache.title') }}
       </p>
-      <p class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-sm leading-tight text-muted-foreground">
         {{ t('workflow.settings.clearCache.description') }}
       </p>
     </div>
@@ -127,7 +127,7 @@
       <p>
         {{ t('workflow.settings.publicId.title') }}
       </p>
-      <p class="text-sm leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-sm leading-tight text-muted-foreground">
         {{ t('workflow.settings.publicId.description') }}
       </p>
     </div>
@@ -135,7 +135,7 @@
       href="https://docs.extension.automa.site/blocks/trigger.html#trigger-using-js-customevent"
       target="_blank"
       rel="noopener"
-      class="mr-2 text-gray-600 dark:text-gray-200"
+      class="mr-2 text-muted-foreground"
     >
       <v-remixicon name="riInformationLine" />
     </a>

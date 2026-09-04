@@ -6,7 +6,7 @@
       </h1>
       <v-remixicon
         name="riCloseLine"
-        class="cursor-pointer text-gray-600 dark:text-gray-300"
+        class="cursor-pointer text-muted-foreground hover:text-foreground"
         @click="$emit('close')"
       />
     </div>
@@ -37,7 +37,7 @@
             />
             <div class="text-right">
               <span
-                class="cursor-pointer text-sm text-gray-600 underline dark:text-gray-300"
+                class="cursor-pointer text-sm text-muted-foreground underline hover:text-foreground"
                 @click="filtersBuilder.workflowId = ''"
               >
                 Clear

@@ -2,14 +2,14 @@
   <ui-expand
     :data-testid="`block-category-${category?.name || 'blocks'}`"
     hide-header-icon
-    header-class="flex items-center py-1.5 focus:ring-0 w-full text-left text-xs font-semibold text-gray-700 dark:text-gray-300"
+    header-class="flex items-center py-1.5 focus:ring-0 w-full text-left text-xs font-semibold text-foreground"
   >
     <template #header="{ show }">
       <span
         :class="category?.color || 'bg-accent'"
         class="h-2.5 w-2.5 rounded-full"
       ></span>
-      <p class="ml-2 flex-1 capitalize text-xs font-semibold">
+      <p class="ml-2 flex-1 capitalize text-xs font-semibold text-foreground">
         {{ category?.name || 'Blocks' }}
       </p>
       <v-remixicon :name="show ? 'riSubtractLine' : 'riAddLine'" size="16" />
@@ -21,11 +21,11 @@
         :data-testid="`block-item-${block.id}`"
         :title="getBlockTitle(block)"
         draggable="true"
-        class="bg-input group relative cursor-move select-none rounded-md p-2.5 transition hover:shadow-sm"
+        class="bg-muted text-card-foreground group relative cursor-move select-none rounded-md p-2.5 transition hover:bg-accent hover:shadow-sm"
         @dragstart="$event.dataTransfer.setData('block', JSON.stringify(block))"
       >
         <div
-          class="invisible absolute right-1.5 top-1.5 flex items-center text-gray-500 group-hover:visible dark:text-gray-400"
+          class="invisible absolute right-1.5 top-1.5 flex items-center text-muted-foreground group-hover:visible"
         >
           <a
             :data-testid="`btn-docs-block-${block.id}`"
@@ -62,16 +62,16 @@
           :path="getIconPath(block.icon)"
           :name="block.icon"
           size="20"
-          class="mb-1.5 text-gray-700 dark:text-gray-200"
+          class="mb-1.5 text-foreground"
         />
         <p
-          class="text-overflow capitalize leading-tight text-xs font-medium text-gray-800 dark:text-gray-200"
+          class="text-overflow capitalize leading-tight text-xs font-medium text-foreground"
         >
           {{ block.name }}
         </p>
         <div
           v-if="block.tag"
-          class="flex items-center justify-center absolute top-0 right-0 min-w-[42px] h-[18px] group-hover:invisible rounded-tr-md rounded-bl-[16px] rounded-tl-0 rounded-br-0 bg-[#79FFEB] dark:bg-[#2DD4BF] text-[10px] font-semibold dark:text-gray-900"
+          class="flex items-center justify-center absolute top-0 right-0 min-w-[42px] h-[18px] group-hover:invisible rounded-tr-md rounded-bl-[16px] rounded-tl-0 rounded-br-0 bg-primary/20 text-primary text-[10px] font-semibold"
         >
           {{ block.tag }}
         </div>

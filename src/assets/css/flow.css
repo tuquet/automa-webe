@@ -1,5 +1,5 @@
 .vue-flow__minimap {
-  @apply rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md overflow-hidden;
+  @apply rounded-lg bg-card border border-border shadow-md overflow-hidden;
 }
 
 .vue-flow__minimap-mask {
@@ -32,7 +32,7 @@
     }
     &.source {
       border-width: 3px;
-      @apply border-accent -mr-4 bg-white dark:bg-black;
+      @apply border-accent -mr-4 bg-background;
     }
   }
 }
@@ -54,11 +54,11 @@
 }
 
 .vue-flow__background pattern circle {
-  fill: #cbd5e1;
+  fill: var(--border, #cbd5e1);
 }
 
 .dark .vue-flow__background pattern circle {
-  fill: #27272a;
+  fill: var(--border, #27272a);
 }
 
 .vue-flow__edge {

@@ -62,7 +62,7 @@
         v-if="state.showSidebar"
         data-testid="studio-sidebar"
         :style="{ width: `${sidebarCss.width}px` }"
-        class="h-full border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-20 flex flex-col shrink-0 overflow-hidden shadow-sm relative text-xs"
+        class="h-full border-r border-border bg-card text-card-foreground z-20 flex flex-col shrink-0 overflow-hidden shadow-sm relative text-xs"
       >
         <!-- Block Form Editor -->
         <workflow-edit-block
@@ -95,7 +95,7 @@
       <!-- VueFlow Canvas Area -->
       <main
         data-testid="studio-canvas-main"
-        class="flex-1 h-full relative overflow-hidden bg-gray-100 dark:bg-gray-950"
+        class="flex-1 h-full relative overflow-hidden bg-background text-foreground"
         @dragover.prevent="onDragoverEditor"
         @drop="onDropInEditor"
       >

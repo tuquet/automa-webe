@@ -3,34 +3,34 @@
     <slot v-if="editor" name="prepend" :editor="editor" />
     <div
       v-if="editor && toolbar && !readonly"
-      class="bg-box-transparent sticky top-0 z-50 mb-2 flex items-center space-x-1 rounded-lg p-2 backdrop-blur"
+      class="bg-muted/80 sticky top-0 z-50 mb-2 flex items-center space-x-1 rounded-lg p-2 backdrop-blur border border-border"
     >
       <button
         :class="{
-          'bg-box-transparent text-primary': editor.isActive('heading', {
+          'bg-accent text-primary': editor.isActive('heading', {
             level: 1,
           }),
         }"
         title="Heading 1"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="editor.commands.toggleHeading({ level: 1 })"
       >
         <v-remixicon name="riH1" />
       </button>
       <button
         :class="{
-          'bg-box-transparent text-primary': editor.isActive('heading', {
+          'bg-accent text-primary': editor.isActive('heading', {
             level: 2,
           }),
         }"
         title="Heading 2"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="editor.commands.toggleHeading({ level: 2 })"
       >
         <v-remixicon name="riH2" />
       </button>
       <span
-        class="h-5 w-px bg-gray-300 dark:bg-gray-600"
+        class="h-5 w-px bg-border"
         style="margin: 0 12px"
       ></span>
       <button
@@ -38,40 +38,40 @@
         :key="item.id"
         :title="item.name"
         :class="{
-          'bg-box-transparent text-primary': editor.isActive(item.id),
+          'bg-accent text-primary': editor.isActive(item.id),
         }"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="editor.chain().focus()[item.action]().run()"
       >
         <v-remixicon :name="item.icon" />
       </button>
       <span
-        class="h-5 w-px bg-gray-300 dark:bg-gray-600"
+        class="h-5 w-px bg-border"
         style="margin: 0 12px"
       ></span>
       <button
         :class="{
-          'bg-box-transparent text-primary': editor.isActive('blockquote'),
+          'bg-accent text-primary': editor.isActive('blockquote'),
         }"
         title="Blockquote"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="editor.commands.toggleBlockquote()"
       >
         <v-remixicon name="riDoubleQuotesL" />
       </button>
       <button
         title="Insert image"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="insertImage(editor)"
       >
         <v-remixicon name="riImageLine" />
       </button>
       <button
         :class="{
-          'bg-box-transparent text-primary': editor.isActive('link'),
+          'bg-accent text-primary': editor.isActive('link'),
         }"
         title="Link"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="setLink(editor)"
       >
         <v-remixicon name="riLinkM" />
@@ -79,7 +79,7 @@
       <button
         v-show="editor.isActive('link')"
         title="Remove link"
-        class="editor-menu-btn hoverable"
+        class="editor-menu-btn transition-colors hover:bg-accent hover:text-accent-foreground"
         @click="editor.commands.unsetLink()"
       >
         <v-remixicon name="riLinkUnlinkM" />
@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
   outline: none;
 }
 .ProseMirror p.is-editor-empty:first-child::before {
-  @apply text-gray-400;
+  @apply text-muted-foreground;
   content: attr(data-placeholder);
   float: left;
   pointer-events: none;

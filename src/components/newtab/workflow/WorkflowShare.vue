@@ -63,7 +63,7 @@
           class="scroll h-32 w-full resize-none"
         />
         <p
-          class="absolute bottom-2 right-2 text-sm text-gray-600 dark:text-gray-200"
+          class="absolute bottom-2 right-2 text-sm text-muted-foreground"
         >
           {{ state.workflow.description.length }}/300
         </p>
@@ -72,12 +72,12 @@
         v-model="state.workflow.content"
         :placeholder="t('common.description')"
         :limit="5000"
-        class="content-editor bg-box-transparent prose prose-zinc relative max-w-none rounded-lg p-4 dark:prose-invert"
+        class="content-editor bg-card border border-border prose prose-zinc relative max-w-none rounded-lg p-4 dark:prose-invert"
         @count="state.contentLength = $event"
       >
         <template #append>
           <p
-            class="absolute bottom-2 right-2 text-sm text-gray-600 dark:text-gray-200"
+            class="absolute bottom-2 right-2 text-sm text-muted-foreground"
           >
             {{ state.contentLength }}/5000
           </p>

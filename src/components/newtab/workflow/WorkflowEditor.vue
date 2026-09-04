@@ -32,7 +32,7 @@
       :node-color="minimapNodeColor"
       pannable
       zoomable
-      class="hidden md:block shadow-md border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden !z-20"
+      class="hidden md:block shadow-md border border-border rounded-lg overflow-hidden !z-20"
     />
     <div
       v-if="editorControls"

@@ -4,7 +4,7 @@
       <button
         v-tooltip:bottom="t('workflow.blocks.go-back.name')"
         role="button"
-        class="bg-input mr-2 h-12 rounded-lg px-1 text-gray-600 transition dark:text-gray-300"
+        class="bg-muted mr-2 h-12 rounded-lg px-1 text-muted-foreground transition hover:text-foreground"
         @click="$emit('close')"
       >
         <v-remixicon name="riArrowLeftSLine" />
@@ -40,7 +40,7 @@
             <h3 class="leading-tight">
               {{ t('common.log', 2) }}
             </h3>
-            <p class="leading-tight text-gray-600 dark:text-gray-300">
+            <p class="leading-tight text-muted-foreground">
               {{ t('running.message') }}
             </p>
           </div>
@@ -49,14 +49,14 @@
           <div
             v-for="block in running.state.currentBlock"
             :key="block.id"
-            class="hoverable group flex w-full items-center rounded-md px-2 py-1"
+            class="group flex w-full items-center rounded-md px-2 py-1 transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             <span
               :key="key"
               :title="`Duration: ${Math.round(
                 (Date.now() - block.startedAt) / 1000
               )}s`"
-              class="text-overflow ml-6 w-14 shrink-0 text-gray-400"
+              class="text-overflow ml-6 w-14 shrink-0 text-muted-foreground"
             >
               {{ countDuration(block.startedAt, Date.now()) }}
             </span>

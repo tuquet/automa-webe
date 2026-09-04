@@ -6,7 +6,7 @@
           <p class="text-overflow">
             {{ t('workflow.blocks.base.settings.blockTimeout.title') }}
           </p>
-          <p class="line-clamp leading-tight text-gray-600 dark:text-gray-300">
+          <p class="line-clamp leading-tight text-muted-foreground">
             {{ t('workflow.blocks.base.settings.blockTimeout.description') }}
           </p>
         </div>
@@ -22,7 +22,7 @@
             {{ t('workflow.blocks.debugMode.title') }}
           </p>
           <p
-            class="text-overflow leading-tight text-gray-600 dark:text-gray-300"
+            class="text-overflow leading-tight text-muted-foreground"
           >
             {{ t('workflow.blocks.debugMode.description') }}
           </p>
