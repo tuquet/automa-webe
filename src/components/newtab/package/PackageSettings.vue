@@ -55,7 +55,7 @@
               <div class="col-span-1 text-right">
                 <v-remixicon
                   name="riDeleteBin7Line"
-                  class="inline-block cursor-pointer text-gray-600 dark:text-gray-200"
+                  class="inline-block cursor-pointer text-muted-foreground hover:text-foreground"
                   @click="deleteBlockIo('inputs', index)"
                 />
               </div>
@@ -114,7 +114,7 @@
               <div class="col-span-1 text-right">
                 <v-remixicon
                   name="riDeleteBin7Line"
-                  class="inline-block cursor-pointer text-gray-600 dark:text-gray-200"
+                  class="inline-block cursor-pointer text-muted-foreground hover:text-foreground"
                   @click="deleteBlockIo('outputs', index)"
                 />
               </div>
