@@ -56,9 +56,12 @@
       v-if="withPagination && filteredItems && filteredItems.length >= 10"
       class="mt-4 flex items-center justify-between"
     >
-      <div>
-        {{ t('components.pagination.text1') }}
-        <select v-model="pagination.perPage" class="bg-input rounded-md p-1">
+      <div class="text-xs text-muted-foreground flex items-center gap-1.5">
+        <span>{{ t('components.pagination.text1') }}</span>
+        <select
+          v-model="pagination.perPage"
+          class="h-7 appearance-none rounded-md border border-input bg-background/50 px-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors shadow-2xs cursor-pointer"
+        >
           <option
             v-for="num in [10, 15, 25, 50, 100, 150]"
             :key="num"
@@ -67,11 +70,13 @@
             {{ num }}
           </option>
         </select>
-        {{
-          t('components.pagination.text2', {
-            count: filteredItems.length,
-          })
-        }}
+        <span>
+          {{
+            t('components.pagination.text2', {
+              count: filteredItems.length,
+            })
+          }}
+        </span>
       </div>
       <ui-pagination
         v-model="pagination.currentPage"
@@ -85,6 +90,8 @@
 import { reactive, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isObject, arraySorter } from '@/utils/helper';
+
+defineOptions({ name: 'UiTable' });
 
 const props = defineProps({
   headers: {

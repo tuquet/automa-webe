@@ -59,26 +59,26 @@
             allowHTML: true,
             content: blockErrors,
           }"
-          class="absolute top-2 right-2 text-red-500 dark:text-red-400"
+          class="absolute top-2 right-2 text-destructive"
         >
           <v-remixicon name="riAlertLine" size="20" />
         </span>
         <p
           v-if="block.details.id"
-          class="text-overflow whitespace-nowrap font-semibold leading-tight"
+          class="text-overflow whitespace-nowrap font-semibold leading-tight text-xs"
         >
           {{ getBlockName() }}
         </p>
         <p
           :class="{ 'mb-1': data.description && data.loopId }"
-          class="text-overflow leading-tight text-gray-600 dark:text-gray-200"
+          class="text-overflow leading-tight text-xs text-muted-foreground"
         >
           {{ data.description }}
         </p>
         <span
           v-if="showTextToCopy"
           :title="showTextToCopy.name + ' (click to copy)'"
-          class="bg-box-transparent text-overflow absolute bottom-0 right-0 rounded-sm rounded-br-lg py-px px-1 text-xs text-gray-600 dark:text-gray-200"
+          class="bg-muted text-muted-foreground text-overflow absolute bottom-0 right-0 rounded-sm rounded-br-md py-px px-1.5 text-xs font-mono"
           style="max-width: 40%; cursor: pointer"
           @click.stop="insertToClipboard(showTextToCopy.value)"
         >

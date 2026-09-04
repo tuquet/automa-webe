@@ -4,6 +4,8 @@
 <script setup>
 import { inject, h, useSlots } from 'vue';
 
+defineOptions({ name: 'UiTabPanel' });
+
 /* eslint-disable-next-line */
 const props = defineProps({
   value: {

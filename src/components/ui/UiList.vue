@@ -9,6 +9,7 @@
 </template>
 <script>
 export default {
+  name: 'UiList',
   props: {
     disabled: Boolean,
   },

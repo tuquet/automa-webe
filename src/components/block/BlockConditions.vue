@@ -22,7 +22,7 @@
     </div>
     <p
       v-show="data.description"
-      class="text-overflow mt-2 leading-tight text-gray-600 dark:text-gray-200"
+      class="text-overflow mt-2 leading-tight text-xs text-muted-foreground"
     >
       {{ data.description }}
     </p>
@@ -33,7 +33,7 @@
       <li
         v-for="item in data.conditions"
         :key="item.id"
-        class="bg-box-transparent relative flex w-full flex-1 items-center rounded-lg p-2"
+        class="relative flex w-full flex-1 items-center rounded-md border border-input bg-background/50 p-2 shadow-2xs text-xs"
         @dblclick.stop="$emit('edit', { editCondition: item.id })"
       >
         <p

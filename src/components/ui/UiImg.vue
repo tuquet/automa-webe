@@ -3,11 +3,13 @@
     <div class="flex items-center justify-center">
       <slot v-if="state.loading" name="loading">
         <div
-          class="bg-input-dark absolute h-full w-full animate-pulse rounded-lg"
+          class="bg-muted absolute h-full w-full animate-pulse rounded-md"
         ></div>
       </slot>
       <slot v-else-if="state.error" name="error">
-        <p class="text-lighter text-center">Failed to load image</p>
+        <p class="text-xs text-muted-foreground text-center">
+          Failed to load image
+        </p>
       </slot>
       <div
         v-else
@@ -27,6 +29,7 @@
 import { ref, shallowReactive, onMounted } from 'vue';
 
 export default {
+  name: 'UiImg',
   props: {
     src: {
       type: String,

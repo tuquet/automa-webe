@@ -6,6 +6,8 @@
 <script setup>
 import { toRefs, provide } from 'vue';
 
+defineOptions({ name: 'UiTabPanels' });
+
 /* eslint-disable-next-line */
 const props = defineProps({
   modelValue: {

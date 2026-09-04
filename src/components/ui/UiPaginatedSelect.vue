@@ -7,7 +7,7 @@
     <label
       v-if="label"
       :for="componentId"
-      class="ml-1 text-sm text-gray-600 dark:text-gray-200"
+      class="mb-1.5 ml-0.5 block text-xs font-medium text-foreground cursor-pointer"
       @click="toggleDropdown"
     >
       {{ label }}
@@ -16,24 +16,24 @@
       <button
         :id="componentId"
         type="button"
-        class="bg-input text-left z-10 h-full w-full appearance-none rounded-lg bg-transparent px-4 py-2 pr-10 transition"
-        :class="{ 'text-gray-500': !selectedOptionLabel }"
+        class="flex h-8 w-full appearance-none rounded-md border border-input bg-background/50 px-3 py-1.5 pr-8 text-xs text-foreground text-left focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs z-10 cursor-pointer"
+        :class="{ 'text-muted-foreground': !selectedOptionLabel }"
         :disabled="disabled"
         @click="toggleDropdown"
       >
         {{ selectedOptionLabel || placeholder }}
       </button>
       <v-remixicon
-        name="riArrowDropDownLine"
-        size="28"
-        class="pointer-events-none absolute right-0 mr-2 text-gray-600 transition-transform dark:text-gray-200"
+        name="riArrowDownSLine"
+        size="16"
+        class="pointer-events-none absolute right-2.5 text-muted-foreground transition-transform z-20"
         :class="{ 'rotate-180': isOpen }"
       />
     </div>
 
     <div
       v-if="isOpen"
-      class="absolute top-full z-50 mt-1 w-full rounded-lg bg-white shadow-xl dark:bg-gray-800"
+      class="absolute top-full z-50 mt-1 w-full rounded-md border border-border bg-popover text-popover-foreground shadow-md"
     >
       <div class="px-2 my-2 w-full">
         <ui-input
@@ -46,41 +46,41 @@
       </div>
       <ul
         ref="optionsListEl"
-        class="max-h-60 overflow-y-auto p-2 space-y-2"
+        class="max-h-60 overflow-y-auto p-1 space-y-1 text-xs"
         @scroll="handleScroll"
       >
         <li
           v-for="option in options"
           :key="option[optionValueKey]"
-          class="cursor-pointer rounded-lg px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+          class="cursor-pointer rounded-sm px-3 py-1.5 hover:bg-accent hover:text-accent-foreground transition-colors"
           :class="{
-            'bg-gray-100 font-semibold dark:bg-gray-700':
+            'bg-accent font-semibold text-accent-foreground':
               modelValue === option[optionValueKey],
           }"
           @click="selectOption(option)"
         >
           {{ option[optionLabelKey] }}
         </li>
-        <li v-if="isLoading" class="px-4 py-2 text-center text-gray-500">
+        <li
+          v-if="isLoading"
+          class="px-3 py-2 text-center text-muted-foreground"
+        >
           Loading...
         </li>
         <li
           v-if="!haveMore && !isLoading && options.length > 0"
-          class="px-4 py-2 text-center text-sm text-gray-500"
+          class="px-3 py-2 text-center text-xs text-muted-foreground"
         >
           No more results
         </li>
         <li
           v-if="!isLoading && options.length === 0"
-          class="px-4 py-2 text-center text-gray-500"
+          class="px-3 py-2 text-center text-xs text-muted-foreground"
         >
           No results found
         </li>
       </ul>
-      <div
-        v-if="$slots.footer"
-        class="border-t border-gray-200 p-2 dark:border-gray-700"
-      >
+      <div v-if="$slots.footer" class="border-t border-border p-2">
         <slot name="footer"></slot>
       </div>
     </div>
@@ -90,6 +90,8 @@
 <script setup>
 import { useComponentId } from '@/composable/componentId';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+
+defineOptions({ name: 'UiPaginatedSelect' });
 
 const props = defineProps({
   modelValue: {

@@ -21,7 +21,7 @@
     <p
       :title="t('workflow.blocks.element-exists.selector')"
       :class="{ 'font-mono': !data.description }"
-      class="text-overflow bg-box-transparent mb-2 rounded-lg p-2 text-right text-sm"
+      class="text-overflow mb-2 rounded-md border border-input bg-background/50 p-2 text-right text-xs shadow-2xs"
       style="max-width: 200px"
     >
       {{
@@ -30,7 +30,7 @@
         t('workflow.blocks.element-exists.selector')
       }}
     </p>
-    <p class="text-right text-gray-600 dark:text-gray-200">
+    <p class="text-right text-xs text-muted-foreground">
       <span :title="t('workflow.blocks.element-exists.fallbackTitle')">
         &#9432;
       </span>

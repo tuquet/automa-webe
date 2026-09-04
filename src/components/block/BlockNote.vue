@@ -15,7 +15,7 @@
             class="cursor-pointer"
           />
         </template>
-        <p class="mb-1 ml-1 text-sm text-gray-600 dark:text-gray-200">Colors</p>
+        <p class="mb-1.5 ml-0.5 text-xs font-medium text-foreground">Colors</p>
         <div class="flex items-center space-x-2">
           <span
             v-for="(color, colorId) in colors"
@@ -90,7 +90,7 @@ const initialSize = {
 };
 
 const colors = {
-  white: 'bg-white dark:bg-gray-800',
+  white: 'bg-card text-card-foreground border border-border',
   red: 'bg-red-200 dark:bg-red-300',
   indigo: 'bg-indigo-200 dark:bg-indigo-300',
   green: 'bg-green-200 dark:bg-green-300',

@@ -22,7 +22,6 @@
           id="btn.workflow.create"
           size="sm"
           variant="outline"
-          title="New Workflow"
           @click="$emit('newWorkflow')"
         />
 
@@ -30,7 +29,6 @@
           id="btn.workflow.import"
           size="sm"
           variant="outline"
-          title="Open Workflow (Ctrl+O)"
           @click="$emit('importWorkflow')"
         />
       </div>
@@ -227,22 +225,17 @@
         id="btn.workflow.save"
         size="sm"
         variant="outline"
-        title="Save (Ctrl+S)"
         @click="$emit('saveWorkflow')"
       />
 
       <!-- Export Button -->
-      <Button
+      <AutomaButton
         v-if="automaCoreStatus === 'online'"
-        variant="outline"
+        id="btn.workflow.export"
         size="sm"
-        data-testid="btn-export-json"
-        title="Export Workflow JSON"
+        variant="outline"
         @click="$emit('exportJson')"
-      >
-        <Download class="size-3.5 mr-1" />
-        <span class="hidden sm:inline">Export</span>
-      </Button>
+      />
 
       <!-- Live Execution Controls / Run Button -->
       <div v-if="automaCoreStatus === 'online'" class="flex items-center gap-1">
@@ -283,7 +276,6 @@
           id="btn.workflow.run"
           size="sm"
           variant="primary"
-          title="Run (Ctrl+Enter)"
           @click="$emit('runWorkflow')"
         />
       </div>
@@ -299,7 +291,6 @@ import {
   Check,
   ChevronDown,
   Database,
-  Download,
   FileText,
   GitBranch,
   PanelLeft,

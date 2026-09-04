@@ -73,8 +73,9 @@
                 <textarea
                   :value="param.value"
                   rows="3"
+                  :data-testid="`input-param-${param.name || idx}`"
                   placeholder='{ "key": "value" }'
-                  class="w-full px-2.5 py-1.5 text-xs font-mono rounded-md bg-background border border-input focus:outline-none focus:ring-1 focus:ring-ring text-foreground"
+                  class="w-full px-2.5 py-1.5 text-xs font-mono rounded-md bg-background border border-input focus:outline-none focus:ring-1 focus:ring-ring text-foreground shadow-2xs"
                   @input="
                     $emit('update:param', {
                       index: idx,

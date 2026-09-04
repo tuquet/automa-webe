@@ -4,16 +4,16 @@
 
 @layer utilities {
   .hoverable {
-    @apply hover:bg-gray-800 hover:bg-opacity-5 dark:hover:bg-gray-200 dark:hover:bg-opacity-5;
+    @apply hover:bg-accent hover:text-accent-foreground transition-colors;
   }
   .bg-input {
-    @apply bg-black bg-opacity-5 hover:bg-opacity-10 dark:bg-gray-200 dark:bg-opacity-5 dark:hover:bg-opacity-10;
+    @apply bg-muted hover:bg-accent transition-colors;
   }
   .bg-box-transparent {
-    @apply bg-black bg-opacity-5 dark:bg-gray-200 dark:bg-opacity-5;
+    @apply bg-accent text-accent-foreground;
   }
   .bg-box-transparent-2 {
-    @apply bg-black bg-opacity-10 dark:bg-gray-200 dark:bg-opacity-10;
+    @apply bg-accent text-accent-foreground;
   }
 }
 
@@ -30,7 +30,7 @@
 }
 
 * {
-  @apply dark:border-gray-800;
+  @apply dark:border-border;
 }
 
 html.dark {
@@ -95,7 +95,7 @@ pre {
     height: 9px;
   }
   &::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-700;
+    @apply bg-muted hover:bg-accent;
     border-radius: 8px;
   }
   &::-webkit-scrollbar-track {
@@ -109,7 +109,7 @@ pre {
 }
 
 .tippy-box[data-theme~='tooltip-theme'] {
-  @apply px-2 py-1 bg-gray-900 dark:bg-gray-200 dark:text-black text-sm text-gray-200 rounded-md;
+  @apply px-2 py-1 bg-popover text-popover-foreground border border-border text-xs rounded-md shadow-md;
 }
 .Vue-Toastification__toast {
   font-family: inherit !important;
@@ -126,5 +126,5 @@ pre {
 }
 
 .input-label {
-  @apply ml-1 text-sm text-gray-600 dark:text-gray-200;
+  @apply mb-1.5 ml-0.5 block text-xs font-medium text-foreground;
 }

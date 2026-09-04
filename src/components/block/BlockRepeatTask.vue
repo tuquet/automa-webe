@@ -19,20 +19,22 @@
         <span>{{ t('workflow.blocks.repeat-task.name') }}</span>
       </div>
     </div>
-    <div class="bg-input relative flex items-center rounded-lg">
+    <div
+      class="relative flex items-center rounded-md border border-input bg-background/50 text-xs shadow-2xs"
+    >
       <input
         :value="data.repeatFor"
         placeholder="0"
-        class="bg-transparent py-2 px-4 focus:ring-0"
+        class="h-8 w-full bg-transparent px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
         style="padding-right: 57px; width: 95%"
         @keydown.stop
         @input="handleInput"
       />
-      <span class="absolute right-4 text-gray-600 dark:text-gray-200">
+      <span class="absolute right-3 text-xs text-muted-foreground">
         {{ t('workflow.blocks.repeat-task.times') }}
       </span>
     </div>
-    <p class="text-right text-gray-600 dark:text-gray-200">
+    <p class="text-right text-xs text-muted-foreground mt-1">
       {{ t('workflow.blocks.repeat-task.repeatFrom') }}
     </p>
     <Handle :id="`${id}-output-1`" type="source" :position="Position.Right" />

@@ -11,14 +11,14 @@
       <div class="pointer-events-none">
         <p
           title="Block id (click to copy)"
-          class="block-menu pointer-events-auto text-overflow inline-block px-1 dark:text-gray-300"
+          class="block-menu pointer-events-auto text-overflow inline-block px-1 text-xs text-muted-foreground"
           style="max-width: 96px; margin-bottom: 0"
           @click="insertToClipboard"
         >
           {{ isCopied ? '✅ Copied' : blockId }}
         </p>
       </div>
-      <div class="block-menu inline-flex items-center dark:text-gray-300">
+      <div class="block-menu inline-flex items-center text-muted-foreground">
         <button
           v-if="!blockData.details?.disableDelete"
           title="Delete block"
@@ -71,7 +71,7 @@
     <ui-card :class="contentClass" class="block-base__content relative z-10">
       <v-remixicon
         v-if="workflow?.data?.value.testingMode"
-        :class="{ 'text-red-500 dark:text-red-400': data.$breakpoint }"
+        :class="{ 'text-destructive': data.$breakpoint }"
         class="absolute left-0 top-0"
         name="riRecordCircleFill"
         title="Set as breakpoint"
@@ -137,11 +137,11 @@ function runWorkflow() {
 </script>
 <style>
 .block-menu {
-  @apply mb-1 bg-black bg-opacity-10 dark:bg-gray-200 dark:bg-opacity-10 rounded-md;
+  @apply mb-1 rounded-md border border-border bg-popover text-popover-foreground shadow-sm;
   button {
     padding-left: 6px;
     padding-right: 6px;
-    @apply focus:ring-0 py-1 hover:text-primary;
+    @apply focus:ring-0 py-1 hover:text-primary transition-colors;
   }
 }
 </style>

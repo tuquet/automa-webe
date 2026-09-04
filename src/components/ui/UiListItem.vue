@@ -1,12 +1,12 @@
 <template>
   <component
     :is="tag"
-    class="ui-list-item flex w-full items-center rounded-lg transition focus:outline-none"
+    class="ui-list-item flex w-full items-center rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring select-none text-xs cursor-pointer"
     role="listitem"
     :class="[
-      active ? color : 'hoverable',
-      small ? 'p-2' : 'py-2 px-4',
-      { 'pointer-events-none bg-opacity-75': disabled },
+      active ? color : 'hover:bg-accent hover:text-accent-foreground',
+      small ? 'py-1 px-2' : 'py-1.5 px-3',
+      { 'pointer-events-none opacity-50': disabled },
     ]"
   >
     <slot></slot>
@@ -14,6 +14,7 @@
 </template>
 <script>
 export default {
+  name: 'UiListItem',
   props: {
     active: Boolean,
     disabled: Boolean,
@@ -24,8 +25,7 @@ export default {
     },
     color: {
       type: String,
-      default:
-        'bg-primary text-primary dark:bg-secondary dark:text-secondary bg-opacity-10 dark:bg-opacity-10',
+      default: 'bg-accent text-accent-foreground font-medium',
     },
   },
 };

@@ -28,6 +28,8 @@
 <script setup>
 import { watch, ref } from 'vue';
 
+defineOptions({ name: 'UiExpand' });
+
 const props = defineProps({
   modelValue: {
     type: Boolean,

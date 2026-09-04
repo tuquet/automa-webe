@@ -11,7 +11,10 @@
     <template #trigger>
       <slot />
     </template>
-    <p v-if="filteredItems.length === 0" class="text-center">
+    <p
+      v-if="filteredItems.length === 0"
+      class="text-center text-xs text-muted-foreground py-2"
+    >
       {{ t('message.noData') }}
     </p>
     <ui-list v-else class="space-y-1">
@@ -19,7 +22,9 @@
         v-for="(item, index) in filteredItems"
         :id="`list-item-${index}`"
         :key="getItem(item, true)"
-        :class="{ 'bg-box-transparent': state.activeIndex === index }"
+        :class="{
+          'bg-accent text-accent-foreground': state.activeIndex === index,
+        }"
         class="cursor-pointer"
         @mousedown="selectItem(index, true)"
         @mouseenter="state.activeIndex = index"

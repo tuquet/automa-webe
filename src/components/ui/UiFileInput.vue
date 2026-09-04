@@ -2,17 +2,17 @@
   <div class="input-ui inline-block w-full">
     <label
       v-if="label"
-      class="ml-1 inline-flex items-center text-sm leading-none text-gray-600 dark:text-gray-200"
+      class="mb-1.5 ml-0.5 inline-flex items-center text-xs font-medium text-foreground"
     >
       <span>{{ label }}</span>
       <v-remixicon
         v-tooltip="tooltipContent"
         name="riInformationLine"
-        class="ml-1"
-        size="16"
+        class="ml-1 text-muted-foreground"
+        size="14"
       />
     </label>
-    <div class="mt-1 w-full">
+    <div class="w-full">
       <input
         ref="fileInput"
         type="file"
@@ -31,8 +31,8 @@
         Choose File
       </ui-button>
       <p
-        class="mt-1 text-sm text-center text-gray-500 dark:text-gray-400"
-        :class="{ 'text-red-500': hasError }"
+        class="mt-1 text-xs text-center text-muted-foreground"
+        :class="{ 'text-destructive': hasError }"
       >
         {{ statusText }}
       </p>
@@ -43,6 +43,8 @@
 import { computed, onMounted, ref, shallowRef } from 'vue';
 import { useToast } from 'vue-toastification';
 import UiButton from './UiButton.vue';
+
+defineOptions({ name: 'UiFileInput' });
 
 const props = defineProps({
   modelValue: {

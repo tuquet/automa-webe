@@ -79,7 +79,7 @@
     </div>
     <div
       v-if="data.author"
-      class="mt-1 flex items-center text-sm text-gray-600 dark:text-gray-200"
+      class="mt-1 flex items-center text-xs text-muted-foreground"
     >
       <p>By {{ data.author }}</p>
       <a

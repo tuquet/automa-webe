@@ -9,7 +9,7 @@
     </div>
     <div
       ref="content"
-      class="ui-popover__content rounded-lg border bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+      class="ui-popover__content rounded-md border border-border bg-popover text-popover-foreground shadow-md outline-none"
       :class="[padding]"
     >
       <slot v-bind="{ isShow }"></slot>
@@ -21,6 +21,7 @@ import { ref, onMounted, watch, shallowRef, onUnmounted } from 'vue';
 import createTippy from '@/lib/tippy';
 
 export default {
+  name: 'UiPopover',
   props: {
     placement: {
       type: String,

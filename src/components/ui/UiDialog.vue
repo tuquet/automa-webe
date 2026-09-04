@@ -5,7 +5,9 @@
     @close="state.show = false"
   >
     <template #header>
-      <h3 class="font-semibold">{{ state.options.title }}</h3>
+      <h3 class="text-sm font-semibold text-foreground">
+        {{ state.options.title }}
+      </h3>
     </template>
     <slot
       v-if="state.options.custom"
@@ -13,7 +15,7 @@
       :name="state.type"
     />
     <template v-else>
-      <p class="leading-tight text-gray-600 dark:text-gray-200">
+      <p class="text-xs leading-relaxed text-muted-foreground">
         {{ state.options.body }}
       </p>
       <ui-input
