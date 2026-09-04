@@ -18,7 +18,7 @@
         {{ blocks.length }}
       </span>
       <v-remixicon
-        :name="show ? 'riArrowDownSLine' : 'riArrowRightSLine'"
+        :name="show ? 'ChevronDown' : 'ChevronRight'"
         size="16"
         class="text-muted-foreground transition-transform"
       />
@@ -45,7 +45,7 @@
             rel="noopener"
             class="inline-flex items-center justify-center p-1 rounded text-muted-foreground hover:text-foreground hover:bg-accent transition"
           >
-            <v-remixicon name="riInformationLine" size="13" />
+            <v-remixicon name="Info" size="13" />
           </a>
           <button
             type="button"
@@ -56,9 +56,8 @@
           >
             <v-remixicon
               size="13"
-              :name="
-                pinned.includes(block.id) ? 'riPushpin2Fill' : 'riPushpin2Line'
-              "
+              name="Pin"
+              :class="pinned.includes(block.id) ? 'text-primary fill-primary' : ''"
             />
           </button>
         </div>

@@ -16,7 +16,7 @@
         class="size-7 rounded-md"
         @click="handleClose"
       >
-        <v-remixicon name="riArrowLeftLine" size="16" />
+        <v-remixicon name="ArrowLeft" size="16" />
       </ui-button>
 
       <span
@@ -30,7 +30,7 @@
         />
         <v-remixicon
           v-else
-          :name="getBlockIcon() || 'riCommandLine'"
+          :name="getBlockIcon() || 'Terminal'"
           size="16"
         />
       </span>
@@ -51,7 +51,7 @@
         target="_blank"
         class="inline-flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition shrink-0"
       >
-        <v-remixicon name="riInformationLine" size="16" />
+        <v-remixicon name="Info" size="16" />
       </a>
     </div>
     <component
